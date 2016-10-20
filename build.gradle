@@ -1,0 +1,21 @@
+apply from: 'buildsystem/dependencies.gradle'
+
+buildscript {
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.1.3'
+    }
+}
+
+allprojects {
+    ext {
+        androidApplicationId = 'net.cosmiclion.beum'
+        androidVersionCode = 1
+        androidVersionName = "1.0"
+
+    }
+}
+

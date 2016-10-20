@@ -1,0 +1,75 @@
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+ext {
+    //Android
+    androidBuildToolsVersion = "24.0.2"
+    androidCompileSdkVersion = 24
+    androidMinSdkVersion = 15
+    androidTargetSdkVersion = 24
+
+    //Libraries
+    rxJavaVersion = '1.0.14'
+    rxAndroidVersion = '1.0.1'
+    javaxAnnotationVersion = '1.0'
+    javaxInjectVersion = '1'
+    androidAnnotationsVersion = '21.0.3'
+
+    recyclerViewVersion = '24.2.0'
+    appcompatVersion = '24.2.0'
+    cardviewVersion = '24.2.0'
+    designVersion = '24.2.0'
+    supportVersion = '24.2.0'
+
+    guavaVersion = '18.0'
+    googlePlayVersion = '9.4.0'
+    fbSDKVersion = '4.5.0'
+    volleyVersion = '1.0.19'
+    gsonVersion = '2.6.2'
+
+    //Testing
+    robolectricVersion = '3.0'
+    jUnitVersion = '4.12'
+    assertJVersion = '1.7.1'
+    mockitoVersion = '1.9.5'
+    dexmakerVersion = '1.0'
+    espressoVersion = '2.0'
+    testingSupportLibVersion = '0.1'
+
+    //Development
+    leakCanaryVersion = '1.3.1'
+
+    presentationDependencies = [
+            rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
+            javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+
+            recyclerView:       "com.android.support:recyclerview-v7:${recyclerViewVersion}",
+            appcompat:          "com.android.support:appcompat-v7:${appcompatVersion}",
+            cardView:           "com.android.support:cardview-v7:${cardviewVersion}",
+            design:             "com.android.support:design:${designVersion}",
+            support:            "com.android.support:support-v4:${supportVersion}",
+    ]
+
+    domainDependencies = [
+            javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            javaxInject:        "javax.inject:javax.inject:${javaxInjectVersion}",
+            rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
+    ]
+
+    dataDependencies = [
+            gson:               "com.google.code.gson:gson:${gsonVersion}",
+            rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
+            javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            javaxInject:        "javax.inject:javax.inject:${javaxInjectVersion}",
+            androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}"
+    ]
+
+    developmentDependencies = [
+            leakCanary: "com.squareup.leakcanary:leakcanary-android:${leakCanaryVersion}",
+    ]
+}
