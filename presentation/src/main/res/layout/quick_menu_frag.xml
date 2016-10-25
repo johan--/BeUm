@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/basic_white"
+    android:orientation="vertical">
+
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+    <!--android:id="@+id/swipeHotTopic"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent">-->
+    <!--&lt;!&ndash; TODO: Update blank fragment layout &ndash;&gt;-->
+    <!--<android.support.v7.widget.RecyclerView-->
+    <!--android:id="@+id/listHotTopic"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:background="@color/bg_topics" />-->
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+
+    <TextView
+        android:id="@+id/txtNoData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:padding="@dimen/text_size_medium"
+        android:text="Hello quick menu"
+        android:textAlignment="center"
+        android:visibility="visible" />
+
+    <!--<TextView-->
+    <!--android:id="@+id/textVolleyError"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="center"-->
+    <!--android:padding="@dimen/size_word"-->
+    <!--android:text="ssssssss"-->
+    <!--android:textColor="#FF4444"-->
+    <!--android:visibility="gone" />-->
+</LinearLayout>

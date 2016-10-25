@@ -1,0 +1,71 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+        <item name="colorPrimary">@color/yellow_700</item>
+        <item name="colorPrimaryDark">@color/yellow_800</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="android:buttonStyle">@style/MyMaterialTheme.Base.Button</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/basic_white</item>
+        <item name="android:colorButtonNormal">@color/brown_700</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.ButtonFlat" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/light_green_500</item>
+    </style>
+
+    <style name="FacebookLoginButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:colorButtonNormal">@color/yellow_600</item>
+        <item name="android:textSize">@dimen/text_button</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+    </style>
+
+    <style name="MaterialButton" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:theme">@style/Theme.MaterialButton</item>
+    </style>
+
+    <style name="Theme.MaterialButton" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:colorControlNormal">@color/basic_blue</item>
+        <item name="android:colorAccent">@color/amber_700</item>
+        <item name="android:colorButtonNormal">@color/red_a400</item>
+    </style>
+
+    <!--<style name="MyMaterialTheme.ActionBar" parent="MyMaterialTheme.Base">-->
+        <!--<item name="android:textColorPrimary">?attr/colorPrimary</item>-->
+        <!--<item name="colorControlNormal">@android:color/white</item>-->
+        <!--<item name="colorControlHighlight">@color/yellow_200</item>-->
+        <!--<item name="colorControlActivated">?attr/colorPrimary</item>-->
+    <!--</style>-->
+
+    <!--<style name="MyMaterialTheme.ToolBar" parent="">-->
+        <!--<item name="android:layout_width">match_parent</item>-->
+        <!--<item name="android:layout_height">?attr/actionBarSize</item>-->
+        <!--<item name="android:background">?attr/colorPrimary</item>-->
+        <!--<item name="android:theme">@style/MyMaterialTheme.ActionBar</item>-->
+        <!--<item name="popupTheme">@style/MyMaterialTheme.ActionBar.Popup</item>-->
+        <!--<item name="android:elevation" tools:ignore="NewApi">@dimen/toolbar_elevation</item>-->
+        <!--&lt;!&ndash;<item name="layout_scrollFlags">scroll|enterAlways</item>&ndash;&gt;-->
+    <!--</style>-->
+
+    <!--<style name="MyMaterialTheme.ActionBar.Popup" parent="ThemeOverlay.AppCompat.Light" />-->
+
+    <!--<style name="MyMaterialTheme.TabLayout" parent="">-->
+        <!--<item name="android:layout_width">match_parent</item>-->
+        <!--<item name="android:layout_height">?attr/actionBarSize</item>-->
+        <!--<item name="android:background">@android:color/white</item>-->
+        <!--<item name="android:theme">@style/MyMaterialTheme.ActionBar</item>-->
+        <!--<item name="android:text">@android:color/black</item>-->
+        <!--<item name="android:elevation" tools:ignore="NewApi">@dimen/toolbar_elevation</item>-->
+        <!--<item name="tabMode">scrollable</item>-->
+        <!--<item name="tabGravity">fill</item>-->
+    <!--</style>-->
+</resources>

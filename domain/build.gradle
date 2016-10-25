@@ -1,26 +1,36 @@
-apply plugin: 'java'
+apply plugin: 'com.android.library'
 
-//noinspection GroovyUnusedAssignment
-sourceCompatibility = 1.7
-//noinspection GroovyUnusedAssignment
-targetCompatibility = 1.7
+android {
+    def globalConfiguration = rootProject.extensions.getByName("ext")
 
-configurations {
-    provided
-}
+    compileSdkVersion globalConfiguration.getAt("androidCompileSdkVersion")
+    buildToolsVersion globalConfiguration.getAt("androidBuildToolsVersion")
 
-sourceSets {
-    main {
-        compileClasspath += configurations.provided
+    defaultConfig {
+        minSdkVersion globalConfiguration.getAt("androidMinSdkVersion")
+        targetSdkVersion globalConfiguration.getAt("androidTargetSdkVersion")
+
+        versionCode globalConfiguration.getAt("androidVersionCode")
+        versionName globalConfiguration.getAt("androidVersionName")
+
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.debug
+        }
     }
 }
-
 dependencies {
     def domainDependencies = rootProject.ext.domainDependencies
+
+    compile project(':data')
 
     provided domainDependencies.javaxAnnotation
 
     compile domainDependencies.javaxInject
     compile domainDependencies.rxJava
 
+    compile domainDependencies.guava
+    compile domainDependencies.support
 }

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_one"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_dialog_map"
+        android:title="@string/quick_menu_tab_name"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_two"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_dialog_info"
+        android:title="@string/my_library_tab_name"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_three"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_dialog_email"
+        android:title="@string/purchase_list_tab_name"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_four"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_popup_reminder"
+        android:title="@string/configuration_tab_name"
+        app:showAsAction="ifRoom" />
+</menu>

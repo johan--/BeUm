@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Strings related to login -->
+    <string name="app_decription">Mô tả ứng dụng của bạn</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Mật khẩu</string>
+    <string name="action_sign_in">Đăng nhập</string>
+    <string name="different_login">hoặc</string>
+    <string name="plus_sign_out">Change Google+ account</string>
+    <string name="plus_disconnect">Disconnect from Google+</string>
+    <string name="error_invalid_email">Email không hợp lệ</string>
+    <string name="error_invalid_password">Mật khẩu quá ngắn</string>
+    <string name="error_incorrect_password">Email hoặc mật khẩu không chính xác</string>
+    <string name="error_field_required">Bắt buộc</string>
+    <string name="forgot_password">Quên mật khẩu?</string>
+    <string name="create_account">Đăng ký</string>
+    <string name="btn_login_fb">Đăng nhập bằng Facebook</string>
+    <string name="btn_logout_fb">Thoát</string>
+    <string name="error_try_again">Lỗi, vui lòng thử lại</string>
+    <string name="powered_by">Powered by</string>
+</resources>

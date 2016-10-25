@@ -19,9 +19,9 @@ ext {
     androidAnnotationsVersion = '21.0.3'
 
     recyclerViewVersion = '24.2.0'
-    appcompatVersion = '24.2.0'
+    appcompatVersion = '25.0.0'
     cardviewVersion = '24.2.0'
-    designVersion = '24.2.0'
+    designVersion = '25.0.0'
     supportVersion = '24.2.0'
 
     guavaVersion = '18.0'
@@ -46,27 +46,40 @@ ext {
             rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
             javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}",
+            javaxInject:        "javax.inject:javax.inject:${javaxInjectVersion}",
 
             recyclerView:       "com.android.support:recyclerview-v7:${recyclerViewVersion}",
             appcompat:          "com.android.support:appcompat-v7:${appcompatVersion}",
             cardView:           "com.android.support:cardview-v7:${cardviewVersion}",
             design:             "com.android.support:design:${designVersion}",
             support:            "com.android.support:support-v4:${supportVersion}",
+
+            guava:              "com.google.guava:guava:${guavaVersion}",
     ]
 
     domainDependencies = [
-            javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
-            javaxInject:        "javax.inject:javax.inject:${javaxInjectVersion}",
-            rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
-    ]
-
-    dataDependencies = [
-            gson:               "com.google.code.gson:gson:${gsonVersion}",
             rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
             rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
             javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}",
             javaxInject:        "javax.inject:javax.inject:${javaxInjectVersion}",
-            androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}"
+
+            guava:              "com.google.guava:guava:${guavaVersion}",
+            support:            "com.android.support:support-v4:${supportVersion}",
+    ]
+
+    dataDependencies = [
+            rxJava:             "io.reactivex:rxjava:${rxJavaVersion}",
+            rxAndroid:          "io.reactivex:rxandroid:${rxAndroidVersion}",
+            javaxAnnotation:    "javax.annotation:jsr250-api:${javaxAnnotationVersion}",
+            androidAnnotations: "com.android.support:support-annotations:${androidAnnotationsVersion}",
+            javaxInject:        "javax.inject:javax.inject:${javaxInjectVersion}",
+
+            gson:               "com.google.code.gson:gson:${gsonVersion}",
+            guava:              "com.google.guava:guava:${guavaVersion}",
+            support:            "com.android.support:support-v4:${supportVersion}",
+            volley:             "com.mcxiaoke.volley:library:${volleyVersion}",
     ]
 
     developmentDependencies = [

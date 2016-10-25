@@ -1,11 +1,66 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimary">@color/yellow_700</item>
+        <item name="colorPrimaryDark">@color/yellow_800</item>
         <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+        <item name="colorPrimary">@color/yellow_700</item>
+        <item name="colorPrimaryDark">@color/yellow_800</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+        <item name="buttonStyle">@style/MyMaterialTheme.Base.Button</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.Button" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/basic_white</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.ButtonFlat" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/light_green_500</item>
+    </style>
+
+
+
+    <style name="ThemeOverlay.MaterialSheetFab.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@android:color/white</item>
+        <item name="colorControlNormal">@android:color/white</item>
+        <item name="colorControlHighlight">#8fff</item>
+        <item name="colorControlActivated">@color/basic_black</item>
+    </style>
+
+    <style name="ThemeOverlay.MaterialSheetFab.ActionBar.Popup" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="Widget.MaterialSheetFab.ToolBar" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="android:theme">@style/ThemeOverlay.MaterialSheetFab.ActionBar</item>
+        <item name="popupTheme">@style/ThemeOverlay.MaterialSheetFab.ActionBar.Popup</item>
+        <item name="android:elevation" tools:ignore="NewApi">@dimen/toolbar_elevation</item>
+        <!--<item name="layout_scrollFlags">scroll|enterAlways</item>-->
+    </style>
+
+    <style name="Widget.MaterialSheetFab.TabLayout" parent="">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.MaterialSheetFab.ActionBar</item>
+        <item name="android:elevation" tools:ignore="NewApi">@dimen/toolbar_elevation</item>
+        <item name="tabMode">scrollable</item>
+        <item name="tabGravity">fill</item>
     </style>
 
 </resources>

@@ -72,6 +72,7 @@ dependencies {
     compile presentationDependencies.design
     compile presentationDependencies.support
 
+    compile presentationDependencies.guava
     //Development
     compile developmentDependencies.leakCanary
 }

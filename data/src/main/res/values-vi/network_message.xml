@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="generic_server_down">Máy chủ gặp sự cố</string>
+    <string name="generic_error">Lỗi, vui lòng thử lại</string>
+    <string name="no_internet">Không có kết nối mạng</string>
+</resources>

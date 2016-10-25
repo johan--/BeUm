@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quick_menu_tab_name">Quick menu</string>
+    <string name="my_library_tab_name">My library</string>
+    <string name="purchase_list_tab_name">Purchase list</string>
+    <string name="configuration_tab_name">Configuration</string>
+	
+</resources>
