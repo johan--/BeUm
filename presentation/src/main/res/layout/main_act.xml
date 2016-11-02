@@ -5,7 +5,7 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="net.cosmiclion.beum.main.MainActivity"
+    tools:context="net.cosmiclion.opms.main.MainActivity"
     tools:openDrawer="start">
 
     <android.support.design.widget.CoordinatorLayout
@@ -26,69 +26,24 @@
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     style="@style/Widget.MaterialSheetFab.ToolBar">
-
                 </android.support.v7.widget.Toolbar>
+
             </android.support.design.widget.AppBarLayout>
 
             <include layout="@layout/main_content_layout"></include>
-            <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:background="@color/red_300">-->
-
-            <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_alignParentTop="true"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:text="hello" />&ndash;&gt;-->
-
-            <!--<TextView-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:background="@color/blue_100"-->
-            <!--android:layout_above="@+id/bottom_navigation"-->
-            <!--android:text="hellsso" />-->
-
-            <!--<android.support.design.widget.BottomNavigationView-->
-            <!--android:id="@+id/bottom_navigation"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--app:itemBackground="@android:color/white"-->
-            <!--app:itemIconTint="@drawable/nav_item_color_state"-->
-            <!--app:itemTextColor="@drawable/nav_item_color_state"-->
-            <!--app:menu="@menu/menu_bottom_navigation" />-->
-
-
-            <!--&lt;!&ndash;<net.cosmiclion.beum.main.CustomViewPager&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/viewpager"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;app:layout_behavior="@string/appbar_scrolling_view_behavior" />&ndash;&gt;-->
-
-            <!--<FrameLayout-->
-            <!--android:id="@+id/contentFrame"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
-            <!--&lt;!&ndash;<android.support.v7.widget.RecyclerView&ndash;&gt;-->
-            <!--&lt;!&ndash;android:id="@+id/rv"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_width="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_height="match_parent"&ndash;&gt;-->
-            <!--&lt;!&ndash;android:layout_above="@id/nm_bottom"&ndash;&gt;-->
-            <!--&lt;!&ndash;app:layout_behavior="@string/appbar_scrolling_view_behavior" />&ndash;&gt;-->
-
             <!--</RelativeLayout>-->
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
     <!-- Navigation Drawer -->
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
-        app:headerLayout="@layout/nav_header"
+        app:itemBackground="@android:color/transparent"
         app:menu="@menu/drawer_actions" />
 
+    <!--app:headerLayout="@layout/nav_header"-->
 </android.support.v4.widget.DrawerLayout>
 

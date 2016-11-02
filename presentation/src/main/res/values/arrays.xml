@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="opts">
+        <item>red</item>
+        <item>green</item>
+        <item>blue</item>
+    </string-array>
+
+    <string-array name="opts_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+</resources>

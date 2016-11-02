@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sample_text_title">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet  Lorem ipsum dolor sit amet </string>
+    <string name="sample_text_subtitle">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet</string>
+    <string name="book_shelf_text_input_hint">Sample: Alice in wonderland</string>
+    <string name="text_input_hint">Sample: West world</string>
+	
+	<string name="dialog_button_cancel">cancel</string>
+	<string name="dialog_button_ok">ok</string>
+	<string name="dialog_button_discard">discard</string>
+	<string name="dialog_button_agree">agree</string>
+	<string name="dialog_button_disagree">disagree</string>
+	
+	<string name="dialog_radio_sort_title">Sort by Title</string>
+	<string name="dialog_radio_sort_author">Sort by Author</string>
+	<string name="dialog_radio_sort_read">Sort by reading order</string>
+</resources>

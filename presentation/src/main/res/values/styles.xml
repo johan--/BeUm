@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/yellow_700</item>
         <item name="colorPrimaryDark">@color/yellow_800</item>
@@ -11,6 +11,10 @@
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
+        <!-- Preference setting -->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
+        <item name="android:listPreferredItemHeight">100dp</item>
+        <!-- Preference setting end -->
         <item name="colorPrimary">@color/yellow_700</item>
         <item name="colorPrimaryDark">@color/yellow_800</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -28,16 +32,29 @@
     </style>
 
     <style name="MyMaterialTheme.Base.ButtonFlat" parent="Widget.AppCompat.Button.Borderless.Colored">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/light_green_500</item>
+        <item name="android:textSize">@dimen/action_text_size</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.ImageButton" parent="Widget.AppCompat.Button.Small">
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.SpinnerItem" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:textSize">@dimen/action_text_size</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.SpinnerDropdownItem" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+        <item name="android:textSize">@dimen/action_text_size</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 
 
-
     <style name="ThemeOverlay.MaterialSheetFab.ActionBar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
-        <item name="android:textColorPrimary">@android:color/white</item>
-        <item name="colorControlNormal">@android:color/white</item>
-        <item name="colorControlHighlight">#8fff</item>
+        <item name="android:textColorPrimary">?attr/colorPrimary</item>
+        <item name="colorControlNormal">?attr/colorPrimary</item>
+        <item name="colorControlHighlight">@color/yellow_300</item>
         <item name="colorControlActivated">@color/basic_black</item>
     </style>
 
@@ -63,4 +80,38 @@
         <item name="tabGravity">fill</item>
     </style>
 
+    <style name="PreferenceThemeOverlay">
+        <item name="preferenceScreenStyle">@style/Preference.PreferenceScreen</item>
+        <item name="preferenceFragmentStyle">@style/PreferenceFragment</item>
+        <item name="preferenceCategoryStyle">@style/Preference.Category</item>
+        <item name="preferenceStyle">@style/Preference</item>
+        <item name="preferenceInformationStyle">@style/Preference.Information</item>
+        <item name="checkBoxPreferenceStyle">@style/Preference.CheckBoxPreference</item>
+        <item name="switchPreferenceCompatStyle">@style/Preference.SwitchPreferenceCompat</item>
+        <item name="dialogPreferenceStyle">@style/Preference.DialogPreference</item>
+        <item name="editTextPreferenceStyle">@style/Preference.DialogPreference.EditTextPreference
+        </item>
+        <item name="preferenceFragmentListStyle">@style/PreferenceFragmentList</item>
+    </style>
+
+    <style name="RadioButtonThemeWhite" parent="@android:style/Widget.CompoundButton">
+        <item name="android:layout_width">@dimen/config_theme_thumbnail_width</item>
+        <item name="android:layout_height">@dimen/config_theme_thumbnail_height</item>
+        <item name="android:background">@drawable/custom_radio_theme_white</item>
+        <item name="android:button">@null</item>
+    </style>
+
+    <style name="RadioButtonThemeBrown" parent="@android:style/Widget.CompoundButton">
+        <item name="android:layout_width">@dimen/config_theme_thumbnail_width</item>
+        <item name="android:layout_height">@dimen/config_theme_thumbnail_height</item>
+        <item name="android:background">@drawable/custom_radio_theme_brown</item>
+        <item name="android:button">@null</item>
+    </style>
+
+    <style name="RadioButtonThemeBlack" parent="@android:style/Widget.CompoundButton">
+        <item name="android:layout_width">@dimen/config_theme_thumbnail_width</item>
+        <item name="android:layout_height">@dimen/config_theme_thumbnail_height</item>
+        <item name="android:background">@drawable/custom_radio_theme_black</item>
+        <item name="android:button">@null</item>
+    </style>
 </resources>

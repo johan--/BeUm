@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="purchase_download">Download</string>
+    <string name="purchase_search_hint">Search here...</string>
+
+</resources>
