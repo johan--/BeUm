@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutBookItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/list_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/ivBookCover"
+            android:layout_width="@dimen/grid_thumbnail_width"
+            android:layout_height="@dimen/grid_thumbnail_height"
+            android:src="@drawable/book_cover" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/list_padding"
+            android:layout_marginStart="@dimen/list_padding"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tvBookName"
+                style="@style/MyMaterialTheme.Base.TextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/book_shelf_text_input_hint" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/MyMaterialTheme.Base.TextTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Author:" />
+
+                <TextView
+                    android:id="@+id/tvBookAuthor"
+                    style="@style/MyMaterialTheme.Base.TextNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:layout_marginStart="@dimen/dimen_4dp"
+                    android:text="David Beckham" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/MyMaterialTheme.Base.TextTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Detail:" />
+
+                <TextView
+                    android:id="@+id/tvBookPublisher"
+                    style="@style/MyMaterialTheme.Base.TextNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/dimen_4dp"
+                    android:layout_marginStart="@dimen/dimen_4dp"
+                    android:maxLines="5"
+                    android:text="@string/sample_text_subtitle" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/selected_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/red_400"
+        android:visibility="invisible" />
+</LinearLayout><!--</android.support.v7.widget.CardView>-->

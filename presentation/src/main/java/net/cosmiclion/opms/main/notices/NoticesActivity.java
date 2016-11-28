@@ -1,15 +1,13 @@
 package net.cosmiclion.opms.main.notices;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.main.notice.NoticeFragment;
@@ -18,8 +16,8 @@ import net.cosmiclion.opms.main.notices.adapter.NoticesAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NoticesFragment extends Fragment implements NoticesContract.View, NoticesAdapter.ViewHolder.ClickListener, SwipeRefreshLayout.OnRefreshListener{
-    public static final String FRAGMENT = "NoticesFragment";
+public class NoticesActivity extends AppCompatActivity implements NoticesContract.View, NoticesAdapter.ViewHolder.ClickListener, SwipeRefreshLayout.OnRefreshListener{
+    public static final String FRAGMENT = "NoticesActivity";
 
     public String TAG = getClass().getSimpleName();
 
@@ -29,24 +27,19 @@ public class NoticesFragment extends Fragment implements NoticesContract.View, N
 
     private SwipeRefreshLayout mSwipeRefreshLayout;
 
-    public NoticesFragment() {
+    public NoticesActivity() {
     }
 
-    public static NoticesFragment newInstance() {
-        NoticesFragment fragment = new NoticesFragment();
+    public static NoticesActivity newInstance() {
+        NoticesActivity fragment = new NoticesActivity();
         return fragment;
     }
 
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View layout = inflater.inflate(R.layout.notices_frag, container, false);
-        setupRecyclerView(layout);
-        return layout;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.notices_frag);
+
     }
 
 
@@ -72,7 +65,7 @@ public class NoticesFragment extends Fragment implements NoticesContract.View, N
 
     @Override
     public void onItemClicked(int position) {
-        final FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         NoticeFragment helpFragment = NoticeFragment.newInstance();
         transaction.replace(R.id.contentFrame, helpFragment, NoticeFragment.FRAGMENT);
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
