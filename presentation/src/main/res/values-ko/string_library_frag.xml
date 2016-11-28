@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sample_text_title">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet  Lorem ipsum dolor sit amet </string>
-    <string name="sample_text_subtitle">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet</string>
-    <string name="book_shelf_text_input_hint">Sample: Alice in wonderland</string>
-    <string name="text_input_hint">Sample: West world</string>
-	
-	<string name="dialog_button_cancel">cancel</string>
-	<string name="dialog_button_ok">ok</string>
-	<string name="dialog_button_discard">discard</string>
-	<string name="dialog_button_agree">agree</string>
-	<string name="dialog_button_disagree">disagree</string>
+	<string name="sample_text_title">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet  Lorem ipsum dolor sit amet </string>
+	<string name="sample_text_subtitle">Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet Lorem ipsum dolor sit amet</string>
+	<string name="book_shelf_text_input_hint">Sample: Alice in wonderland</string>
+	<string name="text_input_hint">Sample: West world</string>
 
-	<string name="dialog_radio_sort_title">Sort by Title</string>
-	<string name="dialog_radio_sort_author">Sort by Author</string>
-	<string name="dialog_radio_sort_read">Sort by reading order</string>
+	<string name="dialog_button_cancel">취소</string>
+	<string name="dialog_button_ok">확인</string>
+
+	<string name="dialog_text_new_title">새 책장 추가</string>
+	<string name="dialog_text_new_subtitle">새 책장의 이름을 입력해주세요</string>
+
+	<string name="dialog_text_search_title">검색</string>
+	<string name="dialog_text_search_subtitle">검색어를 입력해주세요</string>
+
+	<string name="dialog_text_sort_title">정렬</string>
+	<string name="dialog_text_sort_subtitle">정렬방식을 선택해주세요</string>
+	<string name="dialog_button_sort_by_title">책 제목 순으로</string>
+	<string name="dialog_button_sort_by_author">저자 순으로</string>
+	<string name="dialog_button_sort_by_read">최근에 읽은 순으로</string>
+
+	<string name="library_button_new">책장 추가</string>
+	<string name="library_button_move">책장에 넣음</string>
+	<string name="library_button_delete">삭제</string>
+	<string name="library_button_cancel">완료</string>
+
+	<string name="library_text_title">책 제목</string>
+	<string name="library_text_author">저자:</string>
+	<string name="library_text_detail">내용:</string>
 </resources>

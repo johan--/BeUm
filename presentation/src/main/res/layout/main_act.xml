@@ -26,24 +26,65 @@
                 <android.support.v7.widget.Toolbar
                     android:id="@+id/toolbar"
                     style="@style/Widget.MaterialSheetFab.ToolBar">
+
+                    <ImageView
+                        android:id="@+id/toolbar_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:padding="@dimen/dimen_12dp"
+                        android:src="@drawable/ic_opms_logo" />
                 </android.support.v7.widget.Toolbar>
 
             </android.support.design.widget.AppBarLayout>
 
             <include layout="@layout/main_content_layout"></include>
-            <!--</RelativeLayout>-->
         </LinearLayout>
     </android.support.design.widget.CoordinatorLayout>
-    <!-- Navigation Drawer -->
+
     <android.support.design.widget.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="160dp"
+        android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:foregroundGravity="center_vertical"
+        app:headerLayout="@layout/nav_header"
         app:itemBackground="@android:color/transparent"
-        app:menu="@menu/drawer_actions" />
+        app:menu="@menu/drawer_actions">
 
-    <!--app:headerLayout="@layout/nav_header"-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="textEnd"
+                android:gravity="end"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_powered_by_title"
+                android:textColor="@color/basic_black"
+                android:textSize="@dimen/drawer_powered_textSize"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:textAlignment="textStart"
+                android:gravity="start"
+                android:paddingLeft="@dimen/dimen_4dp"
+                android:paddingStart="@dimen/dimen_4dp"
+                android:layout_height="wrap_content"
+                android:text="@string/nav_cosmic_lion_title"
+                android:textColor="@color/yellow_700"
+                android:textSize="@dimen/drawer_powered_textSize"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </android.support.design.widget.NavigationView>
+
 </android.support.v4.widget.DrawerLayout>
 

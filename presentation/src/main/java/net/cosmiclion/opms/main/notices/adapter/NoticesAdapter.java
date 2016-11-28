@@ -16,6 +16,7 @@ import java.util.List;
 public class NoticesAdapter extends RecyclerView.Adapter<NoticesAdapter.ViewHolder> {
     @SuppressWarnings("unused")
     private String TAG = getClass().getSimpleName();
+    private final int ITEM_EVEN = 0, ITEM_ODD = 1;
     private ViewHolder.ClickListener clickListener;
     private List<String> notices;
 
@@ -26,9 +27,32 @@ public class NoticesAdapter extends RecyclerView.Adapter<NoticesAdapter.ViewHold
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notices_list_item, parent, false);
-        return new ViewHolder(view, clickListener);
+    public int getItemViewType(int position) {
+        if (position % 2 == 0) {
+            return ITEM_EVEN;
+        } else {
+            return ITEM_ODD;
+        }
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        NoticesAdapter.ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+        int layout = 0;
+        switch (viewType) {
+            case ITEM_EVEN:
+                layout = R.layout.notices_list_item_even;
+                View v1 = inflater.inflate(layout, viewGroup, false);
+                viewHolder = new NoticesAdapter.ViewHolder(v1, clickListener);
+                break;
+            case ITEM_ODD:
+                layout = R.layout.notices_list_item_odd;
+                View v2 = inflater.inflate(layout, viewGroup, false);
+                viewHolder = new NoticesAdapter.ViewHolder(v2, clickListener);
+                break;
+        }
+        return viewHolder;
     }
 
     @Override

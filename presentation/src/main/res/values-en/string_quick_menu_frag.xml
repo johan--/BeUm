@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quickmenu_recent_read">최근 읽은 책</string>
+
+    <string name="quickmenu_recent_purchase">최근 구매한 책</string>
+    <string name="quickmenu_view_all"><u>전체 보기 &#8250;</u></string>
+
+</resources>

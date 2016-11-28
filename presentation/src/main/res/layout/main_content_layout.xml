@@ -17,25 +17,22 @@
             android:layout_height="1dp"
             android:background="@android:color/darker_gray" />
 
-        <android.support.design.widget.BottomNavigationView
-            android:id="@+id/bottom_navigation"
+        <com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+            android:id="@+id/bottom_navigation_lib"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:itemBackground="@android:color/white"
-            app:itemIconTint="@drawable/nav_item_color_state"
-            app:itemTextColor="@drawable/nav_item_color_state"
-            app:menu="@menu/menu_bottom_navigation" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/bottom_navigation_layout" >
+        android:layout_above="@+id/bottom_navigation_layout">
 
-        <FrameLayout
-            android:id="@+id/contentFrame"
+        <com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@android:color/transparent"/>
+
     </RelativeLayout>
 </RelativeLayout>

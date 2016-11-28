@@ -4,8 +4,14 @@
     android:installLocation="auto">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_INTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"/>
 
     <application
+        android:name="net.cosmiclion.opms.ebookreader.skyepub.SkyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -24,7 +30,11 @@
         </activity>
         <activity
             android:name="net.cosmiclion.opms.main.MainActivity"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="net.cosmiclion.opms.main.notices.NoticesActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="net.cosmiclion.opms.ebookreader.skyepub.BookViewActivity" />
     </application>
 
 </manifest>

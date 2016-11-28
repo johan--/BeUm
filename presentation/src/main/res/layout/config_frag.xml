@@ -4,14 +4,4 @@
     android:background="@color/basic_white"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/txtNoData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="@dimen/text_size_medium"
-        android:text="Config"
-        android:textAlignment="center"
-        android:visibility="visible" />
-
 </FrameLayout>

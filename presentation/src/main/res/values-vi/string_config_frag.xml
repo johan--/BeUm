@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_send_report">Send crash reports</string>
+    <string name="pref_send_report_summary">Helps to fix bugs</string>
+    <string name="pref_sync_frequency">Sync frequency</string>
+    <string name="pref_sync_frequency_summary">Set the sync frequency</string>
+    <string name="pref_user_name">Set username</string>
+    <string name="pref_user_name_summary">Set your username</string>
+
+    <string name="pref_user_profile">User Profile</string>
+    <string name="pref_viewer_setting">Viewer Settings</string>
+
+    <string name="pref_theme">pref_theme</string>
+    <string name="pref_theme_title">Theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <string name="pref_two_page_landscape">가로에서 양면페이지 보기</string>
+    <string name="pref_rotate">회전금지</string>
+    <string name="pref_select_background">배경선택</string>
+    <string name="pref_page_transition_effect">페이지 전환효과</string>
+    <string name="page_transition_effect_none">없음</string>
+    <string name="page_transition_effect_slide">슬라이드</string>
+    <string name="page_transition_effect_flipping">넘기기</string>
+</resources>

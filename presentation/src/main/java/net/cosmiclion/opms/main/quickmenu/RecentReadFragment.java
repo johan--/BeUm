@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.main.MainActivity;
@@ -45,8 +44,8 @@ public class RecentReadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recent_read_frag, container, false);
-        TextView tvLabel = (TextView) view.findViewById(R.id.tvLabel);
-        tvLabel.setText(page + " -- " + title);
+//        TextView tvLabel = (TextView) view.findViewById(R.id.tvLabel);
+//        tvLabel.setText(page + " -- " + title);
         ImageView imageView = (ImageView) view.findViewById(R.id.ivBook);
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override

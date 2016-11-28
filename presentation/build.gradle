@@ -57,12 +57,14 @@ android {
 }
 
 
+
 dependencies {
     def presentationDependencies = rootProject.ext.presentationDependencies
     def developmentDependencies = rootProject.ext.developmentDependencies
 
     compile project(':domain')
     compile project(':data')
+    compile files('libs/skyepub.jar')
 
     compile presentationDependencies.rxJava
     compile presentationDependencies.rxAndroid
@@ -76,7 +78,7 @@ dependencies {
     compile presentationDependencies.support
 
     compile presentationDependencies.guava
+    compile presentationDependencies.aHBottomNavigation
     //Development
     compile developmentDependencies.leakCanary
-    compile 'com.android.support:support-v4:24.2.1'
 }

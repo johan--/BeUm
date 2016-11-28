@@ -2,6 +2,8 @@ package net.cosmiclion.opms.main.library.dialog;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,7 +25,10 @@ public class SortDialogFragment extends DialogFragment {
     private static final String BUNDLE_KEY_DIALOG_SUBTITLE = "DIALOG_SUBTITLE";
     private TextView tvTitle;
     private TextView tvSubTitle;
-    private Button btnPositive;
+    private Button btnSortTitle;
+    private Button btnSortAuthor;
+    private Button btnSortRead;
+
     private Button btnNegative;
 
     public SortDialogFragment() {
@@ -51,8 +56,16 @@ public class SortDialogFragment extends DialogFragment {
         super.onViewCreated(view, savedInstanceState);
         tvTitle = (TextView) view.findViewById(R.id.tvTitle);
         tvSubTitle = (TextView) view.findViewById(R.id.tvSubTitle);
-        btnPositive = (Button) view.findViewById(R.id.btnOk);
-        btnPositive.setOnClickListener(dialogListener);
+
+        btnSortTitle = (Button) view.findViewById(R.id.btnSortTitle);
+        btnSortTitle.setOnClickListener(dialogListener);
+
+        btnSortAuthor = (Button) view.findViewById(R.id.btnSortAuthor);
+        btnSortAuthor.setOnClickListener(dialogListener);
+
+        btnSortRead = (Button) view.findViewById(R.id.btnSortRead);
+        btnSortRead.setOnClickListener(dialogListener);
+
         btnNegative = (Button) view.findViewById(R.id.btnCancel);
         btnNegative.setOnClickListener(dialogListener);
 
@@ -72,6 +85,16 @@ public class SortDialogFragment extends DialogFragment {
         return dialog;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+    }
+
     private View.OnClickListener dialogListener = new View.OnClickListener() {
 
         @Override
@@ -81,10 +104,19 @@ public class SortDialogFragment extends DialogFragment {
                     Debug.i(TAG, "cancel");
                     dismiss();
                     break;
-                case R.id.btnOk:
-                    Debug.i(TAG, "ok " );
+                case R.id.btnSortTitle:
+                    Debug.i(TAG, "btnSortTitle ");
                     dismiss();
                     break;
+                case R.id.btnSortAuthor:
+                    Debug.i(TAG, "btnSortAuthor ");
+                    dismiss();
+                    break;
+                case R.id.btnSortRead:
+                    Debug.i(TAG, "btnSortRead ");
+                    dismiss();
+                    break;
+
                 default:
                     break;
             }

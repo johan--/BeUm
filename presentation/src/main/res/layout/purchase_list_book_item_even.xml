@@ -31,7 +31,7 @@
                 style="@style/MyMaterialTheme.Base.TextTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/book_shelf_text_input_hint" />
+                android:text="@string/library_text_title" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -42,16 +42,19 @@
                     style="@style/MyMaterialTheme.Base.TextTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Author:" />
+                    android:gravity="bottom"
+                    android:text="@string/library_text_author"
+                    android:textSize="@dimen/list_author_textSize" />
 
                 <TextView
                     android:id="@+id/tvBookAuthor"
                     style="@style/MyMaterialTheme.Base.TextNormal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dimen_4dp"
                     android:layout_marginStart="@dimen/dimen_4dp"
-                    android:text="David Beckham" />
+                    android:gravity="bottom"
+                    android:textSize="@dimen/list_detail_textSize" />
 
             </LinearLayout>
 
@@ -61,36 +64,32 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    style="@style/MyMaterialTheme.Base.TextTitle"
+                    style="@style/MyMaterialTheme.Base.TextNormal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Detail:" />
+                    android:layout_height="match_parent"
+                    android:text="@string/library_text_detail"
+                    android:textSize="@dimen/list_author_textSize"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvBookPublisher"
                     style="@style/MyMaterialTheme.Base.TextNormal"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="@dimen/dimen_4dp"
                     android:layout_marginStart="@dimen/dimen_4dp"
                     android:maxLines="5"
-                    android:text="@string/sample_text_subtitle" />
+                    android:textSize="@dimen/list_detail_textSize" />
             </LinearLayout>
 
             <TextView
                 android:id="@+id/btnPurchaseDownload"
                 style="@style/MyMaterialTheme.Base.TextButton"
-                android:clickable="true"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/find_id" />
+                android:layout_height="match_parent"
+                android:gravity="bottom"
+                android:text="@string/purchase_download" />
         </LinearLayout>
     </LinearLayout>
 
-    <View
-        android:id="@+id/selected_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="@color/red_400"
-        android:visibility="invisible" />
-</LinearLayout><!--</android.support.v7.widget.CardView>-->
+</LinearLayout>

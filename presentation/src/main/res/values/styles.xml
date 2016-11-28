@@ -13,7 +13,7 @@
     <style name="MyMaterialTheme" parent="MyMaterialTheme.Base">
         <!-- Preference setting -->
         <item name="preferenceTheme">@style/PreferenceThemeOverlay</item>
-        <item name="android:listPreferredItemHeight">100dp</item>
+        <item name="android:listPreferredItemHeight">@dimen/config_height</item>
         <!-- Preference setting end -->
         <item name="colorPrimary">@color/yellow_700</item>
         <item name="colorPrimaryDark">@color/yellow_800</item>
@@ -23,21 +23,81 @@
     <style name="MyMaterialTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
-        <item name="buttonStyle">@style/MyMaterialTheme.Base.Button</item>
+        <!--<item name="android:buttonStyle">@style/MyMaterialTheme.Base.Button</item>-->
     </style>
 
     <style name="MyMaterialTheme.Base.Button" parent="Widget.AppCompat.Button.Colored">
-        <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/basic_white</item>
+        <item name="android:background">@drawable/custom_button_positive</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:padding">@dimen/dimen_16dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.ButtonNegative" parent="Widget.AppCompat.Button.Colored">
+        <item name="android:background">@drawable/custom_button_negative</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:padding">@dimen/dimen_16dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="MyMaterialTheme.Base.ButtonFlat" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:textSize">@dimen/action_text_size</item>
+        <item name="colorButtonNormal">?attr/colorPrimary</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.ButtonTextColor" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:textSize">@dimen/action_text_size</item>
+        <item name="android:textColor">@color/button_black_state</item>
+        <item name="android:radius">@dimen/dimen_16dp</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.TextTitle" parent="android:Widget.TextView">
+        <item name="android:paddingBottom">@dimen/list_title_textPadding</item>
+        <item name="android:textSize">@dimen/list_title_textSize</item>
         <item name="android:textColor">@android:color/black</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.TextButton" parent="android:Widget.TextView">
+        <item name="android:textSize">@dimen/list_title_textSize</item>
+        <item name="android:textColor">@color/button_yellow_state</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:clickable">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.TextNormal" parent="android:Widget.TextView">
+        <item name="android:paddingBottom">@dimen/list_title_textPadding</item>
+        <item name="android:textColor">@color/text_light_grey</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="MyMaterialTheme.Base.ImageButton" parent="Widget.AppCompat.Button.Small">
         <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="MyMaterialTheme.Base.ButtonColor" parent="Widget.AppCompat.Button.Borderless.Colored">
+        <item name="android:background">@drawable/button_custom</item>
+        <item name="android:textAppearance">@android:style/TextAppearance.Holo.Small</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:padding">@dimen/dimen_24dp</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
 
     <style name="MyMaterialTheme.Base.SpinnerItem" parent="android:Widget.TextView.SpinnerItem">
@@ -63,7 +123,7 @@
     <style name="Widget.MaterialSheetFab.ToolBar" parent="">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">?attr/actionBarSize</item>
-        <item name="android:background">@android:color/white</item>
+        <item name="android:background">?attr/colorPrimary</item>
         <item name="android:theme">@style/ThemeOverlay.MaterialSheetFab.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.MaterialSheetFab.ActionBar.Popup</item>
         <item name="android:elevation" tools:ignore="NewApi">@dimen/toolbar_elevation</item>
@@ -95,23 +155,18 @@
     </style>
 
     <style name="RadioButtonThemeWhite" parent="@android:style/Widget.CompoundButton">
-        <item name="android:layout_width">@dimen/config_theme_thumbnail_width</item>
-        <item name="android:layout_height">@dimen/config_theme_thumbnail_height</item>
         <item name="android:background">@drawable/custom_radio_theme_white</item>
         <item name="android:button">@null</item>
     </style>
 
     <style name="RadioButtonThemeBrown" parent="@android:style/Widget.CompoundButton">
-        <item name="android:layout_width">@dimen/config_theme_thumbnail_width</item>
-        <item name="android:layout_height">@dimen/config_theme_thumbnail_height</item>
         <item name="android:background">@drawable/custom_radio_theme_brown</item>
         <item name="android:button">@null</item>
     </style>
 
     <style name="RadioButtonThemeBlack" parent="@android:style/Widget.CompoundButton">
-        <item name="android:layout_width">@dimen/config_theme_thumbnail_width</item>
-        <item name="android:layout_height">@dimen/config_theme_thumbnail_height</item>
         <item name="android:background">@drawable/custom_radio_theme_black</item>
         <item name="android:button">@null</item>
     </style>
+
 </resources>

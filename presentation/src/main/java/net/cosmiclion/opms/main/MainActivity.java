@@ -1,6 +1,7 @@
 package net.cosmiclion.opms.main;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,27 +11,41 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.UseCaseHandler;
-import net.cosmiclion.opms.login.LoginActivity;
+import net.cosmiclion.opms.ebookreader.skyepub.BookViewActivity;
+import net.cosmiclion.opms.ebookreader.skyepub.SkyApplication;
+import net.cosmiclion.opms.ebookreader.skyepub.SkySetting;
 import net.cosmiclion.opms.main.config.ConfigFragment;
 import net.cosmiclion.opms.main.help.HelpFragment;
 import net.cosmiclion.opms.main.library.LibraryFragment;
 import net.cosmiclion.opms.main.library.LibraryPresenter;
+import net.cosmiclion.opms.main.library.dialog.model.DialogParameter;
 import net.cosmiclion.opms.main.library.usecase.GetBooks;
 import net.cosmiclion.opms.main.mylibrary.source.LibraryRepository;
 import net.cosmiclion.opms.main.mylibrary.source.local.LibraryLocalDataSource;
 import net.cosmiclion.opms.main.mylibrary.source.remote.LibraryRemoteDataSource;
+import net.cosmiclion.opms.main.notices.NoticesActivity;
 import net.cosmiclion.opms.main.notices.NoticesFragment;
 import net.cosmiclion.opms.main.purchase.PurchaseFragment;
 import net.cosmiclion.opms.main.quickmenu.QuickMenuFragment;
@@ -42,9 +57,20 @@ import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItemDetail;
 import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItems;
 import net.cosmiclion.opms.utils.ActivityUtils;
 import net.cosmiclion.opms.utils.Debug;
+import net.cosmiclion.opms.utils.PromptDialogFragment;
+import net.cosmiclion.opms.utils.tasks.BookItem;
+import net.cosmiclion.opms.utils.tasks.DownloadDocumentTask;
+import net.cosmiclion.opms.utils.tasks.ExtractAssetTask;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.File;
+import java.util.ArrayList;
+
+public class MainActivity extends AppCompatActivity implements QuickMenuFragment.ViewPurchaseListListener{
+
     private String TAG = getClass().getName();
+    public static final String SCREEN_TAG = "SCREEN_TAG";
+    public static final int NOTICES_SCREEN = 0;
+    public static final int HELP_SCREEN = 1;
 
     private DrawerLayout mDrawerLayout;
 
@@ -58,14 +84,26 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar mToolBar;
 
+    private AHBottomNavigation bottomNavigation;
+    private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
+    private AHBottomNavigationViewPager viewPager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_act);
         setupToolBar();
         setupDrawer();
-        showQuickMenuFragment();
-        setupBottomNavigation();
+//        showQuickMenuFragment();
+//        setupBottomNavigation();
+        setupAHBottomNavigation();
+
+        String appName = getApplicationName();
+        if (SkySetting.getStorageDirectory() == null) {
+            SkySetting.setStorageDirectory(getFilesDir().getAbsolutePath(),
+                    appName);
+        }
+
     }
 
     @Override
@@ -77,8 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
             case R.id.menu_item_notify:
                 Debug.i(TAG, "menu_item_notify");
-                setBottomViewChecked();
-                showNotification();
+                showScreen(NOTICES_SCREEN);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -87,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+
         //dont call **super**, if u want disable back button in current screen.
         //create a dialog to ask yes no question whether or not the user wants to exit
     }
@@ -95,9 +133,37 @@ public class MainActivity extends AppCompatActivity {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             //preventing default implementation previous to android.os.Build.VERSION_CODES.ECLAIR
+            showPromptLogoutDialog();
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    /**
+     * the menu layout has the 'add/new' menu item
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_toolbar, menu);
+
+        final MenuItem item = menu.findItem(R.id.menu_item_notify);
+        MenuItemCompat.setActionView(item, R.layout.notify_counter);
+        RelativeLayout notifCount = (RelativeLayout) MenuItemCompat.getActionView(item);
+
+        TextView tv = (TextView) notifCount.findViewById(R.id.actionbar_notifcation_textview);
+        tv.setText("12");
+
+        View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onOptionsItemSelected(item);
+            }
+        };
+        item.getActionView().setOnClickListener(onClickListener);
+        ImageView ivMenuNotify = (ImageView) notifCount.findViewById(R.id.ivMenuNotify);
+        ivMenuNotify.setOnClickListener(onClickListener);
+        return super.onCreateOptionsMenu(menu);
     }
 
     public String getApplicationName() {
@@ -109,18 +175,18 @@ public class MainActivity extends AppCompatActivity {
         mToolBar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolBar);
         ActionBar ab = getSupportActionBar();
-        ab.setHomeAsUpIndicator(R.drawable.ic_menu_black_24dp);
+        ab.setHomeAsUpIndicator(R.drawable.ic_menu);
         ab.setDisplayShowTitleEnabled(false);
         ab.setDisplayHomeAsUpEnabled(true);
-        ab.setIcon(R.drawable.ic_opms);
+//        ab.setIcon(R.drawable.ic_opms_logo);
 
         getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
             @Override
             public void onBackStackChanged() {
                 final FragmentManager fm = getSupportFragmentManager();
-                if (fm.getBackStackEntryCount() > 0) {
+                int stack = fm.getBackStackEntryCount();
+                if (stack > 0) {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true); // show back button
-
                     mToolBar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
                     mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
                         @Override
@@ -135,16 +201,6 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * the menu layout has the 'add/new' menu item
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_toolbar, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
     private void setupDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setStatusBarBackground(R.color.colorPrimaryDark);
@@ -155,17 +211,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupDrawerContent(NavigationView navigationView) {
-
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
                     @Override
                     public boolean onNavigationItemSelected(MenuItem menuItem) {
                         final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                        setBottomViewChecked();
                         switch (menuItem.getItemId()) {
                             case R.id.nav_item_home:
                                 Debug.i(TAG, "Home");
-                                showQuickMenuFragment();
+                                bottomNavigation.setCurrentItem(0);
                                 break;
                             case R.id.nav_item_website:
                                 Debug.i(TAG, "website");
@@ -179,15 +233,10 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case R.id.nav_item_logout:
                                 Debug.i(TAG, "logout");
-                                Intent myIntent = new Intent(MainActivity.this, LoginActivity.class);
-                                startActivity(myIntent);
+                                showPromptLogoutDialog();
                                 break;
                             case R.id.nav_item_help:
-                                Debug.i(TAG, "help");
-                                HelpFragment helpFragment = HelpFragment.newInstance();
-                                transaction.replace(R.id.contentFrame, helpFragment, HelpFragment.FRAGMENT);
-                                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                                transaction.commit();
+                                showScreen(HELP_SCREEN);
                                 break;
                             default:
                                 break;
@@ -253,7 +302,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showConfigFragment(FragmentManager fragmentManager, FragmentTransaction transaction, Fragment fragment) {
+    public void showConfigFragment(FragmentManager fragmentManager, FragmentTransaction transaction, Fragment fragment) {
         fragment = fragmentManager.findFragmentByTag(ConfigFragment.FRAGMENT);
         if (fragment == null || !fragment.isVisible()) {
             mBottomNavigationView.getMenu().findItem(R.id.action_four).setChecked(true);
@@ -265,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBottomNavigation() {
 
-        mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+//        mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
         mBottomNavigationView.setHorizontalFadingEdgeEnabled(false);
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -275,6 +324,7 @@ public class MainActivity extends AppCompatActivity {
                 FragmentManager fragmentManager = getSupportFragmentManager();
                 Fragment fragment = null;
                 setHomeMenu();
+                setBottomViewChecked();
                 switch (item.getItemId()) {
                     case R.id.action_one:
                         showQuickMenuFragment();
@@ -295,18 +345,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void showNotification() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(NoticesFragment.FRAGMENT);
-        if (fragment == null || (fragment != null && !fragment.isVisible())) {
-            NoticesFragment noticesFragment = NoticesFragment.newInstance();
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.contentFrame, noticesFragment, NoticesFragment.FRAGMENT);
-            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//        transaction.addToBackStack(null);
-            transaction.commit();
+    private void showScreen(int type) {
+        Intent intent = new Intent(MainActivity.this, NoticesActivity.class);
+        String extraValue = null;
+        if (type == NOTICES_SCREEN) {
+            extraValue = NoticesFragment.class.getSimpleName();
+        } else if (type == HELP_SCREEN) {
+            extraValue = HelpFragment.class.getSimpleName();
         }
+        intent.putExtra(MainActivity.SCREEN_TAG, extraValue);
+        startActivity(intent);
     }
+
 
     private void setBottomViewChecked() {
         mBottomNavigationView.getMenu().getItem(0).setChecked(false);
@@ -316,13 +366,163 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setHomeMenu() {
-        mToolBar.setNavigationIcon(R.drawable.ic_menu_black_24dp);
+        mToolBar.setNavigationIcon(R.drawable.ic_menu);
         mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mDrawerLayout.openDrawer(GravityCompat.START);
-
             }
         });
     }
+
+    private void setupAHBottomNavigation() {
+        bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_lib);
+        viewPager = (AHBottomNavigationViewPager) findViewById(R.id.view_pager);
+        viewPager.setAdapter(new MainPagerAdapter(this, getSupportFragmentManager()));
+        viewPager.setOffscreenPageLimit(MainPagerAdapter.NUMB_ITEMS);
+        viewPager.setCurrentItem(0);
+//        viewPager.setHorizontalFadingEdgeEnabled(true);
+        viewPager.setPagingEnabled(true);
+
+        // Create items
+        AHBottomNavigationItem item1 = new AHBottomNavigationItem(R.string.quick_menu_tab_name, R.drawable.ic_quickmenu, R.color.basic_black);
+        AHBottomNavigationItem item2 = new AHBottomNavigationItem(R.string.my_library_tab_name, R.drawable.ic_library, R.color.basic_black);
+        AHBottomNavigationItem item3 = new AHBottomNavigationItem(R.string.purchase_list_tab_name, R.drawable.ic_purchase, R.color.basic_black);
+        AHBottomNavigationItem item4 = new AHBottomNavigationItem(R.string.configuration_tab_name, R.drawable.ic_config, R.color.basic_black);
+
+        bottomNavigationItems.add(item1);
+        bottomNavigationItems.add(item2);
+        bottomNavigationItems.add(item3);
+        bottomNavigationItems.add(item4);
+
+        String accentColor = getResources().getString(R.color.yellow_700);
+        String inActiveColor = getResources().getString(R.color.basic_black);
+        bottomNavigation.setForceTitlesDisplay(true);
+        bottomNavigation.addItems(bottomNavigationItems);
+        bottomNavigation.setAccentColor(Color.parseColor(accentColor));
+        bottomNavigation.setInactiveColor(Color.parseColor(inActiveColor));
+        bottomNavigation.setColored(false);
+        bottomNavigation.setCurrentItem(0);
+//        bottomNavigation.setBehaviorTranslationEnabled(true);
+//        bottomNavigation.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+        bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+            @Override
+            public boolean onTabSelected(int position, boolean wasSelected) {
+                viewPager.setCurrentItem(position, false);
+                Debug.i(TAG, "wasSelected=" + wasSelected);
+                return true;
+            }
+        });
+
+        bottomNavigation.setOnNavigationPositionListener(new AHBottomNavigation.OnNavigationPositionListener() {
+            @Override
+            public void onPositionChange(int y) {
+                Debug.i(TAG, "BottomNavigation Position: =" + y);
+            }
+        });
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
+            }
+
+            @Override
+            public void onPageSelected(int i) {
+                Debug.i(TAG, "frag id=" + viewPager.getCurrentItem());
+                bottomNavigation.setCurrentItem(i);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int i) {
+            }
+        });
+    }
+
+    private void showPromptLogoutDialog(){
+        Log.d(TAG, "show dialog");
+        String title = getResources().getString(R.string.dialog_logout_title);
+        String subTitle = getResources().getString(R.string.dialog_text_sort_subtitle);
+        DialogParameter parameter = new DialogParameter(title, "");
+        PromptDialogFragment dialog = PromptDialogFragment.newInstance(parameter);
+        dialog.show(getFragmentManager(), "DIALOG_PROMPT");
+    }
+    /**
+     * Opens a demo document from assets directory
+     */
+    public void openDemoDocument(final BookItem item) {
+        Log.d("openDemoDocument", "fileName = " + item.filePath);
+        String appName = getApplicationName();
+        if (SkySetting.getStorageDirectory() == null) {
+            SkySetting.setStorageDirectory(getFilesDir().getAbsolutePath(),
+                    appName);
+        }
+        final File demoDocumentFile = new File(getFilesDir(), item.filePath);
+        if (demoDocumentFile.exists()) {
+            Log.d(TAG, "demoDocumentFile");
+            if(item.isPDF == 1){
+                openPlugPdfViewerAct(Uri.fromFile(demoDocumentFile));
+            }else{
+                openViewer(item);
+            }
+        } else {
+            Log.d(TAG, "! demoDocumentFile");
+            ExtractAssetTask task = new ExtractAssetTask(MainActivity.this, new DownloadDocumentTask.DownloadedFileCallback() {
+                @Override
+                public void onFileDownloaded(Uri uri) {
+                    if(item.isPDF == 1){
+                        openPlugPdfViewerAct(uri);
+                    }else{
+                        openViewer(item);
+                    }
+
+                }
+            });
+            task.execute(item.filePath);
+        }
+    }
+
+    private void openPlugPdfViewerAct(Uri uri) {
+//        Intent intent = new Intent(this, PlugPDFView.class);
+//        intent.putExtra("FILE_PATH", uri.getPath());
+//        startActivity(intent);
+//        finish();
+    }
+
+    private void openViewer(BookItem item) {
+        try {
+            SkyApplication app = (SkyApplication) getApplication();
+
+            Intent intent;
+
+            intent = new Intent(this, BookViewActivity.class);
+
+            intent.putExtra("BOOKCODE", item.bookCode);
+            intent.putExtra("TITLE", item.title);
+            intent.putExtra("AUTHOR", "");
+            intent.putExtra("BOOKNAME", item.filePath);
+            intent.putExtra("POSITION", 0.0);
+            intent.putExtra("THEMEINDEX", app.setting.theme);
+            intent.putExtra("DOUBLEPAGED", app.setting.doublePaged);
+            intent.putExtra("transitionType", app.setting.transitionType);
+            intent.putExtra("GLOBALPAGINATION", app.setting.globalPagination);
+            Log.d(TAG, "BOOKNAME = " + item.bookCode + " - " + app.setting.theme + " - " + app.setting.doublePaged + " - "
+                    + app.setting.transitionType + " - " + app.setting.globalPagination + " - ");
+
+            Log.d(TAG, "BOOKNAME = " + item.filePath);
+
+            intent.putExtra("RTL", false);
+            intent.putExtra("VERTICALWRITING", false);
+
+            startActivity(intent);
+        } catch (Exception e) {
+            Log.d(TAG, "ERROR: " + e.getMessage());
+        }
+    }
+
+
+    @Override
+    public void viewAllPurchaseList() {
+        viewPager.setCurrentItem(2);
+    }
+
 }

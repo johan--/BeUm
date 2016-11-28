@@ -4,12 +4,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import net.cosmiclion.beum.R;
-import net.cosmiclion.opms.utils.ActivityUtils;
+import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.login.source.local.TasksLocalDataSource;
 import net.cosmiclion.opms.login.source.remote.TasksRemoteDataSource;
-import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.login.usecase.DoGetBaseValue;
 import net.cosmiclion.opms.login.usecase.DoLogin;
+import net.cosmiclion.opms.utils.ActivityUtils;
 
 
 public class LoginActivity extends AppCompatActivity {

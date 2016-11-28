@@ -4,7 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -23,6 +22,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
  */
 public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdapter.ViewHolder> {
 
+    private final int ITEM_EVEN = 0, ITEM_ODD = 1;
     private String TAG = getClass().getSimpleName();
     private List<BookDomain> mBooks;
     private ImageLoader imageLoader;
@@ -34,28 +34,37 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
         this.clickListener = clickListener;
     }
 
-    public void replaceData(List<BookDomain> books) {
-        setList(books);
-        notifyDataSetChanged();
-    }
-
     private void setList(List<BookDomain> books) {
         mBooks = checkNotNull(books);
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.purchase_list_book_item, parent, false);
-        return new ViewHolder(view, clickListener);
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        BooksPurchaseAdapter.ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
+        int layout = 0;
+        switch (viewType) {
+            case ITEM_EVEN:
+                layout = R.layout.purchase_list_book_item_even;
+                View v3 = inflater.inflate(layout, viewGroup, false);
+                viewHolder = new BooksPurchaseAdapter.ViewHolder(v3, clickListener);
+                break;
+            case ITEM_ODD:
+                layout = R.layout.purchase_list_book_item_odd;
+                View v4 = inflater.inflate(layout, viewGroup, false);
+                viewHolder = new BooksPurchaseAdapter.ViewHolder(v4, clickListener);
+                break;
+        }
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         final BookDomain item = mBooks.get(position);
 
-        holder.title.setText(item.getTitle());
-        holder.author.setText("Author");
-        holder.publisher.setText("Publisher");
+//        holder.title.setText(item.getTitle());
+//        holder.author.setText("Author");
+//        holder.publisher.setText("Publisher");
         holder.bookCover.setImageUrl(item.getCover(), imageLoader);
         holder.bookCover.setDefaultImageResId(R.drawable.book_cover);
 
@@ -65,20 +74,28 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
     }
 
     @Override
+    public int getItemViewType(int position) {
+        if (position % 2 == 0) {
+            return ITEM_EVEN;
+        } else {
+            return ITEM_ODD;
+        }
+    }
+
+    @Override
     public int getItemCount() {
         return mBooks.size();
     }
 
-
     /* VIEW_HOLDER */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener  {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @SuppressWarnings("unused")
         private static final String TAG = ViewHolder.class.getSimpleName();
 
         private TextView title;
         private TextView author;
         private TextView publisher;
-        private Button download;
+        private TextView download;
 
         View selectedOverlay;
         NetworkImageView bookCover;
@@ -91,7 +108,7 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
             title = (TextView) itemView.findViewById(R.id.tvBookName);
             author = (TextView) itemView.findViewById(R.id.tvBookAuthor);
             publisher = (TextView) itemView.findViewById(R.id.tvBookPublisher);
-            download = (Button) itemView.findViewById(R.id.btnPurchaseDownload);
+            download = (TextView) itemView.findViewById(R.id.btnPurchaseDownload);
 
             bookCover = (NetworkImageView) itemView.findViewById(R.id.ivBookCover);
             selectedOverlay = itemView.findViewById(R.id.selected_overlay);

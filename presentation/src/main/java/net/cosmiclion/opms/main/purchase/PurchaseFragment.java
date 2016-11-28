@@ -12,8 +12,10 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import net.cosmiclion.beum.R;
+import net.cosmiclion.opms.main.MainActivity;
 import net.cosmiclion.opms.main.library.model.BookDomain;
 import net.cosmiclion.opms.main.purchase.adapter.BooksPurchaseAdapter;
+import net.cosmiclion.opms.utils.tasks.BookItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,7 +73,8 @@ public class PurchaseFragment extends Fragment implements PurchaseContract.View,
 
     @Override
     public void onItemClicked(int position) {
-
+        ((MainActivity) getActivity()).openDemoDocument(
+                new BookItem(0, "BK0000314002", 0, "BK0000314002.epub", 0));
     }
 
     @Override
@@ -120,9 +123,5 @@ public class PurchaseFragment extends Fragment implements PurchaseContract.View,
         }
     };
 
-
     /* INNER CLASS */
-
-
-
 }

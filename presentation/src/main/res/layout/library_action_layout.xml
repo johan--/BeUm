@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:paddingLeft="@dimen/grid_recycler_view_padding"
-    android:paddingRight="@dimen/grid_recycler_view_padding"
+    android:background="?attr/colorPrimaryDark"
     android:layout_height="?android:attr/actionBarSize"
     android:orientation="horizontal">
 
     <LinearLayout
+        android:paddingLeft="@dimen/dimen_8dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="2"
@@ -44,8 +44,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_weight="1"
                 android:maxEms="12"
-                android:singleLine="true"
-                android:text="New Book"
+                android:text="@string/library_button_new"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <LinearLayout
@@ -63,7 +62,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_search_black_24dp" />
+                    android:src="@drawable/top_menu1" />
 
                 <ImageButton
                     android:id="@+id/btnSortLibrary"
@@ -71,7 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_sort_black_24dp" />
+                    android:src="@drawable/top_menu2" />
 
                 <ImageButton
                     android:id="@+id/btnViewLibrary"
@@ -79,7 +78,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_view_stream_black_24dp" />
+                    android:src="@drawable/top_menu3" />
 
                 <ImageButton
                     android:id="@+id/btnSelectLibrary"
@@ -87,7 +86,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_folder_open_black_24dp" />
+                    android:src="@drawable/top_menu4" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -109,8 +108,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:maxEms="12"
-                android:singleLine="true"
-                android:text="Move Book"
+                android:text="@string/library_button_move"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -123,8 +121,7 @@
                 android:layout_toRightOf="@id/btnMoveBook"
                 android:layout_toLeftOf="@+id/btnCancelSelectBook"
                 android:maxEms="12"
-                android:singleLine="true"
-                android:text="Delete Book"
+                android:text="@string/library_button_delete"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -137,8 +134,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:maxEms="12"
-                android:singleLine="true"
-                android:text="Cancel"
+                android:text="@string/library_button_cancel"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
     </RelativeLayout>

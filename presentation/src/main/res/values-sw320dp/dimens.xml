@@ -3,6 +3,21 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- LOGIN FRAGMENT DIMENS-->
+    <dimen name="login_frag_edittext_padding">16dp</dimen>
+    <dimen name="login_frag_edittext_textSize">12sp</dimen>
+    <dimen name="login_frag_button_padding">16dp</dimen>
+    <dimen name="login_frag_button_textSize">14sp</dimen>
+
+    <!-- QUICKMENU FRAGMENT DIMENS-->
+    <dimen name="quickmenu_frag_button_control_padding">8dp</dimen>
+    <dimen name="quickmenu_frag_recent_read_title_padding">8dp</dimen>
+    <dimen name="quickmenu_frag_recent_read_title_textSize">14sp</dimen>
+    <dimen name="quickmenu_frag_recent_purchase_viewall_textSize">10sp</dimen>
+
+    <!-- QUICKMENU FRAGMENT DIMENS-->
+    <dimen name="library_frag_dialog_text_padding">8dp</dimen>
+
     <!-- ACTION ITEM DIMENS-->
     <dimen name="action_bar_height">40dp</dimen>
     <dimen name="action_text_size">12sp</dimen>
@@ -15,16 +30,46 @@
     <dimen name="grid_font_size_book_author">16sp</dimen>
     <dimen name="grid_font_size_book_publisher">16sp</dimen>
 
+    <!-- LIST ITEM DIMENS -->
+    <dimen name="list_padding">24dp</dimen>
+    <dimen name="list_title_textSize">14sp</dimen>
+    <dimen name="list_title_textPadding">4dp</dimen>
+    <dimen name="list_author_textSize">12sp</dimen>
+    <dimen name="list_detail_textSize">10sp</dimen>
+    <dimen name="list_selected_height">170dp</dimen>
+    <dimen name="list_selected_margin">18dp</dimen>
+    <dimen name="list_selected_point_margin">24dp</dimen>
+
     <!-- GRID_LAYOUT DIMENS-->
+    <dimen name="grid_padding">24dp</dimen>
     <dimen name="grid_recycler_view_padding">4dp</dimen>
     <dimen name="grid_default_font_size">16sp</dimen>
     <dimen name="grid_text_padding">16dp</dimen>
-    <dimen name="grid_text_area_hight">48dp</dimen>
+    <dimen name="grid_text_area_height">48dp</dimen>
     <dimen name="grid_item_image_padding">4dp</dimen>
 
     <!-- CONFIG DIMENS - START -->
-    <dimen name="config_theme_thumbnail_height">40dp</dimen>
-    <dimen name="config_theme_thumbnail_width">30dp</dimen>
-    <!-- CONFIG DIMENS - END -->
+    <dimen name="config_theme_width">200dp</dimen>
+    <dimen name="config_theme_thumbnail_height">80dp</dimen>
+    <dimen name="config_theme_thumbnail_width">60dp</dimen>
+    <dimen name="config_title_textSize">14sp</dimen>
+    <dimen name="config_summary_textSize">12sp</dimen>
+    <dimen name="config_padding">8dp</dimen>
+    <dimen name="config_height">100dp</dimen>
 
+    <!-- DRAWER DIMENS - START -->
+    <dimen name="drawer_width">220dp</dimen>
+    <dimen name="drawer_menu_title_textSize">14sp</dimen>
+    <dimen name="drawer_powered_textSize">12sp</dimen>
+
+    <!-- NOTICES DIMENS - START -->
+    <dimen name="notices_header_title_textSize">14sp</dimen>
+    <dimen name="notices_header_title_padding">14dp</dimen>
+    <dimen name="notices_item_title_textSize">10sp</dimen>
+    <dimen name="notices_item_title_padding">10dp</dimen>
+
+    <dimen name="notice_title_textSize">14sp</dimen>
+    <dimen name="notice_body_textSize">12sp</dimen>
+    <dimen name="notice_body_padding">12dp</dimen>
+    <dimen name="notice_prev_textSize">12sp</dimen>
 </resources>

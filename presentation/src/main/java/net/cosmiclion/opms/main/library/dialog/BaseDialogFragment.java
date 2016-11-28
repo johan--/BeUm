@@ -2,6 +2,8 @@ package net.cosmiclion.opms.main.library.dialog;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,7 +42,7 @@ public class BaseDialogFragment extends DialogFragment {
         BaseDialogFragment frag = new BaseDialogFragment();
         Bundle bundle = new Bundle();
         bundle.putString(BUNDLE_KEY_DIALOG_TITLE, parameter.getTitle());
-        bundle.putString(BUNDLE_KEY_DIALOG_SUBTITLE, parameter.getTitle());
+        bundle.putString(BUNDLE_KEY_DIALOG_SUBTITLE, parameter.getSubTitle());
         bundle.putString(BUNDLE_KEY_DIALOG_HINT, parameter.getHint());
         frag.setArguments(bundle);
         return frag;
@@ -66,8 +68,8 @@ public class BaseDialogFragment extends DialogFragment {
         tvTitle.setText(title);
         String subTitle = bundle.getString(BUNDLE_KEY_DIALOG_SUBTITLE, getResources().getString(R.string.sample_text_subtitle));
         tvSubTitle.setText(subTitle);
-        String hint = bundle.getString(BUNDLE_KEY_DIALOG_HINT, getResources().getString(R.string.text_input_hint));
-        mEditText.setHint(hint);
+//        String hint = bundle.getString(BUNDLE_KEY_DIALOG_HINT, getResources().getString(R.string.text_input_hint));
+//        mEditText.setHint(hint);
         // Show soft keyboard automatically and request focus to field
         mEditText.requestFocus();
         getDialog().getWindow().setSoftInputMode(
@@ -80,6 +82,16 @@ public class BaseDialogFragment extends DialogFragment {
         // request a window without the title
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         return dialog;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null) {
+            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
     }
 
     private View.OnClickListener dialogListener = new View.OnClickListener() {

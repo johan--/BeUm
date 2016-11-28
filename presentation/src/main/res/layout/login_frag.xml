@@ -1,137 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:background="?attr/colorPrimary"
+    android:fillViewport="true"
+    android:scrollbarStyle="insideInset"
+    android:scrollbars="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/ll_main"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:gravity="center_horizontal"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin">
 
-        <ImageView
-            android:id="@+id/ivBeUmLogo"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/layoutOpmsLogo"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/opms_logo" />
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/ivOpmsLogo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/opms_logo" />
+        </LinearLayout>
+
+        <!--<LinearLayout-->
+        <!--android:id="@+id/layout_login_form"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:gravity="center"-->
+        <!--android:orientation="vertical">-->
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_below="@+id/layoutOpmsLogo"
+            android:background="@drawable/login_email_form_bg"
+            android:orientation="vertical"
+            android:padding="@dimen/dimen_16dp">
 
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/login_email"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:background="@drawable/custom_edittext"
+                android:hint="@string/prompt_email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:padding="@dimen/login_frag_edittext_padding"
+                android:textColorHint="@color/grey_400"
+                android:textSize="@dimen/login_frag_edittext_textSize" />
 
-                <EditText
-                    android:id="@+id/login_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/prompt_email"
-                    android:inputType="textEmailAddress"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:singleLine="true"
-                    android:text="test3"
-                    android:textColorHint="@color/grey_0" />
-                <!--android:textColorHint="@color/abc_primary_text_material_dark" />-->
-            </android.support.design.widget.TextInputLayout>
-
-            <android.support.design.widget.TextInputLayout
+            <EditText
+                android:id="@+id/login_password"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <EditText
-                    android:id="@+id/login_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:hint="@string/prompt_password"
-                    android:imeActionId="@+id/login"
-                    android:imeOptions="actionUnspecified"
-                    android:inputType="textVisiblePassword"
-                    android:maxLines="1"
-                    android:padding="8dp"
-                    android:singleLine="true"
-                    android:text="1234"
-                    android:textColorHint="@color/grey_0"
-                    android:typeface="sans" />
-            </android.support.design.widget.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/custom_edittext"
+                android:hint="@string/prompt_password"
+                android:imeActionId="@+id/login"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textVisiblePassword"
+                android:maxLines="1"
+                android:padding="@dimen/login_frag_edittext_padding"
+                android:textColorHint="@color/grey_400"
+                android:textSize="@dimen/login_frag_edittext_textSize"
+                android:typeface="sans" />
 
             <Button
                 android:id="@+id/btn_email_sign_in"
+                style="@style/MyMaterialTheme.Base.Button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in" />
+                android:layout_marginTop="@dimen/dimen_16dp"
+                android:padding="@dimen/login_frag_button_padding"
+                android:text="@string/action_sign_in"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="@dimen/login_frag_button_textSize" />
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <android.support.v7.widget.AppCompatButton
+                    style="@style/MyMaterialTheme.Base.ButtonTextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/find_id" />
+
+                <View
+                    android:layout_width="@dimen/dimen_2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:background="@color/grey_600" />
+
+                <android.support.v7.widget.AppCompatButton
+                    style="@style/MyMaterialTheme.Base.ButtonTextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/find_password" />
+
+                <View
+                    android:layout_width="@dimen/dimen_2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_8dp"
+                    android:background="@color/grey_600" />
+
+                <android.support.v7.widget.AppCompatButton
+                    style="@style/MyMaterialTheme.Base.ButtonTextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@string/sign_up" />
+
+            </LinearLayout>
         </LinearLayout>
+        <!--</LinearLayout>-->
 
         <LinearLayout
-            android:background="@drawable/help_login_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="center_horizontal"
-            android:orientation="horizontal"
-            android:paddingTop="0dp"
-            android:paddingBottom="0dp"
-            android:paddingRight="16dp"
-            android:paddingLeft="16dp">
-
-            <Button
-                style="@style/MyMaterialTheme.Base.ButtonFlat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/find_id"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <Button
-                style="@style/MyMaterialTheme.Base.ButtonFlat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/find_password"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-            <Button
-                style="@style/MyMaterialTheme.Base.ButtonFlat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/sign_up"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
-
-        </LinearLayout>
-
-        <LinearLayout
+            android:id="@+id/layoutCosmicLogo"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="48dp"
-            android:gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/email_login_form"
+            android:gravity="bottom|center_horizontal"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvPowered"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/powered_by" />
 
             <ImageView
                 android:id="@+id/ivCosmicLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+                android:padding="@dimen/dimen_4dp"
                 android:src="@drawable/cosmiclion_logo" />
         </LinearLayout>
-    </LinearLayout>
+    </RelativeLayout>
 </ScrollView>

@@ -5,6 +5,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
@@ -12,7 +13,6 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.main.library.model.BookDomain;
-import net.cosmiclion.opms.utils.Debug;
 import net.cosmiclion.opms.volley.VolleyManager;
 
 import java.util.Collections;
@@ -25,9 +25,11 @@ import java.util.List;
 public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.ViewHolder> {
     @SuppressWarnings("unused")
     private static final String TAG = BookLibraryAdapter.class.getSimpleName();
-
-    private static final int TYPE_INACTIVE = 0;
-    private static final int TYPE_ACTIVE = 1;
+    public static final int LAYOUT_GRID_TYPE = 100;
+    public static final int LAYOUT_LIST_TYPE = 200;
+    private final int ITEM_NOT_SELECTED = 0;
+    private final int ITEM_SELECTED = 1;
+    private final int ITEM_EVEN = 0, ITEM_ODD = 1;
 
     private ImageLoader imageLoader;
     private List<BookDomain> items;
@@ -86,69 +88,126 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
         notifyItemRangeRemoved(positionStart, itemCount);
     }
 
+    /**
+     * This method creates different RecyclerView.ViewHolder objects based on the item view type.\
+     *
+     * @param viewGroup ViewGroup container for the item
+     * @param viewType  type of view to be inflated
+     * @return viewHolder to be inflated
+     */
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
+        BookLibraryAdapter.ViewHolder viewHolder = null;
+        LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         int layout = 0;
-
-        if(itemLayoutType == 1){
-            layout = viewType == TYPE_INACTIVE ? R.layout.grid_book_item : R.layout.grid_book_item_selected;
-        }else if(itemLayoutType == 0){
-            layout = viewType == TYPE_INACTIVE ? R.layout.list_book_item : R.layout.list_book_item_selected;
+        if (itemLayoutType == LAYOUT_GRID_TYPE) {
+//            layout = viewType == ITEM_NOT_SELECTED ? R.layout.grid_book_item_even : R.layout.grid_book_item_selected;
+//            layout = R.layout.grid_book_item_even;
+//            View v1 = inflater.inflate(layout, viewGroup, false);
+//            viewHolder = new ViewHolder(v1, clickListener);
+            switch (viewType) {
+                case ITEM_EVEN:
+                    layout = R.layout.grid_book_item_even;
+                    View v3 = inflater.inflate(layout, viewGroup, false);
+                    viewHolder = new ViewHolder(v3, clickListener);
+                    break;
+                case ITEM_ODD:
+                    layout = R.layout.grid_book_item_odd;
+                    View v4 = inflater.inflate(layout, viewGroup, false);
+                    viewHolder = new ViewHolder(v4, clickListener);
+                    break;
+            }
+        } else if (itemLayoutType == LAYOUT_LIST_TYPE) {
+            switch (viewType) {
+                case ITEM_EVEN:
+                    layout = R.layout.list_book_item_even;
+                    View v3 = inflater.inflate(layout, viewGroup, false);
+                    viewHolder = new ViewHolder(v3, clickListener);
+                    break;
+                case ITEM_ODD:
+                    layout = R.layout.list_book_item_odd;
+                    View v4 = inflater.inflate(layout, viewGroup, false);
+                    viewHolder = new ViewHolder(v4, clickListener);
+                    break;
+            }
         }
-        View v = LayoutInflater.from(parent.getContext()).inflate(layout, parent, false);
-        return new ViewHolder(v, clickListener);
+        return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final BookDomain item = items.get(position);
-
-        holder.title.setText(item.getTitle());
-        holder.bookCover.setImageUrl(item.getCover(), imageLoader);
-        holder.bookCover.setDefaultImageResId(R.drawable.book_cover);
-        // Span the item if active
         final ViewGroup.LayoutParams lp = holder.itemView.getLayoutParams();
         if (lp instanceof StaggeredGridLayoutManager.LayoutParams) {
             StaggeredGridLayoutManager.LayoutParams sglp = (StaggeredGridLayoutManager.LayoutParams) lp;
-            if(itemLayoutType == 0){
+            if (itemLayoutType == LAYOUT_LIST_TYPE) {
                 sglp.setFullSpan(true);
             }
             holder.itemView.setLayoutParams(sglp);
         }
-
         // Highlight the item if it's selected
-        Debug.i(TAG, "isSelected=" + isSelected(position));
         holder.selectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
+        holder.imgPoint.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
+
+        final BookDomain item = items.get(position);
+//        holder.title.setText(item.getTitle());
+        holder.bookCover.setImageUrl(item.getCover(), imageLoader);
+        holder.bookCover.setDefaultImageResId(R.drawable.book_cover);
+        if (itemLayoutType == LAYOUT_GRID_TYPE) {
+
+        } else if (itemLayoutType == LAYOUT_LIST_TYPE) {
+//            holder.author.setText("Ronaldinho");
+        }
     }
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return this.items.size();
     }
 
 //    @Override
 //    public int getItemViewType(int position) {
-////        final  item = items.get(position);
+//        final  item = items.get(position);
 //        return item.isActive() ? TYPE_ACTIVE : TYPE_INACTIVE;
 //    }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    //Returns the view type of the item at position for the purposes of view recycling.
+    @Override
+    public int getItemViewType(int position) {
+        if (itemLayoutType == LAYOUT_GRID_TYPE) {
+            if ((position % 4) == 3) {
+                return ITEM_ODD;
+            } else if((position % 4) == 2){
+                return ITEM_ODD;
+            }else{
+                return ITEM_EVEN;
+            }
+        }else{
+            if (position % 2 == 0) {
+                return ITEM_EVEN;
+            } else {
+                return ITEM_ODD;
+            }
+        }
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         @SuppressWarnings("unused")
         private static final String TAG = ViewHolder.class.getSimpleName();
-
-        TextView title;
-//        TextView subtitle;
-        View selectedOverlay;
-        NetworkImageView bookCover;
-        ImageLoader imageLoader;
+        private TextView title;
+        private TextView author;
+        private View selectedOverlay;
+        private NetworkImageView bookCover;
+        private ImageLoader imageLoader;
         private ClickListener listener;
+        private ImageView imgPoint;
 
         public ViewHolder(View itemView, ClickListener listener) {
             super(itemView);
-
             title = (TextView) itemView.findViewById(R.id.tvBookName);
+            author = (TextView) itemView.findViewById(R.id.tvBookAuthor);
             bookCover = (NetworkImageView) itemView.findViewById(R.id.ivBookCover);
             selectedOverlay = itemView.findViewById(R.id.selected_overlay);
+            imgPoint = (ImageView) itemView.findViewById(R.id.selected_point);
             this.listener = listener;
             if (imageLoader == null) {
                 imageLoader = VolleyManager.getInstance(itemView.getContext()).getImageLoader();
@@ -162,7 +221,6 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
                 listener.onItemClicked(getLayoutPosition());
             }
         }
-
 
         public interface ClickListener {
             void onItemClicked(int position);

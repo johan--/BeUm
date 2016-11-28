@@ -1,32 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="@dimen/config_theme_width"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:padding="@dimen/config_padding"
+    android:orientation="vertical">
+
+    <!--<TextView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:textSize="@dimen/config_title_textSize"-->
+    <!--android:textStyle="bold"-->
+    <!--android:textColor="@android:color/black"-->
+    <!--android:text="@string/pref_page_transition_effect" />-->
 
     <RadioGroup
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
+        android:layout_weight="1"
         android:orientation="horizontal">
 
         <RadioButton
             android:id="@+id/radioTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Text 1" />
+            android:checked="true"
+            android:layout_weight="1"
+            android:text="@string/page_transition_effect_none"
+            android:textSize="@dimen/config_summary_textSize" />
 
         <RadioButton
             android:id="@+id/radioAuthor"
             android:layout_width="wrap_content"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Text 2" />
+            android:text="@string/page_transition_effect_slide"
+            android:textSize="@dimen/config_summary_textSize" />
 
         <RadioButton
             android:id="@+id/radioRead"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Text 3" />
+            android:layout_weight="1"
+            android:text="@string/page_transition_effect_flipping"
+            android:textSize="@dimen/config_summary_textSize" />
 
     </RadioGroup>
 

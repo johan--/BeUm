@@ -4,6 +4,9 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FFBA18</color>
 
+    <color name="text_light_grey">@color/grey_800</color>
+    <color name="odd_background_color">@color/grey_300</color>
+
     <color name="basic_white">#FFFFFF</color>
     <color name="basic_yellow">#FFFF00</color>
     <color name="basic_fuchsia">#FF00FF</color>

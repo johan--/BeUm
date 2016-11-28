@@ -1,84 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:gravity="center"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_24dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
         android:orientation="vertical"
-        android:padding="@dimen/dialog_padding_around_content_area">
+        android:paddingLeft="@dimen/dialog_padding_around_content_area"
+        android:paddingRight="@dimen/dialog_padding_around_content_area"
+        android:paddingTop="@dimen/dialog_padding_around_content_area">
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:maxLines="2"
+            android:gravity="center"
+            android:maxLines="1"
             android:text="@string/sample_text_title"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/dialog_text_title_size"
             android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvSubTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dialog_padding_between_title_and_body_text"
-            android:text="@string/sample_text_subtitle"
-            android:textSize="@dimen/dialog_text_subtitle_size" />
-
-        <RadioGroup
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <RadioButton
-                android:id="@+id/radioTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dialog_radio_sort_title" />
-
-            <RadioButton
-                android:id="@+id/radioAuthor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dialog_radio_sort_author" />
-
-            <RadioButton
-                android:id="@+id/radioRead"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/dialog_radio_sort_read" />
-
-        </RadioGroup>
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:maxLines="1"
+            android:paddingTop="@dimen/library_frag_dialog_text_padding"
+            android:text="@string/sample_text_subtitle"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/dialog_text_subtitle_size" />
 
     </LinearLayout>
 
     <!-- Bottom button -->
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/dialog_padding_around_buttons">
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:padding="@dimen/dialog_padding_around_content_area">
+
+        <Button
+            android:id="@+id/btnSortTitle"
+            style="@style/MyMaterialTheme.Base.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_24dp"
+            android:layout_weight="1"
+            android:text="@string/dialog_button_sort_by_title" />
+
+        <Button
+            android:id="@+id/btnSortAuthor"
+            style="@style/MyMaterialTheme.Base.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_24dp"
+            android:layout_weight="1"
+            android:text="@string/dialog_button_sort_by_author" />
+
+        <Button
+            android:id="@+id/btnSortRead"
+            style="@style/MyMaterialTheme.Base.Button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_24dp"
+            android:layout_weight="1"
+            android:text="@string/dialog_button_sort_by_read" />
 
         <Button
             android:id="@+id/btnCancel"
-            style="@style/MyMaterialTheme.Base.ButtonFlat"
-            android:layout_width="wrap_content"
+            style="@style/MyMaterialTheme.Base.ButtonNegative"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@+id/btnOk"
-            android:text="@string/dialog_button_cancel"
-            android:textAllCaps="true"
-            android:textStyle="bold" />
-
-        <Button
-            android:id="@+id/btnOk"
-            style="@style/MyMaterialTheme.Base.ButtonFlat"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:text="@string/dialog_button_ok"
-            android:textAllCaps="true"
-            android:textStyle="bold" />
-    </RelativeLayout>
+            android:layout_weight="1"
+            android:text="@string/dialog_button_cancel" />
+    </LinearLayout>
 </LinearLayout>

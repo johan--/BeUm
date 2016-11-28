@@ -45,7 +45,7 @@ public class QuickMenuAdapter extends RecyclerView.Adapter<QuickMenuAdapter.View
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_book_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_book_item_even, parent, false);
         return new ViewHolder(view, clickListener);
     }
 

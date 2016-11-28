@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".MainActivity">
 
@@ -9,9 +8,9 @@
         android:checkableBehavior="all">
         <item
             android:id="@+id/nav_item_home"
+            android:checked="true"
             android:icon="@drawable/ic_nav_item_home"
-            android:title="@string/nav_item_home_title"
-            android:checked="true"/>
+            android:title="@string/nav_item_home_title" />
         <item
             android:id="@+id/nav_item_website"
             android:icon="@drawable/ic_nav_item_website"

@@ -1,6 +1,7 @@
 package net.cosmiclion.opms.main.library;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,15 +20,16 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import net.cosmiclion.beum.R;
+import net.cosmiclion.opms.main.MainActivity;
 import net.cosmiclion.opms.main.library.adapter.BookLibraryAdapter;
 import net.cosmiclion.opms.main.library.dialog.BaseDialogFragment;
 import net.cosmiclion.opms.main.library.dialog.SortDialogFragment;
 import net.cosmiclion.opms.main.library.dialog.model.DialogParameter;
 import net.cosmiclion.opms.main.library.model.BookDomain;
 import net.cosmiclion.opms.utils.Debug;
+import net.cosmiclion.opms.utils.tasks.BookItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +83,7 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.start();
+//        mPresenter.start();
     }
 
     @Override
@@ -106,19 +108,14 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
 
     @Override
     public void onItemClicked(int position) {
-        /*
-        if (actionMode != null) {
-            toggleSelection(position);
-        } else {
-            mRecyclerAdaper.removeItem(position);
-        }
-        */
         Debug.i(TAG, "onItemClicked = " + position);
         if (actionButtonSelection.getVisibility() == View.VISIBLE) {
             Debug.i(TAG, "actionButtonSelection = " + actionButtonSelection.getVisibility());
             mRecyclerAdaper.toggleSelection(position);
         } else {
-            Toast.makeText(getContext(), "Hello select", Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), "Hello select", Toast.LENGTH_LONG).show();
+            ((MainActivity) getActivity()).openDemoDocument(
+                    new BookItem(0, "BK0000314002", 0, "BK0000314002.epub", 0));
         }
     }
 
@@ -159,22 +156,22 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
         }
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_library);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mRecyclerAdaper = new BookLibraryAdapter(this, books, mViewType);
+        mRecyclerAdaper = new BookLibraryAdapter(this, books, BookLibraryAdapter.LAYOUT_LIST_TYPE);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdaper);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
+        mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
     }
 
     private void initCustomSpinner(View layout) {
         Spinner spinnerCustom = (Spinner) layout.findViewById(R.id.spinnerCustom);
         ArrayList<String> languages = new ArrayList<String>();
-        languages.add("Android Spinner spinnerCustom = (Spinner)");
-        languages.add("IOS");
-        languages.add("PHP");
-        languages.add("Java");
-        languages.add(".Net");
+        languages.add("전체보기");
+        languages.add("책장1");
+        languages.add("책장2");
+        languages.add("책장3");
+        languages.add("책장4");
 
         CustomSpinnerAdapter customSpinnerAdapter = new CustomSpinnerAdapter(getActivity(), languages);
         spinnerCustom.setAdapter(customSpinnerAdapter);
@@ -209,29 +206,31 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
 
     /* OnItemClick Listener */
 
-    private void showActionNewBookShelfDialog() {
-        String title = "New BookShelf Title";
-        String subTitle = "New BookShelf Sub title";
+    private void showActionNewBookSelfDialog(Resources resource) {
+        String title = resource.getString(R.string.dialog_text_new_title);
+        String subTitle = resource.getString(R.string.dialog_text_new_subtitle);
         DialogParameter parameter = new DialogParameter(title, subTitle, null);
         BaseDialogFragment newBookDialog = BaseDialogFragment.newInstance(parameter);
-        newBookDialog.show(getActivity().getFragmentManager(), "DIALOG_BOOKSHELF");
+        newBookDialog.show(getActivity().getFragmentManager(), "DIALOG_BOOKSELF");
     }
 
-    private void showActionSearchDialog() {
-        String title = "Search Title";
-        String subTitle = "Search Sub title";
+    private void showActionSearchDialog(Resources resource) {
+        String title = resource.getString(R.string.dialog_text_search_title);
+        String subTitle = resource.getString(R.string.dialog_text_search_subtitle);
         DialogParameter parameter = new DialogParameter(title, subTitle, null);
         BaseDialogFragment searchDialog = BaseDialogFragment.newInstance(parameter);
         searchDialog.show(getActivity().getFragmentManager(), "DIALOG_SEARCH");
     }
 
-    private void showActionSortDialog() {
-        String title = "Sort Title";
-        String subTitle = "Sort Sub Title";
+    private void showActionSortDialog(Resources resource) {
+        String title = resource.getString(R.string.dialog_text_sort_title);
+        String subTitle = resource.getString(R.string.dialog_text_sort_subtitle);
         DialogParameter parameter = new DialogParameter(title, subTitle);
         SortDialogFragment sortDialog = SortDialogFragment.newInstance(parameter);
         sortDialog.show(getActivity().getFragmentManager(), "DIALOG_SORT");
     }
+
+    private boolean isFirstTime = true;
 
     private void doActionView() {
         Debug.i(TAG, "doActionView");
@@ -239,24 +238,26 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
         for (int i = 0; i < 10; i++) {
             books.add(new BookDomain("Book ", "Book name " + i, null));
         }
-
-        if (mViewType == 0) {
+        if (isFirstTime) {
+            mViewType = BookLibraryAdapter.LAYOUT_GRID_TYPE;
+            isFirstTime = false;
+        }
+        if (mViewType == BookLibraryAdapter.LAYOUT_LIST_TYPE) {
             Debug.i(TAG, "doActionView mViewType=" + mViewType);
-            btnActionView.setImageResource(R.drawable.ic_view_stream_black_24dp);
+            btnActionView.setImageResource(R.drawable.top_menu3);
             mRecyclerAdaper = new BookLibraryAdapter(this, books, mViewType);
-            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
             mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
-            mViewType = 1;
-        } else if (mViewType == 1) {
+            mViewType = BookLibraryAdapter.LAYOUT_GRID_TYPE;
+        } else if (mViewType == BookLibraryAdapter.LAYOUT_GRID_TYPE) {
             Debug.i(TAG, "doActionView mViewType=" + mViewType);
-            btnActionView.setImageResource(R.drawable.ic_view_module_black_24dp);
+            btnActionView.setImageResource(R.drawable.top_menu3);
             mRecyclerAdaper = new BookLibraryAdapter(this, books, mViewType);
-            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-            mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL));
-            mViewType = 0;
+            mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+            mViewType = BookLibraryAdapter.LAYOUT_LIST_TYPE;
         } else {
             Debug.i(TAG, "doActionView nothign");
         }
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mRecyclerAdaper);
 
     }
@@ -285,15 +286,16 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
 
         @Override
         public void onClick(View view) {
+            Resources resources = getResources();
             switch (view.getId()) {
                 case R.id.btnNewBookShelf:
-                    showActionNewBookShelfDialog();
+                    showActionNewBookSelfDialog(resources);
                     break;
                 case R.id.btnSearchLibrary:
-                    showActionSearchDialog();
+                    showActionSearchDialog(resources);
                     break;
                 case R.id.btnSortLibrary:
-                    showActionSortDialog();
+                    showActionSortDialog(resources);
                     break;
                 case R.id.btnViewLibrary:
                     doActionView();
@@ -344,7 +346,7 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
         public View getDropDownView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = inflater.inflate(R.layout.custom_spinner_dropdown_item, parent, false);
-            CheckedTextView dropDownText =  (CheckedTextView)row.findViewById(R.id.spinLibraryDropDown);
+            CheckedTextView dropDownText = (CheckedTextView) row.findViewById(R.id.spinLibraryDropDown);
             dropDownText.setText(asr.get(position));
 
             return row;
@@ -354,7 +356,7 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
         public View getView(int position, View convertView, ViewGroup parent) {
             LayoutInflater inflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View row = inflater.inflate(R.layout.custom_spinner_item, parent, false);
-            TextView itemText =  (TextView)row.findViewById(R.id.spinLibraryItem);
+            TextView itemText = (TextView) row.findViewById(R.id.spinLibraryItem);
             itemText.setText(asr.get(position));
             itemText.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_arrow_drop_down_black_24dp, 0);
 

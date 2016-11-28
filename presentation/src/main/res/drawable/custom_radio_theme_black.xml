@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_checked="true">
+        <layer-list >
+            <item>
+                <shape>
+                    <solid android:color="@android:color/transparent"/>
+                    <stroke android:width="2dp" android:color="@color/yellow_600" />
+                    <padding android:bottom="4dp" android:left="4dp" android:right="4dp" android:top="4dp" />
+                    <corners android:radius="4dp" />
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/pad_portrait_black"/>
+            </item>
+        </layer-list>
+    </item>
+
+    <item android:state_checked="false">
+        <layer-list>
+            <item>
+                <shape>
+                    <solid android:color="@android:color/transparent"/>
+                    <padding android:bottom="4dp" android:left="4dp" android:right="4dp" android:top="4dp" />
+                    <corners android:radius="4dp" />
+                </shape>
+            </item>
+            <item>
+                <bitmap android:src="@drawable/pad_portrait_black" />
+            </item>
+        </layer-list>
+    </item>
+</selector>
