@@ -1,6 +1,8 @@
 package net.cosmiclion.opms.login;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import net.cosmiclion.beum.R;
@@ -20,8 +22,9 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login_act);
 
+        FragmentManager fragmentManager = getSupportFragmentManager();
         String taskId = null;
-        LoginFragment loginFragment = (LoginFragment) getSupportFragmentManager().findFragmentById(R.id.contentFrame);
+        LoginFragment loginFragment = (LoginFragment) fragmentManager.findFragmentById(R.id.contentFrame);
         if (loginFragment == null) {
             loginFragment = LoginFragment.newInstance();
             if (getIntent().hasExtra(LoginFragment.ARGUMENT_LOGIN_ID)) {
@@ -31,14 +34,15 @@ public class LoginActivity extends AppCompatActivity {
                 bundle.putString(LoginFragment.ARGUMENT_LOGIN_ID, taskId);
                 loginFragment.setArguments(bundle);
             }
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), loginFragment, R.id.contentFrame);
+            ActivityUtils.addFragmentToActivity(fragmentManager, loginFragment, R.id.contentFrame);
         }
+        Context context = getApplicationContext();
         // Create the presenter
         new LoginPresenter(UseCaseHandler.getInstance(), taskId, loginFragment,
-                new DoLogin(TasksRepository.getInstance(TasksRemoteDataSource.getInstance(getApplicationContext()),
-                        TasksLocalDataSource.getInstance(getApplicationContext()))),
-                new DoGetBaseValue(TasksRepository.getInstance(TasksRemoteDataSource.getInstance(getApplicationContext()),
-                        TasksLocalDataSource.getInstance(getApplicationContext())))
+                new DoLogin(TasksRepository.getInstance(TasksRemoteDataSource.getInstance(context),
+                        TasksLocalDataSource.getInstance(context))),
+                new DoGetBaseValue(TasksRepository.getInstance(TasksRemoteDataSource.getInstance(context),
+                        TasksLocalDataSource.getInstance(context)))
         );
     }
 

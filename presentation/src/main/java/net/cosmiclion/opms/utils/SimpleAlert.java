@@ -24,4 +24,6 @@ public class SimpleAlert {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.show();
     }
+
+
 }

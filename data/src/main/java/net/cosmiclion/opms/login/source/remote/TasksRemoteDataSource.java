@@ -75,11 +75,11 @@ public class TasksRemoteDataSource implements TasksDataSource {
                         public void onResponse(BaseValueResponse response) {
                             try {
                                 Debug.i(TAG, "BaseValue response =" + response.getBaseValue());
-                                int baseValue = Integer.parseInt(AES256Cipher.AES_Decode(response.getBaseValue(), AES256Cipher.key));
+                                int baseValue = Integer.parseInt(AES256Cipher.AES_Decode(response.getBaseValue()));
                                 Debug.i(TAG, "BaseValue response before SUB=" + baseValue);
                                 baseValue = baseValue - BASE_VALUE;
                                 Debug.i(TAG, "BaseValue response after sub=" + baseValue);
-                                String baseValueEncrypted = AES256Cipher.AES_Encode(baseValue + "", AES256Cipher.key);
+                                String baseValueEncrypted = AES256Cipher.AES_Encode(baseValue + "");
 
                                 Debug.i(TAG, "baseValueEncrypted=" + baseValueEncrypted);
                                 callback.onBaseValueLoaded(new BaseValueResponse(baseValueEncrypted));
@@ -111,6 +111,7 @@ public class TasksRemoteDataSource implements TasksDataSource {
     public void getLoginResponse(@NonNull LoginRequest loginRequest, @NonNull final LoadLoginCallback callback) {
         Debug.i(TAG, "========getLoginResponse=======");
         try {
+
             Map<String, String> params = new HashMap<String, String>();
             params.put(Constants.PARAMS_ID, loginRequest.getEmailAddress());
             params.put(Constants.PARAMS_PWD, loginRequest.getPassword());

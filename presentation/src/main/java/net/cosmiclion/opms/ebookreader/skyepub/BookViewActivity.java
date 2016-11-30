@@ -95,6 +95,7 @@ import com.skytree.epub.VideoListener;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.main.MainActivity;
+import net.cosmiclion.opms.utils.Debug;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -212,7 +213,7 @@ public class BookViewActivity extends Activity {
     boolean isRTL = false;
     boolean isVerticalWriting = false;
 
-//    final private String TAG = "EPub";
+    //    final private String TAG = "EPub";
     Highlights highlights;
     ArrayList<PagingInformation> pagings = new ArrayList<PagingInformation>();
     int temp = 20;
@@ -736,11 +737,11 @@ public class BookViewActivity extends Activity {
     }
 
     public void enableHaptic() {
-		android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED, 1);
+//        android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED, 1);
     }
 
     public void disableHaptic() {
-		android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED, 0);
+//        android.provider.Settings.System.putInt(getContentResolver(), android.provider.Settings.System.HAPTIC_FEEDBACK_ENABLED, 0);
     }
 
 
@@ -1555,6 +1556,12 @@ public class BookViewActivity extends Activity {
 
         int width = 450;
         int height = 500;
+
+        if(this.isTablet()){
+            width = 650;
+            height = 700;
+        }
+
         fontBox = new SkyBox(this);
         fontBox.setBoxColor(boxColor);
         fontBox.setArrowHeight(ps(25));
@@ -1562,7 +1569,7 @@ public class BookViewActivity extends Activity {
         setFrame(fontBox, ps(50), ps(200), ps(width), ps(height));
 
         ScrollView fontBoxScrollView = new ScrollView(this);
-        this.setFrame(fontBoxScrollView, ps(5), ps(10), ps(440), ps(height - 50));
+        this.setFrame(fontBoxScrollView, ps(5), ps(10), ps(width - 10), ps(height - 50));
         fontBox.contentView.addView(fontBoxScrollView);    // NEW
 
         SkyLayout contentLayout = new SkyLayout(this);
@@ -1594,8 +1601,10 @@ public class BookViewActivity extends Activity {
         brightBar.setId(997);
         brightBar.setBackgroundColor(Color.TRANSPARENT);
         brightBar.setOnSeekBarChangeListener(new SeekBarDelegate());
-        brightBar.setProgressDrawable(new LineDrawable(Color.rgb(160, 160, 160), ps(10)));
-        brightBar.setThumbOffset(-1);
+        LineDrawable progressDrawable = new LineDrawable(Color.rgb(160, 160, 160), ps(10));
+//        brightBar.setProgressDrawable(progressDrawable);
+//        brightBar.setThumbOffset(-1);
+        brightBar.setMinimumHeight(24);
         setFrame(brightBar, ps(100), ps(FY + 4), ps(width - 210), ps(50));
         contentLayout.addView(brightBar);
 
@@ -1656,11 +1665,16 @@ public class BookViewActivity extends Activity {
         // #4 make themes selector.
         int TY = 220;
         int TH = 70;
-        int TW = (width - 40 - 20) / 3;
+        int TW = (width - 40 - 20) / 3; // 3 for 3 button in horizon
+
+        if(this.isTablet()){
+            TW = (width - 50 - 20) / 5; // 5 for 5 button in horizon
+        }
 
         HorizontalScrollView themeScrollView = new HorizontalScrollView(this);
         themesView = new LinearLayout(this);
         themesView.setOrientation(LinearLayout.HORIZONTAL);
+        themesView.setGravity(Gravity.CENTER_VERTICAL);
 
         themeScrollView.addView(themesView, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
@@ -1668,7 +1682,7 @@ public class BookViewActivity extends Activity {
             Theme theme = themes.get(i);
             Button themeButton = new Button(this);
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ps(TW), ps(TH));
-            layoutParams.setMargins(0, 0, 24, 0);
+            layoutParams.setMargins(0, 0, 5, 0);
             themesView.addView(themeButton, layoutParams);
             RoundRectShape rs = new RoundRectShape(new float[]{ps(5), ps(5), ps(5), ps(5), ps(5), ps(5), ps(5), ps(5)}, null, null);
             SkyDrawable brd = new SkyDrawable(rs, theme.backgroundColor, Color.BLACK, 1);
@@ -1771,20 +1785,27 @@ public class BookViewActivity extends Activity {
         this.showOutsideButton();
         int width = 450;
         int height = 500;
+
+        if(this.isTablet()){
+            width = 650;
+            height = 700;
+        }
+
         int left, top;
         if (!this.isTablet()) {
+            //for mobile
             if (this.isHighDensityPhone()) {
                 left = pxr(width + 20);
-                top = ps(40);
+                top = ps(65);
                 if (!isPortrait()) {
-                    top = ps(35);
+                    top = ps(40);
                     left = pxr(width + 80);
                 }
             } else {
                 left = pxr(width + 50);
                 top = ps(75);
                 if (!isPortrait()) {
-                    top = ps(35);
+                    top = ps(40);
                     left = pxr(width + 80);
                 }
             }
@@ -2552,10 +2573,18 @@ public class BookViewActivity extends Activity {
         fontButton.setOnTouchListener(new ImageButtonHighlighterOnTouchListener(fontButton));
         searchButton.setOnTouchListener(new ImageButtonHighlighterOnTouchListener(searchButton));
 
-        titleLabel = this.makeLabel(3000, title, Gravity.CENTER_HORIZONTAL, 17, Color.argb(240, 94, 61, 35));    // setTextSize in android uses sp (Scaled Pixel) as default, they say that sp guarantees the device dependent size, but as usual in android it can't be 100% sure.
-        authorLabel = this.makeLabel(3000, author, Gravity.CENTER_HORIZONTAL, 17, Color.argb(240, 94, 61, 35));
-        pageIndexLabel = this.makeLabel(3000, "......", Gravity.CENTER_HORIZONTAL, 13, Color.argb(240, 94, 61, 35));
-        secondaryIndexLabel = this.makeLabel(3000, "......", Gravity.CENTER_HORIZONTAL, 13, Color.argb(240, 94, 61, 35));
+        if(!this.isTablet()){
+            titleLabel = this.makeLabel(3000, title, Gravity.CENTER_HORIZONTAL, 15, Color.argb(240, 94, 61, 35));
+            authorLabel = this.makeLabel(3000, author, Gravity.CENTER_HORIZONTAL, 15, Color.argb(240, 94, 61, 35));
+            pageIndexLabel = this.makeLabel(3000, "......", Gravity.CENTER_HORIZONTAL, 10, Color.argb(240, 94, 61, 35));
+            secondaryIndexLabel = this.makeLabel(3000, "......", Gravity.CENTER_HORIZONTAL, 10, Color.argb(240, 94, 61, 35));
+        }else{
+            titleLabel = this.makeLabel(3000, title, Gravity.CENTER_HORIZONTAL, 17, Color.argb(240, 94, 61, 35));    // setTextSize in android uses sp (Scaled Pixel) as default, they say that sp guarantees the device dependent size, but as usual in android it can't be 100% sure.
+            authorLabel = this.makeLabel(3000, author, Gravity.CENTER_HORIZONTAL, 17, Color.argb(240, 94, 61, 35));
+            pageIndexLabel = this.makeLabel(3000, "......", Gravity.CENTER_HORIZONTAL, 13, Color.argb(240, 94, 61, 35));
+            secondaryIndexLabel = this.makeLabel(3000, "......", Gravity.CENTER_HORIZONTAL, 13, Color.argb(240, 94, 61, 35));
+
+        }
 
 //		rv.customView.addView(rotationButton);
 //		rv.customView.addView(listButton);
@@ -2576,6 +2605,18 @@ public class BookViewActivity extends Activity {
         ePubView.addView(secondaryIndexLabel);
 
         seekBar = new SkySeekBar(this);
+        if (!this.isTablet()) {  // in case of phone
+            if (this.isHighDensityPhone()) {
+                if (!isPortrait()) {
+
+                }
+            } else {
+
+            }
+            seekBar.setPadding(0, 12, 0, 6);
+        } else { // in case of tablet
+            seekBar.setPadding(0, 4, 0, 6);
+        }
         seekBar.setMax(999);
         seekBar.setId(999);
         float[] outerR = new float[]{12, 12, 12, 12, 12, 12, 12, 12};
@@ -2584,18 +2625,22 @@ public class BookViewActivity extends Activity {
 
         RoundRectShape rectShape = new RoundRectShape(outerR, null, null);
 
+        RectShape rectShape1 = new RectShape();
+
         ShapeDrawable thumb = new ShapeDrawable(rectShape);
 
         thumb.getPaint().setColor(theme.seekThumbColor);
+        thumb.setIntrinsicHeight(getPS(20));
+        thumb.setIntrinsicWidth(getPS(36));
 
-        thumb.setIntrinsicHeight(getPS(16));
-        thumb.setIntrinsicWidth(getPS(32));
         seekBar.setThumb(thumb);
         seekBar.setBackgroundColor(Color.TRANSPARENT);
         seekBar.setOnSeekBarChangeListener(new SeekBarDelegate());
         seekBar.setProgressDrawable(new DottedDrawable(theme.seekBarColor));
         seekBar.setThumbOffset(-3);
-        seekBar.setMinimumHeight(24);
+        seekBar.setMinimumHeight(36);
+//        seekBar.setBackgroundColor(Color.BLACK);
+
 
         int filterColor = theme.controlColor;
         homeButton.setColorFilter(filterColor);
@@ -2640,7 +2685,7 @@ public class BookViewActivity extends Activity {
     public void recalcFrames() {
         this.authorLabel.setVisibility(View.VISIBLE);
         this.secondaryIndexLabel.setVisibility(View.VISIBLE);
-        int seekWidth = (int) (this.getWidth() * 0.8);
+        int seekWidth = (int) (this.getWidth() * 0.75);
         int seekLeft = (this.getWidth() - seekWidth) / 2;
 
         if (!this.isTablet()) {                // for phones   					- tested with Galaxy S2, Galaxy S3, Galaxy S4
@@ -2648,8 +2693,8 @@ public class BookViewActivity extends Activity {
                 this.setLocation(homeButton, pxl(20), pyt(15 - 2));
 //				this.setLocation(rotationButton, 	pxl(20),pyt(15-2));
                 this.setLocation(listButton, pxl(20 + (48 + 5) * 1), pyt(15));
-                this.setLocation(searchButton, pxr(40 + (48 + 5) * 3), pyt(15));
-                this.setLocation(fontButton, pxr(40 + (48 + 5) * 2), pyt(15));
+                this.setLocation(searchButton, pxr(40 + (48 + 5) * 2), pyt(15));
+                this.setLocation(fontButton, pxr(40 + (48 + 5) * 3), pyt(15));
 
 
                 this.setFrame(seekBar, seekLeft, pyb(125), seekWidth, ps(36));
@@ -2680,11 +2725,11 @@ public class BookViewActivity extends Activity {
                 this.setLocation(homeButton, pxl(ox), pyt(oy - 2));
 //				this.setLocation(rotationButton, 	pxl(ox)					,pyt(oy-2));
                 this.setLocation(listButton, pxl(ox + (65) * 1), pyt(oy));
-                this.setLocation(searchButton, pxr(rx + (65) * 3), pyt(oy));
-                this.setLocation(fontButton, pxr(rx + (65) * 2), pyt(oy));
+                this.setLocation(searchButton, pxr(rx + (65) * 2), pyt(oy));
+                this.setLocation(fontButton, pxr(rx + (65) * 3), pyt(oy));
 
 
-                this.setFrame(seekBar, seekLeft, pyb(140), seekWidth, ps(45));
+                this.setFrame(seekBar, seekLeft, pyb(135), seekWidth, ps(45));
                 int brx = rx - 10 + (44) * 1;
                 int bry = oy + 10;
                 bookmarkRect = new Rect(pxr(brx), pyt(bry), pxr(brx - 50), pyt(bry + 50));
@@ -2742,7 +2787,7 @@ public class BookViewActivity extends Activity {
                 this.authorLabel.setVisibility(View.GONE);
                 this.secondaryIndexLabel.setVisibility(View.INVISIBLE);
                 this.secondaryIndexLabel.setVisibility(View.GONE);
-                this.setLocation(pageIndexLabel, this.getLabelWidth(pageIndexLabel) - sd, pyb(125));
+                this.setLocation(pageIndexLabel, this.getLabelWidth(pageIndexLabel) - sd, pyb(118));
 //				this.setLocation(pageIndexLabel,(this.getWidth()/2-this.getLabelWidth(pageIndexLabel)/2)-sd,pyb(90));
             } else {
                 if (this.isDoublePagedForLandscape) {
@@ -2786,10 +2831,10 @@ public class BookViewActivity extends Activity {
                 this.secondaryIndexLabel.setVisibility(View.GONE);
                 if (this.isHoneycomb()) {
 //                    this.setLocation(pageIndexLabel, (this.getWidth() / 2 - this.getLabelWidth(pageIndexLabel) / 2) - sd, pyb(100 + 80));
-                    this.setLocation(pageIndexLabel,  this.getLabelWidth(pageIndexLabel)  , pyb(130 + 80));
+                    this.setLocation(pageIndexLabel, this.getLabelWidth(pageIndexLabel), pyb(130 + 80));
                 } else {
 //                    this.setLocation(pageIndexLabel, (this.getWidth() / 2 - this.getLabelWidth(pageIndexLabel) / 2) - sd, pyb(100));
-                    this.setLocation(pageIndexLabel,  this.getLabelWidth(pageIndexLabel)  , pyb(130));
+                    this.setLocation(pageIndexLabel, this.getLabelWidth(pageIndexLabel), pyb(130));
                 }
             } else {
                 if (this.isDoublePagedForLandscape) {
@@ -3019,7 +3064,7 @@ public class BookViewActivity extends Activity {
     }
 
     public void log(String msg) {
-        Log.w("EPub", msg);
+        Debug.i("EPub", msg);
     }
 
     // this event is called after device is rotated.
@@ -3767,8 +3812,8 @@ public class BookViewActivity extends Activity {
             // TODO Auto-generated method stub
             String customScript = null;
 //			customScript = "function ignoreBookStyle() { document.styleSheets[0].disabled = true; } ignoreBookStyle();";
-			/*
-			customScript = "" +
+            /*
+            customScript = "" +
 					"function preventPreloadVideo() {" +
 						"var videos = document.getElementsByTagName('video');" +
 						"for (var i=0; i<videos.length; i++) {" +
@@ -4728,7 +4773,8 @@ class LineDrawable extends Drawable {
         mPaint.setColor(mColor);
         mPaint.setStrokeWidth(mStrokeWidth);
         mPaint.setStyle(Paint.Style.FILL);
-        canvas.drawLine(0, b.height() / 2 + b.height() * 0.1f, b.width(), b.height() / 2 + b.height() * .1f, mPaint);
+        canvas.drawLine(0, b.height() / 2 + b.height() * 0.1f,
+                b.width(), b.height() / 2 + b.height() * 0.1f, mPaint);
     }
 
     @Override

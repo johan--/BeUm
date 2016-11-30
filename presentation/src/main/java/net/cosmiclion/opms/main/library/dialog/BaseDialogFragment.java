@@ -81,6 +81,8 @@ public class BaseDialogFragment extends DialogFragment {
         Dialog dialog = super.onCreateDialog(savedInstanceState);
         // request a window without the title
         dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
+
         return dialog;
     }
 

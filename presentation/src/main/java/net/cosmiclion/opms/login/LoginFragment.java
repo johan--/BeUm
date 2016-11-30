@@ -74,6 +74,11 @@ public class LoginFragment extends Fragment implements LoginContract.View {
                 showProgressDialog("", "Loading");
 //                mPresenter.doGetBaseValue();
                 doOpenBooks();
+
+                String email = AES256Cipher.AES_Encode(mEmail.getText().toString());
+                String pwd = AES256Cipher.AES_Encode(mPassword.getText().toString());
+
+//                mPresenter.doLogin(new LoginRequest(email, pwd, ""));
             }
         });
         setHasOptionsMenu(true);
@@ -85,8 +90,8 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     public void doLoginAfterGetBaseValue(String baseValue) {
         Debug.i(TAG, "doGetBaseValue=" + baseValue);
         try {
-            String email = AES256Cipher.AES_Encode(mEmail.getText().toString(), AES256Cipher.key);
-            String pwd = AES256Cipher.AES_Encode(mPassword.getText().toString(), AES256Cipher.key);
+            String email = AES256Cipher.AES_Encode(mEmail.getText().toString());
+            String pwd = AES256Cipher.AES_Encode(mPassword.getText().toString());
 
             mPresenter.doLogin(new LoginRequest(email, pwd, baseValue));
         } catch (Exception e) {

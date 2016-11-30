@@ -122,7 +122,7 @@
 
     <style name="Widget.MaterialSheetFab.ToolBar" parent="">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:layout_height">@dimen/tool_bar_height</item>
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:theme">@style/ThemeOverlay.MaterialSheetFab.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.MaterialSheetFab.ActionBar.Popup</item>
@@ -169,4 +169,8 @@
         <item name="android:button">@null</item>
     </style>
 
+    <style name="DialogAnimation">
+        <item name="android:windowEnterAnimation">@android:anim/slide_in_left</item>
+        <item name="android:windowExitAnimation">@android:anim/slide_out_right</item>
+    </style>
 </resources>

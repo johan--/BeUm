@@ -28,4 +28,5 @@ public class LoginRequest {
     public String getBaseValue() {
         return mBaseValue;
     }
+
 }

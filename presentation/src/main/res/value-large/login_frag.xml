@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="login_frag" type="layout">@layout/login_frag_large</item>
+</resources>

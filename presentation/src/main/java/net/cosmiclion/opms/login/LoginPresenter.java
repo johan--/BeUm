@@ -75,7 +75,7 @@ public class LoginPresenter implements LoginContract.Presenter {
     public void doSaveUID(LoginResponse loginResponse, @NonNull Context context) {
         try {
             Debug.i(TAG, "Login success");
-            String uidEncoded = AES256Cipher.AES_Encode(loginResponse.getUid(), AES256Cipher.key);
+            String uidEncoded = AES256Cipher.AES_Encode(loginResponse.getUid());
             Debug.i(TAG, "uid encode=" + uidEncoded);
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             SharedPreferences.Editor editor = preferences.edit();

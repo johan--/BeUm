@@ -7,7 +7,9 @@ public class ApiServices {
 
     public static final String BASE_VALUE = "http://133.130.120.152/BR/APP/ATOOLS/auth/getbasevalue.php";
 
-    public static final String LOGIN_SERVICE = "http://133.130.120.152/BR/APP/MOBILE/auth/login.php";
+//    public static final String LOGIN_SERVICE = "http://133.130.120.152/BR/APP/MOBILE/auth/login.php";
+
+    public static final String LOGIN_SERVICE = "http://malltest.wjopms.com/api/login";
 
     public static final String LOGOUT_SERVICE = "http://133.130.120.152/BR/APP/MOBILE/auth/logout.php";
 

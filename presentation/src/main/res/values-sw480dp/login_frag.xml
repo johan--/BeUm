@@ -1,0 +1,3 @@
+<resources>
+    <item name="login_frag" type="layout">@layout/login_frag_large</item>
+</resources>
