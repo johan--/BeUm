@@ -73,10 +73,8 @@ public class DoGetBooksPurchase extends
          */
         public ResponseValue(ResponseData books) {
             Debug.i("ResponseValue", "ResponseData books=" + books.getResponse());
-            List<BookPurchaseDomain> booksPurchaseDomain = BookPurchaseMapper
-                    .transformList((String) books.getResponse());
+            List<BookPurchaseDomain> booksPurchaseDomain = BookPurchaseMapper.transformList((String) books.getResponse());
             mBooks = checkNotNull(booksPurchaseDomain, "mBookInfo cannot null");
-
         }
 
         public List<BookPurchaseDomain>  getBooksPurchaseResponse() {

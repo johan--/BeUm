@@ -77,6 +77,10 @@ public class BookPurchaseMapper {
             bookPurchaseDomain.is_order = bookPurchaseData.is_order;
             bookPurchaseDomain.is_rental = bookPurchaseData.is_rental;
             bookPurchaseDomain.setPivot(bookPurchaseData.pivot.order_id, bookPurchaseData.pivot.product_id);
+
+            bookPurchaseDomain.filetype = bookPurchaseData.filetype;
+            bookPurchaseDomain.filename = bookPurchaseData.filename;
+
         }
 
         return bookPurchaseDomain;

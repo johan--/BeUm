@@ -2,17 +2,20 @@ package net.cosmiclion.opms.main.purchase.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.squareup.picasso.Picasso;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.main.purchase.model.BookPurchaseDomain;
+import net.cosmiclion.opms.utils.Downloader;
 import net.cosmiclion.opms.volley.VolleyManager;
 
 import java.util.List;
@@ -90,8 +93,33 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
                 .into(holder.bookCover);
 
 //        if (position % 2 == 0) {
-            holder.download.setVisibility(View.INVISIBLE);
+//            holder.download.setVisibility(View.INVISIBLE);
 //        }
+
+        if(item.isFileExists(mContext)) {
+            holder.download.setVisibility(View.INVISIBLE);
+        } else {
+            holder.download.setVisibility(View.VISIBLE);
+            holder.download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Downloader downloader = new Downloader(mContext);
+                    downloader.start(item.product_id, item.filename, new Downloader.OnDownloadListener() {
+                        @Override
+                        public void onStateChanged(String state) {
+                            Log.d(TAG, state);
+
+                            if(state.contains("success")) {
+                                Toast.makeText(mContext, state, Toast.LENGTH_LONG).show();
+                                notifyDataSetChanged();
+                            }
+
+                        }
+                    });
+
+                }
+            });
+        }
     }
 
     @Override

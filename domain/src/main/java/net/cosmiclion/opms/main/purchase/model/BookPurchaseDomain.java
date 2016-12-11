@@ -1,7 +1,10 @@
 package net.cosmiclion.opms.main.purchase.model;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.io.File;
 
 /**
  * Created by longpham on 10/21/2016.
@@ -28,6 +31,19 @@ public class BookPurchaseDomain implements Parcelable {
     public String is_rental;
 
     public Pivot pivot;
+
+    // add values
+    public String filename;
+    public int filetype;
+    public String company_name;
+    public int company_id;
+
+
+    /** add check file exists */
+    public boolean isFileExists(Context ctx) {
+        File file = new File(ctx.getFilesDir(), filename);
+        return file.exists();
+    }
 
     public void setPivot(String order_id, String product_id) {
         this.pivot = new Pivot(order_id, product_id);

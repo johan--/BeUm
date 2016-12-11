@@ -17,4 +17,5 @@ public class BookItem {
         this.filePath = filePath;
         this.isPDF = isPDF;
     }
+
 }
