@@ -55,10 +55,10 @@
                 android:padding="@dimen/quickmenu_frag_recent_read_title_padding"
                 android:layout_alignParentTop="true"
                 android:layout_width="match_parent"
-                android:gravity="center_horizontal"
+                android:gravity="center_horizontal|center_vertical"
                 android:textAlignment="center"
                 android:text="@string/quickmenu_recent_read"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/quickmenu_frag_header_height"
                 android:textColor="@android:color/white" />
 
             <net.cosmiclion.opms.main.quickmenu.CustomViewPager
@@ -94,7 +94,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dimen_48dp"
+                android:layout_height="@dimen/quickmenu_frag_header_height"
                 android:orientation="horizontal">
 
                 <TextView

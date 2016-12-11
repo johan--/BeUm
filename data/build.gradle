@@ -56,4 +56,8 @@ dependencies {
     compile dataDependencies.gson
     compile dataDependencies.volley
     compile dataDependencies.support
+    compile dataDependencies.retrofit2
+    compile dataDependencies.retrofit2Gson
+    compile dataDependencies.retrofit2Logger
+    compile dataDependencies.stetho
 }

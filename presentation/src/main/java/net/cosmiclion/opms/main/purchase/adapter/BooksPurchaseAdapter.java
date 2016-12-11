@@ -1,16 +1,18 @@
 package net.cosmiclion.opms.main.purchase.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
 import net.cosmiclion.beum.R;
-import net.cosmiclion.opms.main.library.model.BookDomain;
+import net.cosmiclion.opms.main.purchase.model.BookPurchaseDomain;
 import net.cosmiclion.opms.volley.VolleyManager;
 
 import java.util.List;
@@ -24,18 +26,31 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
 
     private final int ITEM_EVEN = 0, ITEM_ODD = 1;
     private String TAG = getClass().getSimpleName();
-    private List<BookDomain> mBooks;
-    private ImageLoader imageLoader;
+    private List<BookPurchaseDomain> mBooks;
     private ViewHolder.ClickListener clickListener;
+    private Context mContext;
 
-    public BooksPurchaseAdapter(ViewHolder.ClickListener clickListener, List<BookDomain> books) {
+    public BooksPurchaseAdapter(
+            ViewHolder.ClickListener clickListener,
+            List<BookPurchaseDomain> books,
+            Context context) {
         super();
         this.mBooks = books;
         this.clickListener = clickListener;
+        this.mContext = context;
     }
 
-    private void setList(List<BookDomain> books) {
+    private void setList(List<BookPurchaseDomain> books) {
         mBooks = checkNotNull(books);
+    }
+
+    public void replaceData(List<BookPurchaseDomain> books) {
+        setList(books);
+        notifyDataSetChanged();
+    }
+
+    public List<BookPurchaseDomain> getBooks() {
+        return mBooks;
     }
 
     @Override
@@ -60,17 +75,23 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final BookDomain item = mBooks.get(position);
+        final BookPurchaseDomain item = mBooks.get(position);
 
-//        holder.title.setText(item.getTitle());
-//        holder.author.setText("Author");
-//        holder.publisher.setText("Publisher");
-        holder.bookCover.setImageUrl(item.getCover(), imageLoader);
-        holder.bookCover.setDefaultImageResId(R.drawable.book_cover);
+        holder.title.setText(item.product_title);
+        holder.author.setText(item.product_author);
+        holder.publisher.setText(item.product_translator);
+//        holder.bookCover.setImageUrl(item.cover_image1, imageLoader);
+//        holder.bookCover.setDefaultImageResId(R.drawable.book_cover);
 
-        if (position % 2 == 0) {
+        Picasso.with(mContext)
+                .load(item.cover_image1)
+                .placeholder(R.drawable.book_cover)
+                .error(R.drawable.book_cover)
+                .into(holder.bookCover);
+
+//        if (position % 2 == 0) {
             holder.download.setVisibility(View.INVISIBLE);
-        }
+//        }
     }
 
     @Override
@@ -98,7 +119,7 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
         private TextView download;
 
         View selectedOverlay;
-        NetworkImageView bookCover;
+        ImageView bookCover;
         ImageLoader imageLoader;
         private ClickListener listener;
 
@@ -110,7 +131,7 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
             publisher = (TextView) itemView.findViewById(R.id.tvBookPublisher);
             download = (TextView) itemView.findViewById(R.id.btnPurchaseDownload);
 
-            bookCover = (NetworkImageView) itemView.findViewById(R.id.ivBookCover);
+            bookCover = (ImageView) itemView.findViewById(R.id.ivBookCover);
             selectedOverlay = itemView.findViewById(R.id.selected_overlay);
             this.listener = listener;
             if (imageLoader == null) {

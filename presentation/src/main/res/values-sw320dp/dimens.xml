@@ -9,6 +9,8 @@
     <dimen name="login_frag_button_padding">16dp</dimen>
     <dimen name="login_frag_button_textSize">14sp</dimen>
     <dimen name="login_frag_button_radius">24dp</dimen>
+    <dimen name="login_frag_image_opms_marginTop">12dp</dimen>
+    <dimen name="login_frag_image_opms_marginBottom">4dp</dimen>
 
     <!-- QUICKMENU FRAGMENT DIMENS-->
     <dimen name="quickmenu_frag_button_control_padding">8dp</dimen>
@@ -16,6 +18,7 @@
     <dimen name="quickmenu_frag_recent_read_title_textSize">14sp</dimen>
     <dimen name="quickmenu_frag_recent_purchase_viewall_textSize">10sp</dimen>
     <dimen name="quickmenu_frag_button_control_margin">8dp</dimen>
+    <dimen name="quickmenu_frag_header_height">32dp</dimen>
 
     <!-- QUICKMENU FRAGMENT DIMENS-->
     <dimen name="library_frag_dialog_text_padding">8dp</dimen>

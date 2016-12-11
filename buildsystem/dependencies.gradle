@@ -23,7 +23,7 @@ ext {
     cardviewVersion = '24.2.0'
     designVersion = '25.0.0'
     supportVersion = '24.2.0'
-    preferenceVersion = '23.0.1'
+    preferenceVersion = '23.1.1'
     aHBottomNavigationVersion = '1.5.1'
 
     guavaVersion = '18.0'
@@ -31,6 +31,11 @@ ext {
     fbSDKVersion = '4.5.0'
     volleyVersion = '1.0.19'
     gsonVersion = '2.6.2'
+    retrofit2Version = '2.1.0'
+    retrofit2GsonVersion = '2.1.0'
+    retrofit2LoggerVersion = '3.3.1'
+    stethoVersion = '1.4.1'
+    picassoVersion = '2.5.2'
 
     //Testing
     robolectricVersion = '3.0'
@@ -60,6 +65,7 @@ ext {
 
             guava:              "com.google.guava:guava:${guavaVersion}",
             aHBottomNavigation: "com.aurelhubert:ahbottomnavigation:${aHBottomNavigationVersion}",
+            picasso:            "com.squareup.picasso:picasso:${picassoVersion}",
     ]
 
     domainDependencies = [
@@ -84,6 +90,10 @@ ext {
             guava:              "com.google.guava:guava:${guavaVersion}",
             support:            "com.android.support:support-v4:${supportVersion}",
             volley:             "com.mcxiaoke.volley:library:${volleyVersion}",
+            retrofit2:          "com.squareup.retrofit2:retrofit:${retrofit2Version}",
+            retrofit2Gson:      "com.squareup.retrofit2:converter-gson:${retrofit2GsonVersion}",
+            retrofit2Logger:    "com.squareup.okhttp3:logging-interceptor:${retrofit2LoggerVersion}",
+            stetho:             "com.facebook.stetho:stetho:${stethoVersion}",
     ]
 
     developmentDependencies = [

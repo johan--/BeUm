@@ -2,11 +2,9 @@ package net.cosmiclion.opms.utils;
 
 import android.app.Dialog;
 import android.app.DialogFragment;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,9 +15,6 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import net.cosmiclion.beum.R;
-import net.cosmiclion.opms.login.LoginActivity;
-import net.cosmiclion.opms.main.library.dialog.model.DialogParameter;
-
 
 public class PromptDialogFragment extends DialogFragment {
     private final String TAG = getClass().getSimpleName();
@@ -31,20 +26,11 @@ public class PromptDialogFragment extends DialogFragment {
     private Button btnPositive;
     private Button btnNegative;
 
-    public PromptDialogFragment() {
-        // Empty constructor is required for DialogFragment
-        // Make sure not to add arguments to the constructor
-        // Use `newInstance` instead as shown below
-    }
+    private String dialogTitle;
+    private String dialogSubTitle;
+    private String dialogHint;
 
-    public static PromptDialogFragment newInstance(@NonNull DialogParameter parameter) {
-        PromptDialogFragment frag = new PromptDialogFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(BUNDLE_KEY_DIALOG_TITLE, parameter.getTitle());
-        bundle.putString(BUNDLE_KEY_DIALOG_SUBTITLE, parameter.getSubTitle());
-        bundle.putString(BUNDLE_KEY_DIALOG_HINT, parameter.getHint());
-        frag.setArguments(bundle);
-        return frag;
+    public PromptDialogFragment() {
     }
 
     @Override
@@ -61,11 +47,9 @@ public class PromptDialogFragment extends DialogFragment {
         btnPositive.setOnClickListener(dialogListener);
         btnNegative = (Button) view.findViewById(R.id.btnCancel);
         btnNegative.setOnClickListener(dialogListener);
-        Bundle bundle = getArguments();
-        String title = bundle.getString(BUNDLE_KEY_DIALOG_TITLE, getResources().getString(R.string.sample_text_title));
-        tvTitle.setText(title);
-        String subTitle = bundle.getString(BUNDLE_KEY_DIALOG_SUBTITLE, getResources().getString(R.string.sample_text_subtitle));
-        tvSubTitle.setText(subTitle);
+
+        tvTitle.setText((dialogTitle == null ? "" : dialogTitle));
+        tvSubTitle.setText(dialogSubTitle == null ? "" : dialogSubTitle);
 
         // Show soft keyboard automatically and request focus to field
         getDialog().getWindow().setSoftInputMode(
@@ -98,12 +82,11 @@ public class PromptDialogFragment extends DialogFragment {
                 case R.id.btnCancel:
                     Debug.i(TAG, "cancel");
                     dismiss();
+                    mListener.onClickNegative();
                     break;
                 case R.id.btnOk:
                     dismiss();
-                    Intent myIntent = new Intent(getActivity(), LoginActivity.class);
-                    startActivity(myIntent);
-                    getActivity().finish();
+                    mListener.onClickPositive();
                     break;
                 default:
                     break;
@@ -111,4 +94,39 @@ public class PromptDialogFragment extends DialogFragment {
         }
     };
 
+    public interface DialogListener {
+        void onClickPositive();
+
+        void onClickNegative();
+    }
+
+    public DialogListener mListener;
+
+    public void setDialogClickListener(DialogListener listener) {
+        this.mListener = listener;
+    }
+
+    public String getDialogTitle() {
+        return dialogTitle;
+    }
+
+    public void setDialogTitle(String dialogTitle) {
+        this.dialogTitle = dialogTitle;
+    }
+
+    public String getDialogSubTitle() {
+        return dialogSubTitle;
+    }
+
+    public void setDialogSubTitle(String dialogSubTitle) {
+        this.dialogSubTitle = dialogSubTitle;
+    }
+
+    public String getDialogHint() {
+        return dialogHint;
+    }
+
+    public void setDialogHint(String dialogHint) {
+        this.dialogHint = dialogHint;
+    }
 }

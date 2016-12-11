@@ -27,6 +27,15 @@ public class SkyApplication extends Application {
         loadSetting();
         createSkyDRM();
         this.initializeLeakDetection();
+
+//        // Create an InitializerBuilder
+//        Stetho.InitializerBuilder initializerBuilder =
+//                Stetho.newInitializerBuilder(this);
+//
+//        // Enable Chrome DevTools
+//        initializerBuilder.enableWebKitInspector(
+//                Stetho.defaultInspectorModulesProvider(this)
+//        );
     }
 
     public void reloadBookInformations() {

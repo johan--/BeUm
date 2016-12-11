@@ -1,5 +1,7 @@
 package net.cosmiclion.opms.main.purchase;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,23 +14,39 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import net.cosmiclion.beum.R;
-import net.cosmiclion.opms.main.MainActivity;
-import net.cosmiclion.opms.main.library.model.BookDomain;
+import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.main.purchase.adapter.BooksPurchaseAdapter;
-import net.cosmiclion.opms.utils.tasks.BookItem;
+import net.cosmiclion.opms.main.purchase.model.BookPurchaseDomain;
+import net.cosmiclion.opms.main.purchase.source.PurchaseRepository;
+import net.cosmiclion.opms.main.purchase.source.local.PurchaseLocalDataSource;
+import net.cosmiclion.opms.main.purchase.source.remote.PurchaseRemoteDataSource;
+import net.cosmiclion.opms.main.purchase.usecase.DoGetBooksPurchase;
+import net.cosmiclion.opms.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PurchaseFragment extends Fragment implements PurchaseContract.View, BooksPurchaseAdapter.ViewHolder.ClickListener, SwipeRefreshLayout.OnRefreshListener {
-    public static final String FRAGMENT = "PurchaseFragment";
+import static com.google.common.base.Preconditions.checkNotNull;
 
+/**
+ * Created by longpham on 11/9/2016.
+ */
+public class PurchaseFragment extends Fragment implements
+        PurchaseContract.View,
+        BooksPurchaseAdapter.ViewHolder.ClickListener,
+        SwipeRefreshLayout.OnRefreshListener {
+
+    public static final String FRAGMENT = "PurchaseFragment";
+    private static final String BUNDLE_MOBILE_TOKEN = "BUNDLE_MOBILE_TOKEN";
+    private static final String BUNDLE_BOOKS_PURCHASE = "BUNDLE_BOOKS_PURCHASE";
     private String TAG = getClass().getSimpleName();
 
     private ImageButton btnActionSearch;
     private BooksPurchaseAdapter mRecyclerAdaper;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private PurchaseContract.Presenter mPresenter;
+    private ProgressDialog pDialog;
 
     public PurchaseFragment() {
     }
@@ -40,6 +58,13 @@ public class PurchaseFragment extends Fragment implements PurchaseContract.View,
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Context mContext = getActivity();
+        pDialog = new ProgressDialog(this.getActivity());
+        mPresenter = new PurchasePresenter(UseCaseHandler.getInstance(), this,
+                new DoGetBooksPurchase(PurchaseRepository.getInstance(
+                        PurchaseRemoteDataSource.getInstance(mContext),
+                        PurchaseLocalDataSource.getInstance(mContext)))
+        );
     }
 
     @Override
@@ -48,7 +73,38 @@ public class PurchaseFragment extends Fragment implements PurchaseContract.View,
         View layout = inflater.inflate(R.layout.purchase_frag, container, false);
         setupActionView(layout);
         setupRecyleView(layout);
+        restoreData(savedInstanceState);
+
         return layout;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Debug.i(TAG, "onSaveInstanceState = ");
+        //Save the fragment's state here
+        outState.putString(BUNDLE_MOBILE_TOKEN, mPresenter.getMobileToken());
+        outState.putParcelableArrayList(BUNDLE_BOOKS_PURCHASE, new ArrayList<>(mRecyclerAdaper.getBooks()));
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Debug.i(TAG, "onActivityCreated = ");
+        if (savedInstanceState != null) {
+            //Restore the fragment's state here
+            restoreData(savedInstanceState);
+        }
+    }
+
+    private void restoreData(Bundle bundle) {
+        if (bundle != null) {
+            List<BookPurchaseDomain> books = bundle.getParcelableArrayList(BUNDLE_BOOKS_PURCHASE);
+            mRecyclerAdaper.replaceData(books);
+        } else {
+            mPresenter.getMobileToken(this.getActivity());
+            mPresenter.start();
+        }
     }
 
     @Override
@@ -62,25 +118,44 @@ public class PurchaseFragment extends Fragment implements PurchaseContract.View,
     }
 
     @Override
-    public void showBooksView(List<BookDomain> books) {
-
+    public void showBooksView(List<BookPurchaseDomain> books) {
+        mRecyclerAdaper.replaceData(books);
     }
 
     @Override
     public void setPresenter(PurchaseContract.Presenter presenter) {
-
+        mPresenter = checkNotNull(presenter);
     }
 
     @Override
     public void onItemClicked(int position) {
-        ((MainActivity) getActivity()).openDemoDocument(
-                new BookItem(0, "BK0000314002", 0, "BK0000314002.epub", 0));
+//        ((MainActivity) getActivity()).openDemoDocument(
+//                new BookItem(0, "BK0000314002", 0, "BK0000314002.epub", 0));
     }
 
     @Override
     public void onRefresh() {
         if (mSwipeRefreshLayout.isRefreshing()) {
             mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if (mPresenter != null) {
+            mPresenter.getMobileToken(this.getActivity());
+        }
+        this.mPresenter.loadBooks(false);
+    }
+
+    private void showProgressDialog(String title, String message) {
+        if (!pDialog.isShowing()) {
+            pDialog.setTitle(title);
+            pDialog.setMessage(message);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+    }
+
+    private void hideProgressDialog() {
+        if (pDialog.isShowing()) {
+            pDialog.dismiss();
         }
     }
 
@@ -94,12 +169,8 @@ public class PurchaseFragment extends Fragment implements PurchaseContract.View,
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_purchase);
         mSwipeRefreshLayout.setOnRefreshListener(this);
 
-        List<BookDomain> books = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            books.add(new BookDomain("Book ", "Book name " + i, null));
-        }
-
-        mRecyclerAdaper = new BooksPurchaseAdapter(this, books);
+        mRecyclerAdaper = new BooksPurchaseAdapter(
+                this, new ArrayList<BookPurchaseDomain>(0), getActivity());
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdaper);

@@ -6,35 +6,59 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import net.cosmiclion.beum.R;
+import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.main.config.ConfigFragment;
 import net.cosmiclion.opms.main.library.LibraryFragment;
 import net.cosmiclion.opms.main.purchase.PurchaseFragment;
 import net.cosmiclion.opms.main.quickmenu.QuickMenuFragment;
+import net.cosmiclion.opms.main.quickmenu.QuickMenuPresenter;
+import net.cosmiclion.opms.main.quickmenu.QuickMenuRepository;
+import net.cosmiclion.opms.main.quickmenu.source.local.QuickMenuLocalDataSource;
+import net.cosmiclion.opms.main.quickmenu.source.remote.QuickMenuRemoteDataSource;
+import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItemDetail;
+import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItems;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
+    private final String TAG = getClass().getSimpleName();
     public static final int NUMB_ITEMS = 4;
     public final int QUICK_MENU_LAYOUT = 0;
     public final int LIBRARY_LAYOUT = 1;
     public final int PURCHASE_LIST_LAYOUT = 2;
     public final int CONFIGURATION_LAYOUT = 3;
 
-    private Context context;
+    private Context mContext;
+
+    private QuickMenuFragment quickMenuFragment;
+    private LibraryFragment libraryFragment;
+    private PurchaseFragment purchaseFragment;
 
     public MainPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
-        this.context = context;
+        this.mContext = context;
+
+        quickMenuFragment = QuickMenuFragment.newInstance();
+        new QuickMenuPresenter(UseCaseHandler.getInstance(), quickMenuFragment,
+                new GetQuickMenuItems(QuickMenuRepository.getInstance(
+                        QuickMenuRemoteDataSource.getInstance(mContext),
+                        QuickMenuLocalDataSource.getInstance(mContext))),
+                new GetQuickMenuItemDetail(QuickMenuRepository.getInstance(
+                        QuickMenuRemoteDataSource.getInstance(mContext),
+                        QuickMenuLocalDataSource.getInstance(mContext)))
+        );
+        libraryFragment = LibraryFragment.newInstance();
+        purchaseFragment = PurchaseFragment.newInstance();
     }
 
     @Override
     public Fragment getItem(int position) {
         switch (position) {
             case QUICK_MENU_LAYOUT:
-                return QuickMenuFragment.newInstance();
+                return quickMenuFragment;
             case LIBRARY_LAYOUT:
-                return LibraryFragment.newInstance();
+                return libraryFragment;
             case PURCHASE_LIST_LAYOUT:
-                return PurchaseFragment.newInstance();
+                return purchaseFragment;
             case CONFIGURATION_LAYOUT:
                 return ConfigFragment.newInstance();
             default:
@@ -46,15 +70,15 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         switch (position) {
             case QUICK_MENU_LAYOUT:
-                return context.getString(R.string.quick_menu_tab_name);
+                return mContext.getString(R.string.quick_menu_tab_name);
             case LIBRARY_LAYOUT:
-                return context.getString(R.string.my_library_tab_name);
+                return mContext.getString(R.string.my_library_tab_name);
             case PURCHASE_LIST_LAYOUT:
-                return context.getString(R.string.purchase_list_tab_name);
+                return mContext.getString(R.string.purchase_list_tab_name);
             case CONFIGURATION_LAYOUT:
-                return context.getString(R.string.configuration_tab_name);
+                return mContext.getString(R.string.configuration_tab_name);
             default:
-                return context.getString(R.string.quick_menu_tab_name);
+                return mContext.getString(R.string.quick_menu_tab_name);
         }
     }
 

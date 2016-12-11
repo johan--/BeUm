@@ -17,7 +17,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class AES256Cipher {
     //	public static String key = "COSMICLION2016_BEUMREADINGV11234";
-    private static String key = "abcdefghijklmnopqrstuvwxyz123456";
+    private static String key = "65RrV5K8tTt0yE6s8mJ68iHXxb3ormdT";
     public static byte[] ivBytes = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
 

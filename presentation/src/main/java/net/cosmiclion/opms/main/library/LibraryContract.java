@@ -1,8 +1,11 @@
 package net.cosmiclion.opms.main.library;
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
 import net.cosmiclion.opms.BasePresenter;
 import net.cosmiclion.opms.BaseView;
-import net.cosmiclion.opms.main.library.model.BookDomain;
+import net.cosmiclion.opms.main.library.model.BookLibraryDomain;
 
 import java.util.List;
 
@@ -13,8 +16,13 @@ public interface LibraryContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadBooks(boolean forceUpdate);
+        void getMobileToken(@NonNull Context context);
 
+        String getMobileToken();
+
+        void loadBooks(@NonNull boolean forceUpdate);
+
+        List<BookLibraryDomain> getBooks();
     }
 
     interface View extends BaseView<Presenter> {
@@ -23,7 +31,6 @@ public interface LibraryContract {
 
         boolean isActive();
 
-        void showBooksView(List<BookDomain> books);
-
+        void showBooksView(List<BookLibraryDomain> books);
     }
 }

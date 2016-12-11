@@ -18,9 +18,11 @@ package net.cosmiclion.opms.login;
 
 import android.support.annotation.NonNull;
 
-import net.cosmiclion.opms.login.model.BaseValueResponse;
+import com.google.gson.Gson;
+
 import net.cosmiclion.opms.login.model.LoginRequest;
-import net.cosmiclion.opms.login.model.LoginResponse;
+import net.cosmiclion.opms.login.model.ResponseData;
+import net.cosmiclion.opms.login.model.UserInfoData;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -35,7 +37,7 @@ public class TasksRepository implements TasksDataSource {
 
     private static TasksRepository INSTANCE = null;
 
-    private final TasksDataSource mTasksRemoteDataSource;
+    private final TasksDataSource mRemoteDataSource;
 
     private final TasksDataSource mTasksLocalDataSource;
 
@@ -48,7 +50,7 @@ public class TasksRepository implements TasksDataSource {
     // Prevent direct instantiation.
     private TasksRepository(@NonNull TasksDataSource tasksRemoteDataSource,
                             @NonNull TasksDataSource tasksLocalDataSource) {
-        mTasksRemoteDataSource = checkNotNull(tasksRemoteDataSource);
+        mRemoteDataSource = checkNotNull(tasksRemoteDataSource);
         mTasksLocalDataSource = checkNotNull(tasksLocalDataSource);
     }
 
@@ -74,16 +76,18 @@ public class TasksRepository implements TasksDataSource {
     public static void destroyInstance() {
         INSTANCE = null;
     }
-    
+
     @Override
     public void getLoginResponse(@NonNull LoginRequest loginRequest, @NonNull final LoadLoginCallback callback) {
         checkNotNull(callback);
 
         if (!mCacheIsDirty) {
             // If the cache is dirty we need to fetch new data from the network.
-            mTasksRemoteDataSource.getLoginResponse(loginRequest, new LoadLoginCallback() {
+            mRemoteDataSource.getLoginResponse(loginRequest, new LoadLoginCallback() {
                 @Override
-                public void onLoginLoaded(LoginResponse response) {
+                public void onLoginLoaded(ResponseData response) {
+//                    Debug.i("TasksRepository", "===getLoginResponse===" +
+//                            ((MobileToken)response.getResponse()).getMobileToken());
                     callback.onLoginLoaded(response);
                 }
 
@@ -110,13 +114,14 @@ public class TasksRepository implements TasksDataSource {
     }
 
     @Override
-    public void getBaseValueResponse(@NonNull final LoadBaseValueCallback callback) {
+    public void getUserInfoResponse(@NonNull String token, @NonNull final LoadUserInfoCallback callback) {
         if (!mCacheIsDirty) {
             // If the cache is dirty we need to fetch new data from the network.
-            mTasksRemoteDataSource.getBaseValueResponse(new LoadBaseValueCallback() {
+            mRemoteDataSource.getUserInfoResponse(token, new LoadUserInfoCallback() {
                 @Override
-                public void onBaseValueLoaded(BaseValueResponse response) {
-                    callback.onBaseValueLoaded(response);
+                public void onUserInfoLoaded(ResponseData response) {
+                    saveUserInfo(new Gson().fromJson((String)response.getResponse(),UserInfoData.class));
+                    callback.onUserInfoLoaded(response);
                 }
 
                 @Override
@@ -125,7 +130,46 @@ public class TasksRepository implements TasksDataSource {
                 }
             });
         } else {
-            // Query the local storage if available. If not, query the network.
+//            mTasksLocalDataSource.getTasks(new LoadTasksCallback() {
+//                @Override
+//                public void onTasksLoaded(List<Task> tasks) {
+//                    refreshCache(tasks);
+//                    callback.onTasksLoaded(new ArrayList<>(mCachedTasks.values()));
+//                }
+//
+//                @Override
+//                public void onDataNotAvailable() {
+//                    getTasksFromRemoteDataSource(callback);
+//                }
+//            });
+        }
+    }
+
+    @Override
+    public void saveUserInfo(@NonNull UserInfoData userInfoData) {
+//        mTasksLocalDataSource.saveUserInfo(userInfoData);
+    }
+
+
+    @Override
+    public void getBaseImageUrlResponse(@NonNull final LoadBaseImageUrlCallback callback) {
+        checkNotNull(callback);
+
+        if (!mCacheIsDirty) {
+            // If the cache is dirty we need to fetch new data from the network.
+            mRemoteDataSource.getBaseImageUrlResponse( new LoadBaseImageUrlCallback() {
+
+                @Override
+                public void onBaseImageUrlLoaded(ResponseData response) {
+                    callback.onBaseImageUrlLoaded(response);
+                }
+
+                @Override
+                public void onDataNotAvailable(String errorMessage) {
+                    callback.onDataNotAvailable(errorMessage);
+                }
+            });
+        } else {
 
         }
     }

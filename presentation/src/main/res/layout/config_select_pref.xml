@@ -21,16 +21,15 @@
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/radioTitle"
+            android:id="@+id/pageEffectNone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:checked="true"
             android:layout_weight="1"
             android:text="@string/page_transition_effect_none"
             android:textSize="@dimen/config_summary_textSize" />
 
         <RadioButton
-            android:id="@+id/radioAuthor"
+            android:id="@+id/pageEffectSlide"
             android:layout_width="wrap_content"
             android:layout_weight="1"
             android:layout_height="wrap_content"
@@ -38,7 +37,7 @@
             android:textSize="@dimen/config_summary_textSize" />
 
         <RadioButton
-            android:id="@+id/radioRead"
+            android:id="@+id/pageEffectFlipping"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

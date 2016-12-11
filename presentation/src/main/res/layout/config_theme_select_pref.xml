@@ -12,19 +12,19 @@
         android:orientation="horizontal">
 
         <RadioButton
-            android:id="@+id/radioTitle"
+            android:id="@+id/radioThemeWhite"
             style="@style/RadioButtonThemeWhite"
             android:layout_width="@dimen/config_theme_thumbnail_width"
             android:layout_height="@dimen/config_theme_thumbnail_height" />
 
         <RadioButton
-            android:id="@+id/radioAuthor"
+            android:id="@+id/radioThemeBrown"
             style="@style/RadioButtonThemeBrown"
             android:layout_width="@dimen/config_theme_thumbnail_width"
             android:layout_height="@dimen/config_theme_thumbnail_height" />
 
         <RadioButton
-            android:id="@+id/radioRead"
+            android:id="@+id/radioThemeBlack"
             style="@style/RadioButtonThemeBlack"
             android:layout_width="@dimen/config_theme_thumbnail_width"
             android:layout_height="@dimen/config_theme_thumbnail_height" />

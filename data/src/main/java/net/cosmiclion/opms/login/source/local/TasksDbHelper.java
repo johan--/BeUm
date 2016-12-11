@@ -23,7 +23,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class TasksDbHelper extends SQLiteOpenHelper {
     public static final int DATABASE_VERSION = 1;
 
-    public static final String DATABASE_NAME = "Tasks.db";
+    public static final String DATABASE_NAME = "OPMS_DB.db";
 
     private static final String TEXT_TYPE = " TEXT";
 
@@ -31,14 +31,31 @@ public class TasksDbHelper extends SQLiteOpenHelper {
 
     private static final String COMMA_SEP = ",";
 
-    private static final String SQL_CREATE_ENTRIES ="";
-//            "CREATE TABLE " + TasksPersistenceContract.TaskEntry.TABLE_NAME + " (" +
-//                    TasksPersistenceContract.TaskEntry._ID + TEXT_TYPE + " PRIMARY KEY," +
-//                    TasksPersistenceContract.TaskEntry.COLUMN_NAME_ENTRY_ID + TEXT_TYPE + COMMA_SEP +
-//                    TasksPersistenceContract.TaskEntry.COLUMN_NAME_TITLE + TEXT_TYPE + COMMA_SEP +
-//                    TasksPersistenceContract.TaskEntry.COLUMN_NAME_DESCRIPTION + TEXT_TYPE + COMMA_SEP +
-//                    TasksPersistenceContract.TaskEntry.COLUMN_NAME_COMPLETED + BOOLEAN_TYPE +
-//            " )";
+    private static final String SQL_CREATE_ENTRIES =
+            "CREATE TABLE " + UserInfoContract.Entry.TABLE_NAME + " (" +
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_ID + TEXT_TYPE + " PRIMARY KEY," +
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_ACCOUNT + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_TRUENAME + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_SEX + TEXT_TYPE + COMMA_SEP +
+
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_BIRTHDAY + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_MOBILE + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_ALLOW_EMAIL + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_ALLOW_SMS + TEXT_TYPE + COMMA_SEP +
+
+                    UserInfoContract.Entry.COLUMN_NAME_ALLOW_APP + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_ADDTIME + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_LOGIN_TIME + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_OLD_LOGIN_TIME + TEXT_TYPE + COMMA_SEP +
+
+                    UserInfoContract.Entry.COLUMN_NAME_ADULT_CHECK + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_LOGIN_NUM + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_LOGIN_IP + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_OLD_LOGIN_IP + TEXT_TYPE + COMMA_SEP +
+
+                    UserInfoContract.Entry.COLUMN_NAME_MEMBER_STATE + TEXT_TYPE + COMMA_SEP +
+                    UserInfoContract.Entry.COLUMN_NAME_MOBILE_TOKEN + TEXT_TYPE +
+                    " )";
 
     public TasksDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

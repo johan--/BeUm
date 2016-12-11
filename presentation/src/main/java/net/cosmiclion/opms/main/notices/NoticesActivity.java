@@ -1,5 +1,6 @@
 package net.cosmiclion.opms.main.notices;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -17,9 +18,14 @@ import android.view.MenuItem;
 import android.view.View;
 
 import net.cosmiclion.beum.R;
+import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.login.LoginActivity;
 import net.cosmiclion.opms.main.MainActivity;
 import net.cosmiclion.opms.main.help.HelpFragment;
+import net.cosmiclion.opms.main.notices.source.NoticesRepository;
+import net.cosmiclion.opms.main.notices.source.local.NoticesLocalDataSource;
+import net.cosmiclion.opms.main.notices.source.remote.NoticesRemoteDataSource;
+import net.cosmiclion.opms.main.notices.usecase.DoGetNotices;
 import net.cosmiclion.opms.utils.Debug;
 
 public class NoticesActivity extends AppCompatActivity {
@@ -165,19 +171,30 @@ public class NoticesActivity extends AppCompatActivity {
         fragmentName = getIntent().getStringExtra(MainActivity.SCREEN_TAG);
         FragmentTransaction transaction = getSupportFragmentManager()
                 .beginTransaction();
-        Fragment fragment = null;
-
+//        Fragment fragment = null;
+        Context context = getApplicationContext();
 //        Menu navMenu = mNavigationView.getMenu();
         if (fragmentName.equals(NoticesFragment.class.getSimpleName())) {
-            fragment = NoticesFragment.newInstance();
+            NoticesFragment noticesFragment = NoticesFragment.newInstance();
+            new NoticesPresenter(
+                    UseCaseHandler.getInstance(),
+                    noticesFragment,
+                    new DoGetNotices(
+                            NoticesRepository.getInstance(
+                                    NoticesRemoteDataSource.getInstance(context),
+                                    NoticesLocalDataSource.getInstance(context))));
+
+            transaction.replace(R.id.contentFrame, noticesFragment);
+            transaction.commit();
+
 //            navMenu.findItem(R.id.nav_item_home).setChecked(false);
         } else if (fragmentName.equals(HelpFragment.class.getSimpleName())) {
-            fragment = HelpFragment.newInstance();
+            HelpFragment helpFragment = HelpFragment.newInstance();
+            transaction.replace(R.id.contentFrame, helpFragment);
+            transaction.commit();
 //            navMenu.findItem(R.id.nav_item_help).setChecked(true);
         }
 
-        transaction.replace(R.id.contentFrame, fragment);
-        transaction.commit();
     }
 
     private void goHomeScreen() {

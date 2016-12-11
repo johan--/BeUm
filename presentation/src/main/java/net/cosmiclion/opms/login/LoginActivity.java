@@ -9,7 +9,8 @@ import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.login.source.local.TasksLocalDataSource;
 import net.cosmiclion.opms.login.source.remote.TasksRemoteDataSource;
-import net.cosmiclion.opms.login.usecase.DoGetBaseValue;
+import net.cosmiclion.opms.login.usecase.DoGetImageUrl;
+import net.cosmiclion.opms.login.usecase.DoGetUserInfo;
 import net.cosmiclion.opms.login.usecase.DoLogin;
 import net.cosmiclion.opms.utils.ActivityUtils;
 
@@ -39,10 +40,16 @@ public class LoginActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         // Create the presenter
         new LoginPresenter(UseCaseHandler.getInstance(), taskId, loginFragment,
-                new DoLogin(TasksRepository.getInstance(TasksRemoteDataSource.getInstance(context),
+                new DoLogin(TasksRepository.getInstance(
+                        TasksRemoteDataSource.getInstance(context),
                         TasksLocalDataSource.getInstance(context))),
-                new DoGetBaseValue(TasksRepository.getInstance(TasksRemoteDataSource.getInstance(context),
+                new DoGetUserInfo(TasksRepository.getInstance(
+                        TasksRemoteDataSource.getInstance(context),
+                        TasksLocalDataSource.getInstance(context))),
+                new DoGetImageUrl(TasksRepository.getInstance(
+                        TasksRemoteDataSource.getInstance(context),
                         TasksLocalDataSource.getInstance(context)))
+
         );
     }
 

@@ -2,6 +2,7 @@ package net.cosmiclion.opms.login;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -13,15 +14,17 @@ import android.widget.EditText;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.login.model.LoginRequest;
-import net.cosmiclion.opms.login.model.LoginResponse;
+import net.cosmiclion.opms.login.model.ResponseData;
 import net.cosmiclion.opms.main.MainActivity;
 import net.cosmiclion.opms.utils.AES256Cipher;
 import net.cosmiclion.opms.utils.Debug;
-import net.cosmiclion.opms.utils.SimpleAlert;
+import net.cosmiclion.opms.utils.PromptDialogFragment;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
-public class LoginFragment extends Fragment implements LoginContract.View {
+public class LoginFragment extends Fragment implements LoginContract.View,
+        PromptDialogFragment.DialogListener,
+        View.OnClickListener {
 
     private final String TAG = getClass().getSimpleName();
 
@@ -31,8 +34,11 @@ public class LoginFragment extends Fragment implements LoginContract.View {
 
     private EditText mEmail;
     private EditText mPassword;
+    private android.support.v7.widget.AppCompatButton btnForgotId, btnForgotPass, btnRegister;
 
     private ProgressDialog pDialog;
+
+    private PromptDialogFragment dialog = null;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -65,6 +71,15 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         View root = inflater.inflate(R.layout.login_frag, container, false);
         mEmail = (EditText) root.findViewById(R.id.login_email);
         mPassword = (EditText) root.findViewById(R.id.login_password);
+        btnForgotId = (android.support.v7.widget.AppCompatButton) root.findViewById(R.id.btnForgotId);
+        btnForgotId.setOnClickListener(this);
+        btnForgotPass = (android.support.v7.widget.AppCompatButton) root.findViewById(R.id.btnForgotPass);
+        btnForgotPass.setOnClickListener(this);
+        btnRegister = (android.support.v7.widget.AppCompatButton) root.findViewById(R.id.btnRegister);
+        btnRegister.setOnClickListener(this);
+
+        dialog = new PromptDialogFragment();
+        dialog.setDialogClickListener(this);
 
         Button mBtnSignIn = (Button) root.findViewById(R.id.btn_email_sign_in);
         mBtnSignIn.setOnClickListener(new View.OnClickListener() {
@@ -73,17 +88,22 @@ public class LoginFragment extends Fragment implements LoginContract.View {
                 Debug.i(TAG, "onClick mPresenter.doGetBaseValue()");
                 showProgressDialog("", "Loading");
 //                mPresenter.doGetBaseValue();
-                doOpenBooks();
 
-                String email = AES256Cipher.AES_Encode(mEmail.getText().toString());
-                String pwd = AES256Cipher.AES_Encode(mPassword.getText().toString());
+//                doOpenBooks();
 
-//                mPresenter.doLogin(new LoginRequest(email, pwd, ""));
+                String email = (mEmail.getText().toString());
+                String pwd = AES256Cipher.AES_Encode(mPassword.getText().toString().trim());
+                mPresenter.doLogin(new LoginRequest(email, pwd, ""));
             }
         });
         setHasOptionsMenu(true);
         setRetainInstance(true);
         return root;
+    }
+
+    @Override
+    public void showLoginSuccess(@NonNull ResponseData loginResponse) {
+        mPresenter.doSaveToken(loginResponse, this.getActivity());
     }
 
     @Override
@@ -100,25 +120,22 @@ public class LoginFragment extends Fragment implements LoginContract.View {
     }
 
     @Override
-    public void showLoginSuccess(@NonNull LoginResponse loginResponse) {
-        Debug.i(TAG, loginResponse.getMessage() + " - " + loginResponse.getUid());
-        mPresenter.doSaveUID(loginResponse, this.getActivity());
-    }
-
-    @Override
-    public void showLoginFailure(@NonNull LoginResponse loginResponse) {
+    public void showLoginFailure(@NonNull ResponseData loginResponse) {
         hideProgressDialog();
-        SimpleAlert.show(this.getActivity(), loginResponse.getMessage());
+        dialog.setDialogTitle((String) loginResponse.getResponse());
+        dialog.show(getActivity().getFragmentManager(), "DIALOG_PROMPT");
     }
 
     @Override
     public void showLoginError(String message) {
         hideProgressDialog();
+
         if (message.equals("")) {
-            SimpleAlert.show(this.getActivity(), getString(R.string.error_try_again));
+            dialog.setDialogTitle(getString(R.string.error_try_again));
         } else {
-            SimpleAlert.show(this.getActivity(), message);
+            dialog.setDialogTitle(message);
         }
+        dialog.show(getActivity().getFragmentManager(), "DIALOG_PROMPT");
     }
 
     @Override
@@ -148,4 +165,41 @@ public class LoginFragment extends Fragment implements LoginContract.View {
         }
     }
 
+
+    @Override
+    public void onClickPositive() {
+
+    }
+
+    @Override
+    public void onClickNegative() {
+
+    }
+
+    @Override
+    public void onClick(View view) {
+        String url = "http://malltest.wjopms.com/forgot";
+
+        switch (view.getId()) {
+            case R.id.btnForgotId:
+                goWebsite(url);
+                break;
+            case R.id.btnForgotPass:
+                goWebsite(url);
+                break;
+            case R.id.btnRegister:
+                url = "http://malltest.wjopms.com/register";
+                goWebsite(url);
+                break;
+        }
+    }
+
+    public void goWebsite(String url) {
+        if (!url.startsWith("http://") && !url.startsWith("https://")) {
+            url = "http://" + url;
+        }
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(Intent.createChooser(intent, "Choose browser"));// Choose browser is arbitrary :)
+
+    }
 }

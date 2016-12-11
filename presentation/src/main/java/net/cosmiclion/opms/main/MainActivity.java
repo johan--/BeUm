@@ -1,10 +1,10 @@
 package net.cosmiclion.opms.main;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -16,6 +16,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.PreferenceManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,30 +33,14 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationViewPager;
 
 import net.cosmiclion.beum.R;
-import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.ebookreader.skyepub.BookViewActivity;
 import net.cosmiclion.opms.ebookreader.skyepub.SkyApplication;
 import net.cosmiclion.opms.ebookreader.skyepub.SkySetting;
+import net.cosmiclion.opms.login.LoginActivity;
 import net.cosmiclion.opms.main.config.ConfigFragment;
 import net.cosmiclion.opms.main.help.HelpFragment;
-import net.cosmiclion.opms.main.library.LibraryFragment;
-import net.cosmiclion.opms.main.library.LibraryPresenter;
-import net.cosmiclion.opms.main.library.dialog.model.DialogParameter;
-import net.cosmiclion.opms.main.library.usecase.GetBooks;
-import net.cosmiclion.opms.main.mylibrary.source.LibraryRepository;
-import net.cosmiclion.opms.main.mylibrary.source.local.LibraryLocalDataSource;
-import net.cosmiclion.opms.main.mylibrary.source.remote.LibraryRemoteDataSource;
-import net.cosmiclion.opms.main.notices.NoticesActivity;
 import net.cosmiclion.opms.main.notices.NoticesFragment;
-import net.cosmiclion.opms.main.purchase.PurchaseFragment;
 import net.cosmiclion.opms.main.quickmenu.QuickMenuFragment;
-import net.cosmiclion.opms.main.quickmenu.QuickMenuPresenter;
-import net.cosmiclion.opms.main.quickmenu.QuickMenuRepository;
-import net.cosmiclion.opms.main.quickmenu.source.local.QuickMenuLocalDataSource;
-import net.cosmiclion.opms.main.quickmenu.source.remote.QuickMenuRemoteDataSource;
-import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItemDetail;
-import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItems;
-import net.cosmiclion.opms.utils.ActivityUtils;
 import net.cosmiclion.opms.utils.Debug;
 import net.cosmiclion.opms.utils.PromptDialogFragment;
 import net.cosmiclion.opms.utils.tasks.BookItem;
@@ -65,49 +50,71 @@ import net.cosmiclion.opms.utils.tasks.ExtractAssetTask;
 import java.io.File;
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements QuickMenuFragment.ViewPurchaseListListener{
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_DOUBLE_PAGE;
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_DOUBLE_PAGE_KEY;
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_PAGE_ANIMATION_KEY;
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_PAGE_NONE;
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_ROTATE;
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_ROTATE_KEY;
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_THEME_KEY;
+import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_THEME_WHITE;
+
+public class MainActivity extends AppCompatActivity implements
+        QuickMenuFragment.ViewPurchaseListListener,
+        PromptDialogFragment.DialogListener {
 
     private String TAG = getClass().getName();
     public static final String SCREEN_TAG = "SCREEN_TAG";
     public static final int NOTICES_SCREEN = 0;
     public static final int HELP_SCREEN = 1;
+    private static final String BUNDLE_NUMB_FRAG = "BUNDLE_NUMB_FRAG";
 
     private DrawerLayout mDrawerLayout;
-
-    private QuickMenuPresenter mQuickMenuPresenter;
-
-    private LibraryPresenter mLibraryPresenter;
-
     private BottomNavigationView mBottomNavigationView;
-
     private NavigationView mNavigationView;
-
     private Toolbar mToolBar;
+    private SharedPreferences mPrefs;
+    private SharedPreferences.Editor mPrefsEditor;
 
     private AHBottomNavigation bottomNavigation;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
     private AHBottomNavigationViewPager viewPager;
 
+    private int mNumbFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.main_act);
         setupToolBar();
         setupDrawer();
 //        showQuickMenuFragment();
 //        setupBottomNavigation();
         setupAHBottomNavigation();
+    }
 
-        String appName = getApplicationName();
-        if (SkySetting.getStorageDirectory() == null) {
-            SkySetting.setStorageDirectory(getFilesDir().getAbsolutePath(),
-                    appName);
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString("message", "This is my message to be reloaded");
+        outState.putInt(BUNDLE_NUMB_FRAG, mNumbFragment);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState != null) {
+            String message = savedInstanceState.getString("message");
+            mNumbFragment = savedInstanceState.getInt(BUNDLE_NUMB_FRAG);
+//            Toast.makeText(this, mNumbFragment + "-" + message, Toast.LENGTH_LONG).show();
+            setupHomeIcon();
         }
-
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 mDrawerLayout.openDrawer(GravityCompat.START);
@@ -115,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
 
             case R.id.menu_item_notify:
                 Debug.i(TAG, "menu_item_notify");
-                showScreen(NOTICES_SCREEN);
+                showNotifyScreen();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -124,7 +131,6 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-
         //dont call **super**, if u want disable back button in current screen.
         //create a dialog to ask yes no question whether or not the user wants to exit
     }
@@ -184,21 +190,26 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
             @Override
             public void onBackStackChanged() {
                 final FragmentManager fm = getSupportFragmentManager();
-                int stack = fm.getBackStackEntryCount();
-                if (stack > 0) {
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true); // show back button
-                    mToolBar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
-                    mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            onBackPressed();
-                        }
-                    });
-                } else {
-                    setHomeMenu();
-                }
+                Debug.i(TAG, "mNumbFragment=" + mNumbFragment);
+                mNumbFragment = fm.getBackStackEntryCount();
+                setupHomeIcon();
             }
         });
+    }
+
+    private void setupHomeIcon() {
+        if (mNumbFragment > 0) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true); // show back button
+            mToolBar.setNavigationIcon(R.drawable.ic_arrow_back_black_24dp);
+            mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onBackPressed();
+                }
+            });
+        } else {
+            setHomeMenu();
+        }
     }
 
     private void setupDrawer() {
@@ -223,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
                                 break;
                             case R.id.nav_item_website:
                                 Debug.i(TAG, "website");
-                                String url = "cosmiclion.net";
+                                String url = "malltest.wjopms.com";
                                 if (!url.startsWith("http://") && !url.startsWith("https://")) {
                                     url = "http://" + url;
                                 }
@@ -236,7 +247,7 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
                                 showPromptLogoutDialog();
                                 break;
                             case R.id.nav_item_help:
-                                showScreen(HELP_SCREEN);
+                                showHelpScreen();
                                 break;
                             default:
                                 break;
@@ -249,59 +260,6 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
                 });
     }
 
-    private void showQuickMenuFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentByTag(QuickMenuFragment.FRAGMENT);
-        if (fragment == null) {
-            QuickMenuFragment quickMenuFragment = QuickMenuFragment.newInstance();
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(), quickMenuFragment, R.id.contentFrame);
-            final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            mQuickMenuPresenter = new QuickMenuPresenter(UseCaseHandler.getInstance(), quickMenuFragment,
-                    new GetQuickMenuItems(QuickMenuRepository.getInstance(
-                            QuickMenuRemoteDataSource.getInstance(getApplicationContext()),
-                            QuickMenuLocalDataSource.getInstance(getApplicationContext()))),
-                    new GetQuickMenuItemDetail(QuickMenuRepository.getInstance(
-                            QuickMenuRemoteDataSource.getInstance(getApplicationContext()),
-                            QuickMenuLocalDataSource.getInstance(getApplicationContext())))
-            );
-            transaction.replace(R.id.contentFrame, quickMenuFragment, QuickMenuFragment.FRAGMENT);
-            transaction.commit();
-            if (mBottomNavigationView != null) {
-                MenuItem item = mBottomNavigationView.getMenu().getItem(0);
-                boolean isChecked = item.isChecked();
-                if (!isChecked) {
-                    item.setChecked(true);
-                }
-            }
-        }
-    }
-
-    private void showLibraryFragment(FragmentManager fragmentManager, FragmentTransaction transaction, Fragment fragment) {
-        fragment = fragmentManager.findFragmentByTag(LibraryFragment.FRAGMENT);
-        if (fragment == null || !fragment.isVisible()) {
-            mBottomNavigationView.getMenu().findItem(R.id.action_two).setChecked(true);
-            LibraryFragment libraryFragment = LibraryFragment.newInstance();
-            mLibraryPresenter = new LibraryPresenter(UseCaseHandler.getInstance(), libraryFragment,
-                    new GetBooks(LibraryRepository.getInstance(
-                            LibraryRemoteDataSource.getInstance(getApplicationContext()),
-                            LibraryLocalDataSource.getInstance(getApplicationContext())))
-            );
-            transaction.replace(R.id.contentFrame, libraryFragment, LibraryFragment.FRAGMENT);
-            transaction.commit();
-        }
-
-    }
-
-    private void showPurchaseFragment(FragmentManager fragmentManager, FragmentTransaction transaction, Fragment fragment) {
-        fragment = fragmentManager.findFragmentByTag(PurchaseFragment.FRAGMENT);
-        if (fragment == null || !fragment.isVisible()) {
-            mBottomNavigationView.getMenu().findItem(R.id.action_three).setChecked(true);
-            PurchaseFragment purchaseListFragment = PurchaseFragment.newInstance();
-            transaction.replace(R.id.contentFrame, purchaseListFragment, PurchaseFragment.FRAGMENT);
-            transaction.commit();
-        }
-    }
-
     public void showConfigFragment(FragmentManager fragmentManager, FragmentTransaction transaction, Fragment fragment) {
         fragment = fragmentManager.findFragmentByTag(ConfigFragment.FRAGMENT);
         if (fragment == null || !fragment.isVisible()) {
@@ -312,49 +270,34 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
         }
     }
 
-    private void setupBottomNavigation() {
+    private void showHelpScreen() {
+        FragmentTransaction mTransaction = getSupportFragmentManager().beginTransaction();
 
-//        mBottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
-        mBottomNavigationView.setHorizontalFadingEdgeEnabled(false);
-
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                final FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                FragmentManager fragmentManager = getSupportFragmentManager();
-                Fragment fragment = null;
-                setHomeMenu();
-                setBottomViewChecked();
-                switch (item.getItemId()) {
-                    case R.id.action_one:
-                        showQuickMenuFragment();
-                        break;
-                    case R.id.action_two:
-                        showLibraryFragment(fragmentManager, transaction, fragment);
-                        break;
-                    case R.id.action_three:
-                        showPurchaseFragment(fragmentManager, transaction, fragment);
-                        break;
-                    case R.id.action_four:
-                        showConfigFragment(fragmentManager, transaction, fragment);
-                        break;
-                }
-
-                return true;
-            }
-        });
+        HelpFragment helpFragment = HelpFragment.newInstance();
+        mTransaction.replace(R.id.fragmentContainer, helpFragment, HelpFragment.FRAGMENT);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        mTransaction.addToBackStack(null);
+        mTransaction.commit();
     }
 
-    private void showScreen(int type) {
-        Intent intent = new Intent(MainActivity.this, NoticesActivity.class);
-        String extraValue = null;
-        if (type == NOTICES_SCREEN) {
-            extraValue = NoticesFragment.class.getSimpleName();
-        } else if (type == HELP_SCREEN) {
-            extraValue = HelpFragment.class.getSimpleName();
-        }
-        intent.putExtra(MainActivity.SCREEN_TAG, extraValue);
-        startActivity(intent);
+    private void showNotifyScreen() {
+        FragmentTransaction mTransaction = getSupportFragmentManager().beginTransaction();
+        NoticesFragment noticesFragment = NoticesFragment.newInstance();
+
+        mTransaction.add(R.id.fragmentContainer, noticesFragment, NoticesFragment.FRAGMENT);
+        mTransaction.setTransition(FragmentTransaction.TRANSIT_NONE);
+        mTransaction.addToBackStack(null);
+        mTransaction.commit();
+
+//        Intent intent = new Intent(MainActivity.this, NoticesActivity.class);
+//        String extraValue = null;
+//        if (type == NOTICES_SCREEN) {
+//            extraValue = NoticesFragment.class.getSimpleName();
+//        } else if (type == HELP_SCREEN) {
+//            extraValue = HelpFragment.class.getSimpleName();
+//        }
+//        intent.putExtra(MainActivity.SCREEN_TAG, extraValue);
+//        startActivity(intent);
     }
 
 
@@ -397,6 +340,7 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
 
         String accentColor = getResources().getString(R.color.yellow_700);
         String inActiveColor = getResources().getString(R.color.basic_black);
+
         bottomNavigation.setForceTitlesDisplay(true);
         bottomNavigation.addItems(bottomNavigationItems);
         bottomNavigation.setAccentColor(Color.parseColor(accentColor));
@@ -408,8 +352,8 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
         bottomNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
-                viewPager.setCurrentItem(position, false);
-                Debug.i(TAG, "wasSelected=" + wasSelected);
+                viewPager.setCurrentItem(position, true);
+                Debug.i(TAG, "wasSelected=" + wasSelected + " position=" + position);
                 return true;
             }
         });
@@ -438,14 +382,16 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
         });
     }
 
-    private void showPromptLogoutDialog(){
+    private void showPromptLogoutDialog() {
         Log.d(TAG, "show dialog");
         String title = getResources().getString(R.string.dialog_logout_title);
         String subTitle = getResources().getString(R.string.dialog_text_sort_subtitle);
-        DialogParameter parameter = new DialogParameter(title, "");
-        PromptDialogFragment dialog = PromptDialogFragment.newInstance(parameter);
+        PromptDialogFragment dialog = new PromptDialogFragment();
+        dialog.setDialogTitle(title);
+        dialog.setDialogClickListener(this);
         dialog.show(getFragmentManager(), "DIALOG_PROMPT");
     }
+
     /**
      * Opens a demo document from assets directory
      */
@@ -459,9 +405,9 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
         final File demoDocumentFile = new File(getFilesDir(), item.filePath);
         if (demoDocumentFile.exists()) {
             Log.d(TAG, "demoDocumentFile");
-            if(item.isPDF == 1){
+            if (item.isPDF == 1) {
                 openPlugPdfViewerAct(Uri.fromFile(demoDocumentFile));
-            }else{
+            } else {
                 openViewer(item);
             }
         } else {
@@ -469,9 +415,9 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
             ExtractAssetTask task = new ExtractAssetTask(MainActivity.this, new DownloadDocumentTask.DownloadedFileCallback() {
                 @Override
                 public void onFileDownloaded(Uri uri) {
-                    if(item.isPDF == 1){
+                    if (item.isPDF == 1) {
                         openPlugPdfViewerAct(uri);
-                    }else{
+                    } else {
                         openViewer(item);
                     }
 
@@ -492,8 +438,20 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
         try {
             SkyApplication app = (SkyApplication) getApplication();
 
-            Intent intent;
+            boolean isDoublePage;
+            boolean isRotate;
+            int themeIndex;
+            int pageTransition = CONFIG_PAGE_NONE;
 
+            mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            mPrefsEditor = mPrefs.edit();
+
+            isDoublePage = mPrefs.getBoolean(CONFIG_DOUBLE_PAGE_KEY, CONFIG_DOUBLE_PAGE);
+            isRotate = !mPrefs.getBoolean(CONFIG_ROTATE_KEY, CONFIG_ROTATE);
+            themeIndex = mPrefs.getInt(CONFIG_THEME_KEY, CONFIG_THEME_WHITE);
+            pageTransition = mPrefs.getInt(CONFIG_PAGE_ANIMATION_KEY, CONFIG_PAGE_NONE);
+
+            Intent intent;
             intent = new Intent(this, BookViewActivity.class);
 
             intent.putExtra("BOOKCODE", item.bookCode);
@@ -501,10 +459,11 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
             intent.putExtra("AUTHOR", "");
             intent.putExtra("BOOKNAME", item.filePath);
             intent.putExtra("POSITION", 0.0);
-            intent.putExtra("THEMEINDEX", app.setting.theme);
-            intent.putExtra("DOUBLEPAGED", app.setting.doublePaged);
-            intent.putExtra("transitionType", app.setting.transitionType);
+            intent.putExtra("THEMEINDEX", themeIndex);
+            intent.putExtra("DOUBLEPAGED", isDoublePage);
+            intent.putExtra("transitionType", pageTransition);
             intent.putExtra("GLOBALPAGINATION", app.setting.globalPagination);
+            intent.putExtra("ROTATION", isRotate);
             Log.d(TAG, "BOOKNAME = " + item.bookCode + " - " + app.setting.theme + " - " + app.setting.doublePaged + " - "
                     + app.setting.transitionType + " - " + app.setting.globalPagination + " - ");
 
@@ -525,4 +484,15 @@ public class MainActivity extends AppCompatActivity implements QuickMenuFragment
         viewPager.setCurrentItem(2);
     }
 
+    @Override
+    public void onClickPositive() {
+        Intent myIntent = new Intent(this, LoginActivity.class);
+        startActivity(myIntent);
+        finish();
+    }
+
+    @Override
+    public void onClickNegative() {
+
+    }
 }

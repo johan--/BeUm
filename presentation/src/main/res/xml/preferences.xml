@@ -1,36 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <android.support.v7.preference.PreferenceCategory
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
         android:title="환경">
 
         <net.cosmiclion.opms.main.config.SwitchPreferenceCompat
-            android:defaultValue="off"
-            android:key="key1"
+            android:defaultValue="false"
+            android:widgetLayout="@layout/config_switch"
+            android:key="@string/config_double_page"
             android:summary="@string/pref_two_page_landscape"
             android:title="@string/pref_two_page_landscape"  />
 
         <net.cosmiclion.opms.main.config.SwitchPreferenceCompat
-            android:defaultValue="off"
-            android:key="key1"
+            android:defaultValue="false"
+            android:widgetLayout="@layout/config_switch"
+            android:key="@string/config_rotate"
             android:summary="@string/pref_rotate"
             android:title="@string/pref_rotate"  />
 
-        <!--<android.support.v7.preference.CheckBoxPreference-->
-        <!--android:defaultValue="false"-->
-        <!--android:key="prefSendReport"-->
-        <!--android:summary="@string/pref_send_report_summary"-->
-        <!--android:title="@string/pref_send_report" />-->
-
         <net.cosmiclion.opms.main.config.ThemeSelectPreference
             android:defaultValue="light"
-            android:key="pref_theme"
+            android:key="@string/config_theme"
             android:title="@string/pref_select_background" />
 
-        <net.cosmiclion.opms.main.config.SelectPreference
+        <net.cosmiclion.opms.main.config.PageSlidePreference
             android:defaultValue="light"
             android:summary="@string/pref_page_transition_effect"
             android:title="@string/pref_page_transition_effect"
-            android:key="pref_select"  />
+            android:key="@string/config_page_slide"  />
 
-    </android.support.v7.preference.PreferenceCategory>
-</android.support.v7.preference.PreferenceScreen>
+    </PreferenceCategory>
+</PreferenceScreen>

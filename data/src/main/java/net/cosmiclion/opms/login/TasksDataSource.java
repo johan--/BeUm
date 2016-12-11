@@ -18,30 +18,39 @@ package net.cosmiclion.opms.login;
 
 import android.support.annotation.NonNull;
 
-import net.cosmiclion.opms.login.model.BaseValueResponse;
 import net.cosmiclion.opms.login.model.LoginRequest;
-import net.cosmiclion.opms.login.model.LoginResponse;
+import net.cosmiclion.opms.login.model.ResponseData;
+import net.cosmiclion.opms.login.model.UserInfoData;
 
 
 public interface TasksDataSource {
 
     interface LoadLoginCallback {
 
-        void onLoginLoaded(LoginResponse response);
+        void onLoginLoaded(ResponseData response);
 
         void onDataNotAvailable(String errorMessage);
     }
 
     void getLoginResponse(@NonNull LoginRequest loginRequest, @NonNull LoadLoginCallback callback);
 
-    interface LoadBaseValueCallback {
+    interface LoadUserInfoCallback {
 
-        void onBaseValueLoaded(BaseValueResponse response);
+        void onUserInfoLoaded(ResponseData response);
 
         void onDataNotAvailable(String errorMessage);
 
-
     }
 
-    void getBaseValueResponse(@NonNull LoadBaseValueCallback callback);
+    void getUserInfoResponse(@NonNull String token, @NonNull LoadUserInfoCallback callback);
+
+    void saveUserInfo(@NonNull UserInfoData userInfoData);
+
+
+    interface LoadBaseImageUrlCallback{
+        void onBaseImageUrlLoaded(ResponseData response);
+
+        void onDataNotAvailable(String errorMessage);
+    }
+    void getBaseImageUrlResponse(@NonNull LoadBaseImageUrlCallback callback);
 }

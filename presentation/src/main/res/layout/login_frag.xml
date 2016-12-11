@@ -22,6 +22,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/login_frag_image_opms_marginTop"
+            android:layout_marginBottom="@dimen/login_frag_image_opms_marginBottom"
             android:gravity="center"
             android:orientation="vertical">
 
@@ -48,87 +50,99 @@
             android:orientation="vertical"
             android:padding="@dimen/dimen_16dp">
 
-            <EditText
-                android:id="@+id/login_email"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/custom_edittext"
-                android:hint="@string/prompt_email"
-                android:inputType="textEmailAddress"
-                android:maxLines="1"
-                android:padding="@dimen/login_frag_edittext_padding"
-                android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/login_frag_edittext_textSize" />
-
-            <EditText
-                android:id="@+id/login_password"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/custom_edittext"
-                android:hint="@string/prompt_password"
-                android:imeActionId="@+id/login"
-                android:imeOptions="actionUnspecified"
-                android:inputType="textVisiblePassword"
-                android:maxLines="1"
-                android:padding="@dimen/login_frag_edittext_padding"
-                android:textColorHint="@color/grey_400"
-                android:textSize="@dimen/login_frag_edittext_textSize"
-                android:typeface="sans" />
-
-            <Button
-                android:id="@+id/btn_email_sign_in"
-                style="@style/MyMaterialTheme.Base.Button"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_16dp"
-                android:padding="@dimen/login_frag_button_padding"
-                android:text="@string/action_sign_in"
-                android:textColor="?attr/colorPrimary"
-                android:textSize="@dimen/login_frag_button_textSize" />
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
-
-                <android.support.v7.widget.AppCompatButton
-                    style="@style/MyMaterialTheme.Base.ButtonTextColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/find_id" />
-
-                <View
-                    android:layout_width="@dimen/dimen_2dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/dimen_8dp"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:background="@color/grey_600" />
-
-                <android.support.v7.widget.AppCompatButton
-                    style="@style/MyMaterialTheme.Base.ButtonTextColor"
-                    android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
+                <EditText
+                    android:id="@+id/login_email"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/find_password" />
+                    android:background="@drawable/custom_edittext"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress"
+                    android:text="honggd@gmail.com"
+                    android:maxLines="1"
+                    android:padding="@dimen/login_frag_edittext_padding"
+                    android:textColorHint="@color/grey_400"
+                    android:textSize="@dimen/login_frag_edittext_textSize" />
 
-                <View
-                    android:layout_width="@dimen/dimen_2dp"
+                <EditText
+                    android:id="@+id/login_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/custom_edittext"
+                    android:hint="@string/prompt_password"
+                    android:imeActionId="@+id/login"
+                    android:imeOptions="actionUnspecified"
+                    android:inputType="textPassword"
+                    android:maxLines="1"
+                    android:text="1234"
+                    android:padding="@dimen/login_frag_edittext_padding"
+                    android:textColorHint="@color/grey_400"
+                    android:textSize="@dimen/login_frag_edittext_textSize"
+                    android:typeface="sans" />
+
+                <Button
+                    android:id="@+id/btn_email_sign_in"
+                    style="@style/MyMaterialTheme.Base.Button"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_16dp"
+                    android:padding="@dimen/login_frag_button_padding"
+                    android:text="@string/action_sign_in"
+                    android:textColor="?attr/colorPrimary"
+                    android:textSize="@dimen/login_frag_button_textSize" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/dimen_8dp"
-                    android:layout_marginTop="@dimen/dimen_8dp"
-                    android:background="@color/grey_600" />
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
 
-                <android.support.v7.widget.AppCompatButton
-                    style="@style/MyMaterialTheme.Base.ButtonTextColor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/sign_up" />
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnForgotId"
+                        style="@style/MyMaterialTheme.Base.ButtonTextColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/find_id" />
 
+                    <View
+                        android:layout_width="@dimen/dimen_2dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/dimen_8dp"
+                        android:layout_marginTop="@dimen/dimen_8dp"
+                        android:background="@color/grey_600" />
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnForgotPass"
+                        style="@style/MyMaterialTheme.Base.ButtonTextColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/find_password" />
+
+                    <View
+                        android:layout_width="@dimen/dimen_2dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/dimen_8dp"
+                        android:layout_marginTop="@dimen/dimen_8dp"
+                        android:background="@color/grey_600" />
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/btnRegister"
+                        style="@style/MyMaterialTheme.Base.ButtonTextColor"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/sign_up" />
+
+                </LinearLayout>
             </LinearLayout>
+
         </LinearLayout>
         <!--</LinearLayout>-->
 

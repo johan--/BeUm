@@ -2,11 +2,11 @@ package net.cosmiclion.opms.login.usecase;
 
 import android.support.annotation.NonNull;
 
+import net.cosmiclion.opms.UseCase;
 import net.cosmiclion.opms.login.TasksDataSource;
 import net.cosmiclion.opms.login.TasksRepository;
 import net.cosmiclion.opms.login.model.LoginRequest;
-import net.cosmiclion.opms.login.model.LoginResponse;
-import net.cosmiclion.opms.UseCase;
+import net.cosmiclion.opms.login.model.ResponseData;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -26,7 +26,7 @@ public class DoLogin extends UseCase<DoLogin.RequestValues, DoLogin.ResponseValu
 
         mTasksRepository.getLoginResponse(loginRequest, new TasksDataSource.LoadLoginCallback() {
             @Override
-            public void onLoginLoaded(LoginResponse response) {
+            public void onLoginLoaded(ResponseData response) {
                 getUseCaseCallback().onSuccess(new ResponseValue(response));
             }
 
@@ -50,13 +50,13 @@ public class DoLogin extends UseCase<DoLogin.RequestValues, DoLogin.ResponseValu
     }
 
     public static final class ResponseValue implements UseCase.ResponseValue {
-        private final LoginResponse mLoginResponse;
+        private final ResponseData mLoginResponse;
 
-        public ResponseValue(LoginResponse loginResponse) {
+        public ResponseValue(ResponseData loginResponse) {
             mLoginResponse = checkNotNull(loginResponse, "LoginResponse cannot null");
         }
 
-        public LoginResponse getLoginResponse() {
+        public ResponseData getLoginResponse() {
             return mLoginResponse;
         }
     }

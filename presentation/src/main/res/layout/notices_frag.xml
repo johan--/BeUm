@@ -1,27 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/notices_frag"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/black"
-        android:padding="@dimen/notices_header_title_padding"
-        android:text="@string/notice_header"
-        android:textColor="@android:color/white"
-        android:textSize="@dimen/notices_header_title_textSize"
-        android:textStyle="bold" />
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swipe_notices"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/black"
+                android:padding="@dimen/notices_header_title_padding"
+                android:text="@string/notice_header"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/notices_header_title_textSize"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/header" />
+
+        </RelativeLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
-</LinearLayout>
+    <FrameLayout
+        android:id="@+id/childNoticesFrame"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

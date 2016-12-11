@@ -19,20 +19,9 @@
             android:gravity="center"
             android:orientation="vertical">
 
-            <!--<TextView-->
-            <!--android:id="@+id/tvBookName"-->
-            <!--style="@style/MyMaterialTheme.Base.TextTitle"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center"-->
-            <!--android:paddingLeft="@dimen/grid_text_padding"-->
-            <!--android:paddingRight="@dimen/grid_text_padding"-->
-            <!--android:text="Alice's in Wonderland"-->
-            <!--android:textAlignment="center" />-->
-
         </LinearLayout>
 
-        <com.android.volley.toolbox.NetworkImageView
+        <ImageView
             android:id="@+id/ivBookCover"
             android:layout_centerHorizontal="true"
             android:layout_width="@dimen/grid_thumbnail_width"

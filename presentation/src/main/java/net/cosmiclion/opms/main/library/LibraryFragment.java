@@ -1,5 +1,6 @@
 package net.cosmiclion.opms.main.library;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -22,12 +23,17 @@ import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 
 import net.cosmiclion.beum.R;
+import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.main.MainActivity;
 import net.cosmiclion.opms.main.library.adapter.BookLibraryAdapter;
 import net.cosmiclion.opms.main.library.dialog.BaseDialogFragment;
 import net.cosmiclion.opms.main.library.dialog.SortDialogFragment;
 import net.cosmiclion.opms.main.library.dialog.model.DialogParameter;
-import net.cosmiclion.opms.main.library.model.BookDomain;
+import net.cosmiclion.opms.main.library.model.BookLibraryDomain;
+import net.cosmiclion.opms.main.library.source.LibraryRepository;
+import net.cosmiclion.opms.main.library.source.local.LibraryLocalDataSource;
+import net.cosmiclion.opms.main.library.source.remote.LibraryRemoteDataSource;
+import net.cosmiclion.opms.main.library.usecase.GetBooksLibrary;
 import net.cosmiclion.opms.utils.Debug;
 import net.cosmiclion.opms.utils.tasks.BookItem;
 
@@ -37,12 +43,16 @@ import java.util.List;
 public class LibraryFragment extends Fragment implements LibraryContract.View, SwipeRefreshLayout.OnRefreshListener, BookLibraryAdapter.ViewHolder.ClickListener {
     public static final String FRAGMENT = "LibraryFragment";
 
+    private static final String BUNDLE_MOBILE_TOKEN = "BUNDLE_MOBILE_TOKEN";
+    private static final String BUNDLE_BOOKS_LIBRARY = "BUNDLE_BOOKS_LIBRARY";
+
     private String TAG = getClass().getSimpleName();
     private int mViewType = 0;
     private LibraryContract.Presenter mPresenter;
     private BookLibraryAdapter mRecyclerAdaper;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
+    private ProgressDialog pDialog;
 
     private ImageButton btnActionSearch;
     private ImageButton btnActionSort;
@@ -67,6 +77,13 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        pDialog = new ProgressDialog(this.getActivity());
+        Context mContext = getActivity();
+        mPresenter = new LibraryPresenter(UseCaseHandler.getInstance(), this,
+                new GetBooksLibrary(LibraryRepository.getInstance(
+                        LibraryRemoteDataSource.getInstance(mContext),
+                        LibraryLocalDataSource.getInstance(mContext)))
+        );
     }
 
     @Override
@@ -77,18 +94,42 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
 //        setupListView(layout);
         setupRecyleView(layout);
         initCustomSpinner(layout);
+        restoreData(savedInstanceState);
+
         return layout;
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-//        mPresenter.start();
+    public void onSaveInstanceState(Bundle outState) {
+        Debug.i(TAG, "onSaveInstanceState = ");
+        //Save the fragment's state here
+        outState.putString(BUNDLE_MOBILE_TOKEN, mPresenter.getMobileToken());
+        outState.putParcelableArrayList(BUNDLE_BOOKS_LIBRARY, new ArrayList<>(mRecyclerAdaper.getBooks()));
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Debug.i(TAG, "onActivityCreated = ");
+        if (savedInstanceState != null) {
+            //Restore the fragment's state here
+            restoreData(savedInstanceState);
+        }
+    }
+
+    private void restoreData(Bundle bundle) {
+        if (bundle != null) {
+            List<BookLibraryDomain> books = bundle.getParcelableArrayList(BUNDLE_BOOKS_LIBRARY);
+            mRecyclerAdaper.replaceData(books);
+        } else {
+            mPresenter.getMobileToken(this.getActivity());
+            mPresenter.start();
+        }
     }
 
     @Override
     public void setLoadingIndicator(final boolean active) {
-
     }
 
     @Override
@@ -97,13 +138,24 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
     }
 
     @Override
-    public void showBooksView(List<BookDomain> books) {
-
+    public void showBooksView(List<BookLibraryDomain> books) {
+        mRecyclerAdaper.replaceData(books);
     }
 
     @Override
     public void setPresenter(LibraryContract.Presenter presenter) {
         this.mPresenter = presenter;
+    }
+
+    @Override
+    public void onRefresh() {
+        if (mSwipeRefreshLayout.isRefreshing()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+        }
+        if (mPresenter != null) {
+            mPresenter.getMobileToken(this.getActivity());
+        }
+        this.mPresenter.loadBooks(false);
     }
 
     @Override
@@ -116,13 +168,6 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
 //            Toast.makeText(getContext(), "Hello select", Toast.LENGTH_LONG).show();
             ((MainActivity) getActivity()).openDemoDocument(
                     new BookItem(0, "BK0000314002", 0, "BK0000314002.epub", 0));
-        }
-    }
-
-    @Override
-    public void onRefresh() {
-        if (mSwipeRefreshLayout.isRefreshing()) {
-            mSwipeRefreshLayout.setRefreshing(false);
         }
     }
 
@@ -150,13 +195,14 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
     }
 
     private void setupRecyleView(View view) {
-        List<BookDomain> books = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            books.add(new BookDomain("Book ", "Book name " + i, null));
-        }
+//        List<BookLibraryDomain> books = new ArrayList<>();
+//        for (int i = 0; i < 10; i++) {
+//            books.add(new BookLibraryDomain("Book ", "Book name " + i, null));
+//        }
         mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swipe_library);
         mSwipeRefreshLayout.setOnRefreshListener(this);
-        mRecyclerAdaper = new BookLibraryAdapter(this, books, BookLibraryAdapter.LAYOUT_LIST_TYPE);
+        mRecyclerAdaper = new BookLibraryAdapter(this,
+                new ArrayList<BookLibraryDomain>(0), BookLibraryAdapter.LAYOUT_LIST_TYPE, getActivity());
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdaper);
@@ -234,10 +280,11 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
 
     private void doActionView() {
         Debug.i(TAG, "doActionView");
-        List<BookDomain> books = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            books.add(new BookDomain("Book ", "Book name " + i, null));
-        }
+        List<BookLibraryDomain> booksInit = new ArrayList<BookLibraryDomain>(0);
+//        for (int i = 0; i < 10; i++) {
+//            books.add(new BookLibraryDomain("Book ", "Book name " + i, null));
+//        }
+
         if (isFirstTime) {
             mViewType = BookLibraryAdapter.LAYOUT_GRID_TYPE;
             isFirstTime = false;
@@ -245,13 +292,13 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
         if (mViewType == BookLibraryAdapter.LAYOUT_LIST_TYPE) {
             Debug.i(TAG, "doActionView mViewType=" + mViewType);
             btnActionView.setImageResource(R.drawable.top_menu3);
-            mRecyclerAdaper = new BookLibraryAdapter(this, books, mViewType);
+            mRecyclerAdaper = new BookLibraryAdapter(this, booksInit, mViewType, getActivity());
             mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.VERTICAL));
             mViewType = BookLibraryAdapter.LAYOUT_GRID_TYPE;
         } else if (mViewType == BookLibraryAdapter.LAYOUT_GRID_TYPE) {
             Debug.i(TAG, "doActionView mViewType=" + mViewType);
             btnActionView.setImageResource(R.drawable.top_menu3);
-            mRecyclerAdaper = new BookLibraryAdapter(this, books, mViewType);
+            mRecyclerAdaper = new BookLibraryAdapter(this, booksInit, mViewType, getActivity());
             mRecyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
             mViewType = BookLibraryAdapter.LAYOUT_LIST_TYPE;
         } else {
@@ -259,7 +306,7 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
         }
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setAdapter(mRecyclerAdaper);
-
+        mPresenter.loadBooks(false);
     }
 
     private void doActionSelect() {
@@ -367,21 +414,21 @@ public class LibraryFragment extends Fragment implements LibraryContract.View, S
 
     public interface BookListener {
 
-        void onBookClicked(BookDomain item);
+        void onBookClicked(BookLibraryDomain item);
 
-        void onBookTitleClicked(BookDomain item);
+        void onBookTitleClicked(BookLibraryDomain item);
     }
 
     public BookListener mItemListener = new BookListener() {
 
         @Override
-        public void onBookClicked(BookDomain item) {
-            Debug.i(TAG, "onBookClicked " + item.getTitle());
+        public void onBookClicked(BookLibraryDomain item) {
+//            Debug.i(TAG, "onBookClicked " + item.getTitle());
         }
 
         @Override
-        public void onBookTitleClicked(BookDomain item) {
-            Debug.i(TAG, "onBookTitleClicked " + item.getTitle());
+        public void onBookTitleClicked(BookLibraryDomain item) {
+//            Debug.i(TAG, "onBookTitleClicked " + item.getTitle());
         }
     };
 }

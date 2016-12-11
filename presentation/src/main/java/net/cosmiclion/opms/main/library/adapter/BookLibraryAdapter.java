@@ -1,5 +1,6 @@
 package net.cosmiclion.opms.main.library.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -8,16 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
+import com.squareup.picasso.Picasso;
 
 import net.cosmiclion.beum.R;
-import net.cosmiclion.opms.main.library.model.BookDomain;
-import net.cosmiclion.opms.volley.VolleyManager;
+import net.cosmiclion.opms.main.library.model.BookLibraryDomain;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by longpham on 10/29/2016.
@@ -31,20 +32,37 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
     private final int ITEM_SELECTED = 1;
     private final int ITEM_EVEN = 0, ITEM_ODD = 1;
 
-    private ImageLoader imageLoader;
-    private List<BookDomain> items;
+    private List<BookLibraryDomain> mBooks;
     private int itemLayoutType = 0;
     private ViewHolder.ClickListener clickListener;
+    private Context mContext;
 
-    public BookLibraryAdapter(ViewHolder.ClickListener clickListener, List<BookDomain> items, int viewType) {
+    public BookLibraryAdapter(ViewHolder.ClickListener clickListener,
+                              List<BookLibraryDomain> items,
+                              int viewType,
+                              Context context) {
         super();
         this.clickListener = clickListener;
-        this.items = items;
+        this.mBooks = items;
         this.itemLayoutType = viewType;
+        this.mContext = context;
+    }
+
+    private void setList(List<BookLibraryDomain> books) {
+        mBooks = checkNotNull(books);
+    }
+
+    public void replaceData(List<BookLibraryDomain> books) {
+        setList(books);
+        notifyDataSetChanged();
+    }
+
+    public List<BookLibraryDomain> getBooks() {
+        return mBooks;
     }
 
     public void removeItem(int position) {
-        items.remove(position);
+        mBooks.remove(position);
         notifyItemRemoved(position);
     }
 
@@ -83,7 +101,7 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
 
     private void removeRange(int positionStart, int itemCount) {
         for (int i = 0; i < itemCount; ++i) {
-            items.remove(positionStart);
+            mBooks.remove(positionStart);
         }
         notifyItemRangeRemoved(positionStart, itemCount);
     }
@@ -101,10 +119,7 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
         LayoutInflater inflater = LayoutInflater.from(viewGroup.getContext());
         int layout = 0;
         if (itemLayoutType == LAYOUT_GRID_TYPE) {
-//            layout = viewType == ITEM_NOT_SELECTED ? R.layout.grid_book_item_even : R.layout.grid_book_item_selected;
-//            layout = R.layout.grid_book_item_even;
-//            View v1 = inflater.inflate(layout, viewGroup, false);
-//            viewHolder = new ViewHolder(v1, clickListener);
+
             switch (viewType) {
                 case ITEM_EVEN:
                     layout = R.layout.grid_book_item_even;
@@ -148,10 +163,14 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
         holder.selectedOverlay.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
         holder.imgPoint.setVisibility(isSelected(position) ? View.VISIBLE : View.INVISIBLE);
 
-        final BookDomain item = items.get(position);
-//        holder.title.setText(item.getTitle());
-        holder.bookCover.setImageUrl(item.getCover(), imageLoader);
-        holder.bookCover.setDefaultImageResId(R.drawable.book_cover);
+        final BookLibraryDomain book = mBooks.get(position);
+        holder.title.setText(book.bs_name);
+        Picasso.with(mContext)
+                .load(book.bs_name)
+                .placeholder(R.drawable.book_cover)
+                .error(R.drawable.book_cover)
+                .into(holder.bookCover);
+
         if (itemLayoutType == LAYOUT_GRID_TYPE) {
 
         } else if (itemLayoutType == LAYOUT_LIST_TYPE) {
@@ -161,7 +180,7 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
 
     @Override
     public int getItemCount() {
-        return this.items.size();
+        return this.mBooks.size();
     }
 
 //    @Override
@@ -176,12 +195,12 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
         if (itemLayoutType == LAYOUT_GRID_TYPE) {
             if ((position % 4) == 3) {
                 return ITEM_ODD;
-            } else if((position % 4) == 2){
+            } else if ((position % 4) == 2) {
                 return ITEM_ODD;
-            }else{
+            } else {
                 return ITEM_EVEN;
             }
-        }else{
+        } else {
             if (position % 2 == 0) {
                 return ITEM_EVEN;
             } else {
@@ -196,8 +215,7 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
         private TextView title;
         private TextView author;
         private View selectedOverlay;
-        private NetworkImageView bookCover;
-        private ImageLoader imageLoader;
+        private ImageView bookCover;
         private ClickListener listener;
         private ImageView imgPoint;
 
@@ -205,13 +223,11 @@ public class BookLibraryAdapter extends SelectableAdapter<BookLibraryAdapter.Vie
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.tvBookName);
             author = (TextView) itemView.findViewById(R.id.tvBookAuthor);
-            bookCover = (NetworkImageView) itemView.findViewById(R.id.ivBookCover);
+            bookCover = (ImageView) itemView.findViewById(R.id.ivBookCover);
             selectedOverlay = itemView.findViewById(R.id.selected_overlay);
             imgPoint = (ImageView) itemView.findViewById(R.id.selected_point);
             this.listener = listener;
-            if (imageLoader == null) {
-                imageLoader = VolleyManager.getInstance(itemView.getContext()).getImageLoader();
-            }
+
             itemView.setOnClickListener(this);
         }
 

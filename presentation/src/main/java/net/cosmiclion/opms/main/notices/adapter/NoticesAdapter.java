@@ -7,8 +7,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import net.cosmiclion.beum.R;
+import net.cosmiclion.opms.main.notices.model.NoticeDomain;
 
 import java.util.List;
+
+import static com.google.common.base.Preconditions.checkNotNull;
 
 /**
  * Created by longpham on 11/1/2016.
@@ -18,12 +21,25 @@ public class NoticesAdapter extends RecyclerView.Adapter<NoticesAdapter.ViewHold
     private String TAG = getClass().getSimpleName();
     private final int ITEM_EVEN = 0, ITEM_ODD = 1;
     private ViewHolder.ClickListener clickListener;
-    private List<String> notices;
+    private static List<NoticeDomain> mNotices;
 
-    public NoticesAdapter(ViewHolder.ClickListener clickListener, List<String> notices) {
+    public NoticesAdapter(ViewHolder.ClickListener clickListener, List<NoticeDomain> notices) {
         super();
-        this.notices = notices;
+        this.mNotices = notices;
         this.clickListener = clickListener;
+    }
+
+    private void setList(List<NoticeDomain> books) {
+        mNotices = checkNotNull(books);
+    }
+
+    public void replaceData(List<NoticeDomain> books) {
+        setList(books);
+        notifyDataSetChanged();
+    }
+
+    public List<NoticeDomain> getNotices() {
+        return mNotices;
     }
 
     @Override
@@ -57,13 +73,13 @@ public class NoticesAdapter extends RecyclerView.Adapter<NoticesAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.title.setText(notices.get(position));
+        holder.title.setText(mNotices.get(position).board_title);
 
     }
 
     @Override
     public int getItemCount() {
-        return notices.size();
+        return mNotices.size();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -82,12 +98,12 @@ public class NoticesAdapter extends RecyclerView.Adapter<NoticesAdapter.ViewHold
         @Override
         public void onClick(View v) {
             if (listener != null) {
-                listener.onItemClicked(getLayoutPosition());
+                listener.onItemClicked(mNotices.get(getLayoutPosition()));
             }
         }
 
         public interface ClickListener {
-            void onItemClicked(int position);
+            void onItemClicked(NoticeDomain noticeDomain);
         }
     }
 }

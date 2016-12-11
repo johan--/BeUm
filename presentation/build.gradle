@@ -79,6 +79,7 @@ dependencies {
 
     compile presentationDependencies.guava
     compile presentationDependencies.aHBottomNavigation
+    compile presentationDependencies.picasso
     //Development
     compile developmentDependencies.leakCanary
 }

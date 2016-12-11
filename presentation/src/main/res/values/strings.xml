@@ -49,4 +49,8 @@
     <string name="login_btn_sign_out">Sign out</string>
     <string name="error_signin_fail">Failed to sign in.</string>
 
+    <string name="config_double_page">doublePage</string>
+    <string name="config_rotate">rotate</string>
+    <string name="config_theme">theme</string>
+    <string name="config_page_slide">page_slide</string>
 </resources>
