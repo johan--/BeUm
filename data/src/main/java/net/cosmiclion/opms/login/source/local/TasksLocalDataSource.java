@@ -36,13 +36,13 @@ public class TasksLocalDataSource implements TasksDataSource {
     private final String TAG = getClass().getSimpleName();
     private static TasksLocalDataSource INSTANCE;
 
-    private TasksDbHelper mDbHelper;
+    private DbHelper mDbHelper;
     private SQLiteDatabase mDb;
 
     // Prevent direct instantiation.
     private TasksLocalDataSource(@NonNull Context context) {
         checkNotNull(context);
-        mDbHelper = new TasksDbHelper(context);
+        mDbHelper = new DbHelper(context);
         mDb = mDbHelper.getWritableDatabase();
     }
 

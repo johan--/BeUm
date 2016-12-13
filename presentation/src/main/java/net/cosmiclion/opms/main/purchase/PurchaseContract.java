@@ -23,6 +23,8 @@ public interface PurchaseContract {
         void loadBooks(boolean forceUpdate);
 
         List<BookPurchaseDomain> getBooks();
+
+        void markBookDownloaded(@NonNull String bookId);
     }
 
     interface View extends BaseView<Presenter> {

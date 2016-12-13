@@ -32,4 +32,13 @@ public interface LibraryDataSource {
 
     void getBooksLibraryResponse(@NonNull String token, @NonNull final LoadLibraryCallback callback);
 
+    interface LoadBookShelfCallback {
+
+        void onBookShelfLoaded(ResponseData response);
+
+        void onDataNotAvailable(String errorMessage);
+    }
+
+    void getBookShelfResponse(@NonNull String token, @NonNull String bookId,
+                              @NonNull final LoadBookShelfCallback callback);
 }

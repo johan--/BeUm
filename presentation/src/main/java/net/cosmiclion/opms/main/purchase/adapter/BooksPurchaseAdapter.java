@@ -1,19 +1,23 @@
 package net.cosmiclion.opms.main.purchase.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.ImageLoader;
 import com.squareup.picasso.Picasso;
 
 import net.cosmiclion.beum.R;
+import net.cosmiclion.opms.login.LoginPresenter;
 import net.cosmiclion.opms.main.purchase.model.BookPurchaseDomain;
-import net.cosmiclion.opms.volley.VolleyManager;
+import net.cosmiclion.opms.utils.Debug;
+import net.cosmiclion.opms.utils.Downloader;
 
 import java.util.List;
 
@@ -29,6 +33,9 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
     private List<BookPurchaseDomain> mBooks;
     private ViewHolder.ClickListener clickListener;
     private Context mContext;
+    private String mToken;
+    private Downloader mDownloader;
+
 
     public BooksPurchaseAdapter(
             ViewHolder.ClickListener clickListener,
@@ -38,6 +45,10 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
         this.mBooks = books;
         this.clickListener = clickListener;
         this.mContext = context;
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mToken = sharedPreferences.getString(LoginPresenter.PARAMS_MOBILE_TOKEN, "");
+
+        mDownloader = new Downloader(mContext, mToken);
     }
 
     private void setList(List<BookPurchaseDomain> books) {
@@ -80,18 +91,39 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
         holder.title.setText(item.product_title);
         holder.author.setText(item.product_author);
         holder.publisher.setText(item.product_translator);
-//        holder.bookCover.setImageUrl(item.cover_image1, imageLoader);
-//        holder.bookCover.setDefaultImageResId(R.drawable.book_cover);
 
+//        String urlCoverBook = item.base_cover_image + "/" + item.product_id + "/" + item.cover_image2;
+//        Debug.i(TAG, "urlCoverBook1=" + urlCoverBook);
+        Debug.i(TAG, "urlCoverBook2=" + item.cover_image2);
         Picasso.with(mContext)
-                .load(item.cover_image1)
+                .load(item.cover_image2)
                 .placeholder(R.drawable.book_cover)
                 .error(R.drawable.book_cover)
                 .into(holder.bookCover);
 
 //        if (position % 2 == 0) {
-            holder.download.setVisibility(View.INVISIBLE);
+//            holder.download.setVisibility(View.INVISIBLE);
 //        }
+
+        if (item.isFileExists(mContext)) {
+            holder.download.setVisibility(View.INVISIBLE);
+        } else {
+            holder.download.setVisibility(View.VISIBLE);
+            holder.download.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mDownloader.start(item.product_id, item.filename, new Downloader.OnDownloadListener() {
+                        @Override
+                        public void onStateChanged(String state) {
+                            Log.d(TAG, state);
+                            mDownloadListener.onDownloadClicked(state, item);
+
+                        }
+                    });
+
+                }
+            });
+        }
     }
 
     @Override
@@ -120,7 +152,6 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
 
         View selectedOverlay;
         ImageView bookCover;
-        ImageLoader imageLoader;
         private ClickListener listener;
 
         public ViewHolder(View itemView, ClickListener listener) {
@@ -134,9 +165,6 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
             bookCover = (ImageView) itemView.findViewById(R.id.ivBookCover);
             selectedOverlay = itemView.findViewById(R.id.selected_overlay);
             this.listener = listener;
-            if (imageLoader == null) {
-                imageLoader = VolleyManager.getInstance(itemView.getContext()).getImageLoader();
-            }
 
             itemView.setOnClickListener(this);
         }
@@ -151,6 +179,16 @@ public class BooksPurchaseAdapter extends RecyclerView.Adapter<BooksPurchaseAdap
         public interface ClickListener {
             void onItemClicked(int position);
         }
+    }
+
+    private DownloadClickListener mDownloadListener;
+
+    public interface DownloadClickListener {
+        void onDownloadClicked(String state, BookPurchaseDomain book);
+    }
+
+    public void setOnDownloadClickListener(DownloadClickListener downloadClickListener) {
+        this.mDownloadListener = downloadClickListener;
     }
 
 

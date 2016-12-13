@@ -43,6 +43,7 @@ public class PurchasePresenter implements PurchaseContract.Presenter {
 
     @Override
     public void start() {
+
         loadBooks(false);
     }
 
@@ -54,7 +55,7 @@ public class PurchasePresenter implements PurchaseContract.Presenter {
     }
 
     private void getBooks(boolean forceUpdate, final boolean showLoadingUI) {
-        Debug.i(TAG, "===getBooks Purchase=== " + forceUpdate);
+        Debug.i(TAG, "===getBooks Purchase=== " + mMobileToken);
         if (showLoadingUI) {
             mItemView.setLoadingIndicator(true);
         }
@@ -65,16 +66,15 @@ public class PurchasePresenter implements PurchaseContract.Presenter {
                         List<BookPurchaseDomain> books = response.getBooksPurchaseResponse();
                         String ch = "/";
                         for (BookPurchaseDomain item : books) {
+                            item.base_cover_image = mImageUrl;
                             item.cover_image1 = mImageUrl + ch + item.product_id + ch + item.cover_image1;
+                            item.cover_image2 = mImageUrl + ch + item.product_id + ch + item.cover_image2;
+                            item.cover_image3 = mImageUrl + ch + item.product_id + ch + item.cover_image3;
+                            item.cover_image4 = mImageUrl + ch + item.product_id + ch + item.cover_image4;
                         }
                         Debug.i(TAG, "books size = " + books.size());
-                        if (books.isEmpty()) {
-                            // Show a message indicating there are no tasks for that filter type.
-//                             processEmptyTasks();
-                        } else {
-                            // Show the list of tasks
-                            mItemView.showBooksView(books);
-                        }
+                        mItemView.showBooksView(books);
+//                        mGetBooks.getRepository().doSaveBooks();
                     }
 
                     @Override
@@ -95,8 +95,13 @@ public class PurchasePresenter implements PurchaseContract.Presenter {
     }
 
     @Override
-    public List<BookPurchaseDomain> getBooks(){
+    public List<BookPurchaseDomain> getBooks() {
         return mBooks;
+    }
+
+    @Override
+    public void markBookDownloaded(@NonNull String bookId) {
+        mGetBooks.getRepository().doUpdateBookDownloaded(bookId);
     }
 
     @Override

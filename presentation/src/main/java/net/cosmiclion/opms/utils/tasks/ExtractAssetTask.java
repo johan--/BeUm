@@ -18,6 +18,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import net.cosmiclion.opms.utils.Debug;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,7 +35,7 @@ public class ExtractAssetTask extends AsyncTask<String, Integer, Uri> {
     private final DownloadDocumentTask.DownloadedFileCallback callback;
 
     public ExtractAssetTask(Context ctx, DownloadDocumentTask.DownloadedFileCallback callback) {
-        Log.d(LOG_TAG, "Construct");
+        Debug.i(LOG_TAG, "Construct");
         this.ctx = ctx;
         this.callback = callback;
 
@@ -60,7 +62,9 @@ public class ExtractAssetTask extends AsyncTask<String, Integer, Uri> {
         for (String asset : params) {
             try {
                 InputStream is = ctx.getResources().getAssets().open(asset);
-                File f = new File(ctx.getFilesDir(), asset);
+                File f = new File(ctx.getFilesDir().getAbsolutePath(), asset);
+                Debug.i(LOG_TAG, "getFilesDir=" + ctx.getFilesDir().getAbsolutePath());
+                Debug.i(LOG_TAG, "getFilesDir_F=" + f.getAbsolutePath());
                 OutputStream os = new BufferedOutputStream(new FileOutputStream(f));
                 byte[] buffer = new byte[8192];
                 int read;

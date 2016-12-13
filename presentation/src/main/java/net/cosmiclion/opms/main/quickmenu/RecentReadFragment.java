@@ -1,5 +1,6 @@
 package net.cosmiclion.opms.main.quickmenu;
 
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -10,33 +11,39 @@ import android.widget.ImageView;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.main.MainActivity;
+import net.cosmiclion.opms.main.purchase.model.BookPurchaseData;
+import net.cosmiclion.opms.utils.Debug;
 import net.cosmiclion.opms.utils.tasks.BookItem;
+
+import static net.cosmiclion.opms.utils.Constants.APP_PATH;
 
 /**
  * Created by longpham on 11/17/2016.
  */
 
 public class RecentReadFragment extends Fragment {
-    // Store instance variables
-    private String title;
-    private int page;
 
-    // newInstance constructor for creating fragment with arguments
-    public static RecentReadFragment newInstance(String bookTitle) {
+    private final String TAG = getClass().getSimpleName();
+    private String coverImage;
+    private String filename;
+    private String product_title;
+
+    public static RecentReadFragment newInstance(BookPurchaseData book) {
         RecentReadFragment fragmentFirst = new RecentReadFragment();
         Bundle args = new Bundle();
-//        args.putInt("someInt", page);
-        args.putString("someTitle", bookTitle);
+        args.putString("IMAGE", book.cover_image1);
+        args.putString("FILE_NAME", book.filename);
+        args.putString("TITLE", book.product_title);
         fragmentFirst.setArguments(args);
         return fragmentFirst;
     }
 
-    // Store instance variables based on arguments passed
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        page = getArguments().getInt("someInt", 0);
-        title = getArguments().getString("someTitle");
+        coverImage = getArguments().getString("IMAGE");
+        filename = getArguments().getString("FILE_NAME");
+        product_title = getArguments().getString("TITLE");
     }
 
     // Inflate the view for the fragment based on layout XML
@@ -44,17 +51,20 @@ public class RecentReadFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recent_read_frag, container, false);
-//        TextView tvLabel = (TextView) view.findViewById(R.id.tvLabel);
-//        tvLabel.setText(page + " -- " + title);
+
         ImageView imageView = (ImageView) view.findViewById(R.id.ivBook);
+        Debug.i(TAG, filename + "-Image_path_recent_read=" + APP_PATH + "/" + coverImage);
+        imageView.setImageBitmap(BitmapFactory.decodeFile(APP_PATH + "/" + coverImage));
+
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.d("TAG", "llll");
                 ((MainActivity) getActivity()).openDemoDocument(
-                        new BookItem(0, "Book Title", 0, "BK0000314002.epub", 0));
+                        new BookItem(0, product_title, 0, filename, 0));
             }
         });
+
         return view;
     }
 }

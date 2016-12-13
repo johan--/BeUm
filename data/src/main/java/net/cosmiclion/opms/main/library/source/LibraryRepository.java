@@ -37,7 +37,6 @@ public class LibraryRepository implements LibraryDataSource {
     @Override
     public void getBooksLibraryResponse(@NonNull String token, @NonNull final LoadLibraryCallback callback) {
         checkNotNull(callback);
-
         if (!mCacheIsDirty) {
             // If the cache is dirty we need to fetch new data from the network.
             mRemoteDataSource.getBooksLibraryResponse(token, new LoadLibraryCallback() {
@@ -45,6 +44,30 @@ public class LibraryRepository implements LibraryDataSource {
                 @Override
                 public void onBooksLibraryLoaded(ResponseData response) {
                     callback.onBooksLibraryLoaded(response);
+                }
+
+                @Override
+                public void onDataNotAvailable(String errorMessage) {
+                    callback.onDataNotAvailable(errorMessage);
+                }
+            });
+        } else {
+
+        }
+    }
+
+    @Override
+    public void getBookShelfResponse(@NonNull String token,
+                                     @NonNull String bookId,
+                                     @NonNull final LoadBookShelfCallback callback) {
+        checkNotNull(callback);
+        if (!mCacheIsDirty) {
+            // If the cache is dirty we need to fetch new data from the network.
+            mRemoteDataSource.getBookShelfResponse(token, bookId, new LoadBookShelfCallback() {
+
+                @Override
+                public void onBookShelfLoaded(ResponseData response) {
+                    callback.onBookShelfLoaded(response);
                 }
 
                 @Override

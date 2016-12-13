@@ -1,22 +1,30 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root_frame"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
-    android:padding="@dimen/grid_item_image_padding"
-    android:orientation="vertical">
+    android:padding="@dimen/grid_item_image_padding"  >
+
+
+
+    <ImageView
+        android:id="@+id/ivBook"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_width="@dimen/grid_thumbnail_width"
+        android:layout_height="@dimen/grid_thumbnail_height"
+        android:src="@drawable/book_cover" />
 
     <!--<TextView-->
         <!--android:id="@+id/tvLabel"-->
         <!--style="@style/MyMaterialTheme.Base.TextTitle"-->
-        <!--android:layout_width="match_parent"-->
+        <!--android:layout_centerHorizontal="true"-->
+        <!--android:layout_centerVertical="true"-->
+        <!--android:layout_width="wrap_content"-->
         <!--android:layout_height="wrap_content"-->
+        <!--android:textAlignment="center"-->
         <!--android:textColor="@android:color/white"-->
-        <!--android:visibility="visible" />-->
-
-    <ImageView
-        android:id="@+id/ivBook"
-        android:layout_width="@dimen/grid_thumbnail_width"
-        android:layout_height="@dimen/grid_thumbnail_height"
-        android:src="@drawable/book_cover" />
-</LinearLayout>
+        <!--android:textStyle="bold"-->
+        <!--android:text="@string/quickmenu_nodata"-->
+        <!--android:visibility="invisible" />-->
+</RelativeLayout>

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import net.cosmiclion.opms.BasePresenter;
 import net.cosmiclion.opms.BaseView;
 import net.cosmiclion.opms.main.library.model.BookLibraryDomain;
+import net.cosmiclion.opms.main.library.model.BookShelfDomain;
 
 import java.util.List;
 
@@ -20,9 +21,11 @@ public interface LibraryContract {
 
         String getMobileToken();
 
-        void loadBooks(@NonNull boolean forceUpdate);
+        void loadCombobox(@NonNull boolean forceUpdate);
 
         List<BookLibraryDomain> getBooks();
+
+        void loadBookShelf(@NonNull String bookId);
     }
 
     interface View extends BaseView<Presenter> {
@@ -31,6 +34,8 @@ public interface LibraryContract {
 
         boolean isActive();
 
-        void showBooksView(List<BookLibraryDomain> books);
+        void showSpinnerView(List<BookLibraryDomain> books);
+
+        void showListBookShelfView(List<BookShelfDomain> books);
     }
 }

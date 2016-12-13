@@ -19,6 +19,9 @@ package net.cosmiclion.opms.main.purchase.source;
 import android.support.annotation.NonNull;
 
 import net.cosmiclion.opms.login.model.ResponseData;
+import net.cosmiclion.opms.main.purchase.model.BookPurchaseData;
+
+import java.util.List;
 
 
 public interface PurchaseDataSource {
@@ -30,5 +33,14 @@ public interface PurchaseDataSource {
         void onDataNotAvailable(String errorMessage);
     }
 
-    void getBooksPurchaseResponse(@NonNull String token, @NonNull LoadPurchaseCallback callback);
-}
+    void getBooksPurchaseResponse(@NonNull String token,
+                                  @NonNull LoadPurchaseCallback callback);
+
+    void doSaveBooks(List<BookPurchaseData> books);
+
+    BookPurchaseData getBook(@NonNull String bookId);
+
+    void doUpdateBookDownloaded(@NonNull String bookId);
+
+    void doUpdateBookReaded(@NonNull String bookId);
+    }

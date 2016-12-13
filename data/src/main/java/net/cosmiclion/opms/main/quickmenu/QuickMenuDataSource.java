@@ -18,30 +18,19 @@ package net.cosmiclion.opms.main.quickmenu;
 
 import android.support.annotation.NonNull;
 
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemDetailRequest;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemDetailResponse;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemsRequest;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemsResponse;
+import net.cosmiclion.opms.login.model.ResponseData;
 
 
 public interface QuickMenuDataSource {
 
-    interface LoadQuickMenuItemsCallback {
+    interface LoadPurchaseCallback {
 
-        void onQuickMenuItemsLoaded(QuickMenuItemsResponse response);
-
-        void onDataNotAvailable(String errorMessage);
-    }
-
-    void getQuickMenuItemsResponse(@NonNull QuickMenuItemsRequest request, @NonNull LoadQuickMenuItemsCallback callback);
-
-    interface LoadQuickMenuItemDetailCallback {
-
-        void onQuickMenuItemDetailLoaded(QuickMenuItemDetailResponse response);
+        void onBooksPurchaseLoaded(ResponseData response);
 
         void onDataNotAvailable(String errorMessage);
     }
 
-    void getQuickMenuItemDetailResponse(@NonNull QuickMenuItemDetailRequest request, @NonNull LoadQuickMenuItemDetailCallback callback);
+    void getBooksPurchaseResponse(@NonNull String token,
+                                  @NonNull QuickMenuDataSource.LoadPurchaseCallback callback);
 
 }

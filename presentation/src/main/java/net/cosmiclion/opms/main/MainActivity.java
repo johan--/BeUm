@@ -58,6 +58,7 @@ import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_ROTATE;
 import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_ROTATE_KEY;
 import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_THEME_KEY;
 import static net.cosmiclion.opms.main.config.ConfigFragment.CONFIG_THEME_WHITE;
+import static net.cosmiclion.opms.utils.Constants.APP_PATH;
 
 public class MainActivity extends AppCompatActivity implements
         QuickMenuFragment.ViewPurchaseListListener,
@@ -79,13 +80,14 @@ public class MainActivity extends AppCompatActivity implements
     private AHBottomNavigation bottomNavigation;
     private ArrayList<AHBottomNavigationItem> bottomNavigationItems = new ArrayList<>();
     private AHBottomNavigationViewPager viewPager;
+    private MainPagerAdapter mainPagerAdapter;
 
     private int mNumbFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        Debug.i(TAG,"oncreate MAIN");
         setContentView(R.layout.main_act);
         setupToolBar();
         setupDrawer();
@@ -321,7 +323,8 @@ public class MainActivity extends AppCompatActivity implements
     private void setupAHBottomNavigation() {
         bottomNavigation = (AHBottomNavigation) findViewById(R.id.bottom_navigation_lib);
         viewPager = (AHBottomNavigationViewPager) findViewById(R.id.view_pager);
-        viewPager.setAdapter(new MainPagerAdapter(this, getSupportFragmentManager()));
+        mainPagerAdapter = new MainPagerAdapter(this, getSupportFragmentManager());
+        viewPager.setAdapter(mainPagerAdapter);
         viewPager.setOffscreenPageLimit(MainPagerAdapter.NUMB_ITEMS);
         viewPager.setCurrentItem(0);
 //        viewPager.setHorizontalFadingEdgeEnabled(true);
@@ -396,22 +399,23 @@ public class MainActivity extends AppCompatActivity implements
      * Opens a demo document from assets directory
      */
     public void openDemoDocument(final BookItem item) {
-        Log.d("openDemoDocument", "fileName = " + item.filePath);
+        Debug.i("openDemoDocument", "fileName = " + item.filePath);
         String appName = getApplicationName();
         if (SkySetting.getStorageDirectory() == null) {
-            SkySetting.setStorageDirectory(getFilesDir().getAbsolutePath(),
+            SkySetting.setStorageDirectory(APP_PATH,
                     appName);
         }
-        final File demoDocumentFile = new File(getFilesDir(), item.filePath);
+        final File demoDocumentFile = new File(APP_PATH, item.filePath);
         if (demoDocumentFile.exists()) {
-            Log.d(TAG, "demoDocumentFile");
+            Debug.i(TAG, "demoDocumentFile");
             if (item.isPDF == 1) {
                 openPlugPdfViewerAct(Uri.fromFile(demoDocumentFile));
             } else {
                 openViewer(item);
             }
         } else {
-            Log.d(TAG, "! demoDocumentFile");
+            Debug.i(TAG, "! demoDocumentFile");
+
             ExtractAssetTask task = new ExtractAssetTask(MainActivity.this, new DownloadDocumentTask.DownloadedFileCallback() {
                 @Override
                 public void onFileDownloaded(Uri uri) {
@@ -434,9 +438,10 @@ public class MainActivity extends AppCompatActivity implements
 //        finish();
     }
 
-    private void openViewer(BookItem item) {
+    public void openViewer(BookItem item) {
         try {
             SkyApplication app = (SkyApplication) getApplication();
+            Debug.i(TAG, "openViewer");
 
             boolean isDoublePage;
             boolean isRotate;
@@ -464,17 +469,17 @@ public class MainActivity extends AppCompatActivity implements
             intent.putExtra("transitionType", pageTransition);
             intent.putExtra("GLOBALPAGINATION", app.setting.globalPagination);
             intent.putExtra("ROTATION", isRotate);
-            Log.d(TAG, "BOOKNAME = " + item.bookCode + " - " + app.setting.theme + " - " + app.setting.doublePaged + " - "
+            Debug.i(TAG, "BOOKNAME = " + item.bookCode + " - " + app.setting.theme + " - " + app.setting.doublePaged + " - "
                     + app.setting.transitionType + " - " + app.setting.globalPagination + " - ");
 
-            Log.d(TAG, "BOOKNAME = " + item.filePath);
+            Debug.i(TAG, "BOOKNAME = " + item.filePath);
 
             intent.putExtra("RTL", false);
             intent.putExtra("VERTICALWRITING", false);
 
             startActivity(intent);
         } catch (Exception e) {
-            Log.d(TAG, "ERROR: " + e.getMessage());
+            Debug.i(TAG, "ERROR: " + e.getMessage());
         }
     }
 

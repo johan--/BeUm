@@ -17,6 +17,12 @@ public class BookPurchaseData {
     @SerializedName("product_author")
     public String product_author;
 
+    @SerializedName("filetype")
+    public int filetype;
+
+    @SerializedName("filename")
+    public String filename;
+
     @SerializedName("product_translator")
     public String product_translator;
 
@@ -32,6 +38,15 @@ public class BookPurchaseData {
     @SerializedName("cover_image4")
     public String cover_image4;
 
+    @SerializedName("company_id")
+    public int company_id;
+
+    @SerializedName("company_name")
+    public String company_name;
+
+    @SerializedName("purchase_time")
+    public String purchase_time;
+
     @SerializedName("is_order")
     public String is_order;
 
@@ -41,11 +56,27 @@ public class BookPurchaseData {
     @SerializedName("pivot")
     public Pivot pivot;
 
-    public class Pivot{
+    public class Pivot {
         @SerializedName("order_id")
         public String order_id;
 
         @SerializedName("product_id")
         public String product_id;
     }
+
+    @SerializedName("company")
+    public Company company;
+
+    public class Company {
+        @SerializedName("company_id")
+        public int company_id;
+
+        @SerializedName("company_name")
+        public String company_name;
+    }
+
+    //
+    public int is_downloaded;
+    public int last_page;
+    public String read_date;
 }

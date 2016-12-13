@@ -6,17 +6,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
 import net.cosmiclion.beum.R;
-import net.cosmiclion.opms.UseCaseHandler;
 import net.cosmiclion.opms.main.config.ConfigFragment;
 import net.cosmiclion.opms.main.library.LibraryFragment;
 import net.cosmiclion.opms.main.purchase.PurchaseFragment;
 import net.cosmiclion.opms.main.quickmenu.QuickMenuFragment;
-import net.cosmiclion.opms.main.quickmenu.QuickMenuPresenter;
-import net.cosmiclion.opms.main.quickmenu.QuickMenuRepository;
-import net.cosmiclion.opms.main.quickmenu.source.local.QuickMenuLocalDataSource;
-import net.cosmiclion.opms.main.quickmenu.source.remote.QuickMenuRemoteDataSource;
-import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItemDetail;
-import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItems;
+import net.cosmiclion.opms.utils.Debug;
 
 public class MainPagerAdapter extends FragmentPagerAdapter {
 
@@ -37,17 +31,25 @@ public class MainPagerAdapter extends FragmentPagerAdapter {
         super(fm);
         this.mContext = context;
 
+        Debug.i(TAG, "MainPagerAdapter oncreate ");
+
         quickMenuFragment = QuickMenuFragment.newInstance();
-        new QuickMenuPresenter(UseCaseHandler.getInstance(), quickMenuFragment,
-                new GetQuickMenuItems(QuickMenuRepository.getInstance(
-                        QuickMenuRemoteDataSource.getInstance(mContext),
-                        QuickMenuLocalDataSource.getInstance(mContext))),
-                new GetQuickMenuItemDetail(QuickMenuRepository.getInstance(
-                        QuickMenuRemoteDataSource.getInstance(mContext),
-                        QuickMenuLocalDataSource.getInstance(mContext)))
-        );
+
         libraryFragment = LibraryFragment.newInstance();
+//        libraryFragment.setOnBookReadedListener(new LibraryFragment.BookReadedListener() {
+//            @Override
+//            public void onBookClicked() {
+//                quickMenuFragment.updateBooksReaded();
+//            }
+//        });
         purchaseFragment = PurchaseFragment.newInstance();
+
+//        purchaseFragment.setOnBookReadedListener(new PurchaseFragment.BookReadedListener() {
+//            @Override
+//            public void onBookClicked(List<BookPurchaseDomain> books) {
+//                quickMenuFragment.updateBooksPurchase(books);
+//            }
+//        });
     }
 
     @Override

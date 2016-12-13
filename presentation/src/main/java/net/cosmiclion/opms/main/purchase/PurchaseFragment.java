@@ -2,6 +2,8 @@ package net.cosmiclion.opms.main.purchase;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -12,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import net.cosmiclion.beum.R;
 import net.cosmiclion.opms.UseCaseHandler;
@@ -23,10 +29,14 @@ import net.cosmiclion.opms.main.purchase.source.remote.PurchaseRemoteDataSource;
 import net.cosmiclion.opms.main.purchase.usecase.DoGetBooksPurchase;
 import net.cosmiclion.opms.utils.Debug;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+import static net.cosmiclion.opms.login.LoginPresenter.PARAMS_MOBILE_TOKEN;
+import static net.cosmiclion.opms.utils.Constants.APP_PATH;
 
 /**
  * Created by longpham on 11/9/2016.
@@ -34,11 +44,12 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class PurchaseFragment extends Fragment implements
         PurchaseContract.View,
         BooksPurchaseAdapter.ViewHolder.ClickListener,
-        SwipeRefreshLayout.OnRefreshListener {
+        SwipeRefreshLayout.OnRefreshListener,
+        BooksPurchaseAdapter.DownloadClickListener {
 
     public static final String FRAGMENT = "PurchaseFragment";
-    private static final String BUNDLE_MOBILE_TOKEN = "BUNDLE_MOBILE_TOKEN";
-    private static final String BUNDLE_BOOKS_PURCHASE = "BUNDLE_BOOKS_PURCHASE";
+    public static final String BUNDLE_MOBILE_TOKEN = "BUNDLE_MOBILE_TOKEN";
+    public static final String BUNDLE_BOOKS_PURCHASE = "BUNDLE_BOOKS_PURCHASE";
     private String TAG = getClass().getSimpleName();
 
     private ImageButton btnActionSearch;
@@ -46,6 +57,7 @@ public class PurchaseFragment extends Fragment implements
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private PurchaseContract.Presenter mPresenter;
+    private PurchaseRepository mRepository;
     private ProgressDialog pDialog;
 
     public PurchaseFragment() {
@@ -60,10 +72,13 @@ public class PurchaseFragment extends Fragment implements
         super.onCreate(savedInstanceState);
         Context mContext = getActivity();
         pDialog = new ProgressDialog(this.getActivity());
+
+        mRepository = PurchaseRepository.getInstance(
+                PurchaseRemoteDataSource.getInstance(mContext),
+                PurchaseLocalDataSource.getInstance(mContext));
+
         mPresenter = new PurchasePresenter(UseCaseHandler.getInstance(), this,
-                new DoGetBooksPurchase(PurchaseRepository.getInstance(
-                        PurchaseRemoteDataSource.getInstance(mContext),
-                        PurchaseLocalDataSource.getInstance(mContext)))
+                new DoGetBooksPurchase(mRepository)
         );
     }
 
@@ -71,6 +86,7 @@ public class PurchaseFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View layout = inflater.inflate(R.layout.purchase_frag, container, false);
+
         setupActionView(layout);
         setupRecyleView(layout);
         restoreData(savedInstanceState);
@@ -99,6 +115,8 @@ public class PurchaseFragment extends Fragment implements
 
     private void restoreData(Bundle bundle) {
         if (bundle != null) {
+            String token = bundle.getString(PARAMS_MOBILE_TOKEN);
+            Debug.i(TAG, "restoreData token=" + token);
             List<BookPurchaseDomain> books = bundle.getParcelableArrayList(BUNDLE_BOOKS_PURCHASE);
             mRecyclerAdaper.replaceData(books);
         } else {
@@ -119,7 +137,14 @@ public class PurchaseFragment extends Fragment implements
 
     @Override
     public void showBooksView(List<BookPurchaseDomain> books) {
+//        mRepository.doSaveBooks(books);
         mRecyclerAdaper.replaceData(books);
+        if (mBookReadedListener == null) {
+            Debug.i(TAG, "mBookReadedListener is null");
+        } else {
+            mBookReadedListener.onBookClicked(books);
+        }
+
     }
 
     @Override
@@ -171,6 +196,7 @@ public class PurchaseFragment extends Fragment implements
 
         mRecyclerAdaper = new BooksPurchaseAdapter(
                 this, new ArrayList<BookPurchaseDomain>(0), getActivity());
+        mRecyclerAdaper.setOnDownloadClickListener(this);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setAdapter(mRecyclerAdaper);
@@ -194,5 +220,82 @@ public class PurchaseFragment extends Fragment implements
         }
     };
 
+    @Override
+    public void onDownloadClicked(String state, BookPurchaseDomain book) {
+        if (state.contains("Success")) {
+            String urlCoverBook = book.cover_image2;
+            Debug.i("DownloadImage", "url=" + urlCoverBook);
+            Picasso.with(getActivity())
+                    .load(urlCoverBook)
+                    .error(R.drawable.book_cover)
+                    .into(getTarget(book.cover_image2, getActivity()));
+
+            Toast.makeText(getActivity(), state, Toast.LENGTH_LONG).show();
+            mRecyclerAdaper.notifyDataSetChanged();
+            mPresenter.markBookDownloaded(book.product_id);
+            //download image
+
+        }
+    }
+
     /* INNER CLASS */
+
+    private static Target getTarget(final String url, final Context context) {
+        Target target = new Target() {
+
+            @Override
+            public void onBitmapLoaded(final Bitmap bitmap, final Picasso.LoadedFrom from) {
+                new Thread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        String imageName = url.substring(url.lastIndexOf("/"), url.length());
+                        String exName = url.substring(url.lastIndexOf("."), url.length()).toLowerCase();
+                        Debug.i("DownloadImage", "imageName=" + imageName);
+
+                        File folderParent = new File(APP_PATH);
+                        if (!folderParent.exists()) {
+                            folderParent.mkdirs();
+                        }
+                        File file = new File(folderParent, imageName);
+                        try {
+                            file.createNewFile();
+                            FileOutputStream ostream = new FileOutputStream(file);
+                            if(exName.equals(".jpg")){
+                                bitmap.compress(Bitmap.CompressFormat.JPEG, 80, ostream);
+                            }else if(exName.equals(".png")){
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 80, ostream);
+                            }
+                            ostream.close();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                if (placeHolderDrawable != null) {
+                }
+            }
+        };
+        return target;
+    }
+
+    public interface BookReadedListener {
+
+        void onBookClicked(List<BookPurchaseDomain> books);
+    }
+
+    public BookReadedListener mBookReadedListener;
+
+    public void setOnBookReadedListener(BookReadedListener listener) {
+        this.mBookReadedListener = listener;
+    }
 }

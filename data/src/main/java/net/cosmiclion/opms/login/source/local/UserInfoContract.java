@@ -18,6 +18,9 @@ package net.cosmiclion.opms.login.source.local;
 
 import android.provider.BaseColumns;
 
+import static net.cosmiclion.opms.utils.Constants.COMMA_SEP;
+import static net.cosmiclion.opms.utils.Constants.TEXT_TYPE;
+
 /**
  * The contract used for the db to save the tasks locally.
  */
@@ -54,5 +57,30 @@ public final class UserInfoContract {
         public static final String COLUMN_NAME_MEMBER_STATE = "member_state";
         public static final String COLUMN_NAME_MOBILE_TOKEN = "member_mobile_token";
 
+        public static final String SQL_CREATE_USER_INFO_TABLE =
+                "CREATE TABLE " + UserInfoContract.Entry.TABLE_NAME + " (" +
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_ID + TEXT_TYPE + " PRIMARY KEY," +
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_ACCOUNT + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_TRUENAME + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_SEX + TEXT_TYPE + COMMA_SEP +
+
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_BIRTHDAY + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_MOBILE + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_ALLOW_EMAIL + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_ALLOW_SMS + TEXT_TYPE + COMMA_SEP +
+
+                        UserInfoContract.Entry.COLUMN_NAME_ALLOW_APP + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_ADDTIME + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_LOGIN_TIME + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_OLD_LOGIN_TIME + TEXT_TYPE + COMMA_SEP +
+
+                        UserInfoContract.Entry.COLUMN_NAME_ADULT_CHECK + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_LOGIN_NUM + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_LOGIN_IP + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_OLD_LOGIN_IP + TEXT_TYPE + COMMA_SEP +
+
+                        UserInfoContract.Entry.COLUMN_NAME_MEMBER_STATE + TEXT_TYPE + COMMA_SEP +
+                        UserInfoContract.Entry.COLUMN_NAME_MOBILE_TOKEN + TEXT_TYPE +
+                        " )";
     }
 }

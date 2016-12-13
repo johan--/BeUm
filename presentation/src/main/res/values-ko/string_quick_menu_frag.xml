@@ -4,4 +4,5 @@
 
     <string name="quickmenu_recent_purchase">최근 구매한 책</string>
     <string name="quickmenu_view_all"><u>전체 보기 &#8250;</u></string>
+    <string name="quickmenu_nodata">책을 다운로드 받아야 합니다.</string>
 </resources>

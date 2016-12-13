@@ -1,10 +1,11 @@
 package net.cosmiclion.opms.main.quickmenu;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 
 import net.cosmiclion.opms.BasePresenter;
 import net.cosmiclion.opms.BaseView;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItem;
+import net.cosmiclion.opms.main.purchase.model.BookPurchaseDomain;
 
 import java.util.List;
 
@@ -15,9 +16,13 @@ public interface QuickMenuContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadQuickMenuItems(boolean forceUpdate);
+        void getMobileToken(@NonNull Context context);
 
-        void loadQuickMenuItemDetail(@NonNull String bookId, @NonNull String bookTitle);
+        String getMobileToken();
+
+        void loadBooks(boolean forceUpdate);
+
+        List<BookPurchaseDomain> getBooks();
 
         void goPurchaseListScreen();
     }
@@ -28,24 +33,7 @@ public interface QuickMenuContract {
 
         boolean isActive();
 
-        void showBooksView(List<QuickMenuItem> books);
+        void showBooksView(List<BookPurchaseDomain> books);
 
-//        void showLogoutSuccess(@NonNull LogoutResponse logoutResponse);
-//
-//        void showLogoutFailure(@NonNull LogoutResponse logoutResponse);
-//
-//        void showLogoutError(String message);
-//
-//        void openBookDetail(@NonNull String uid, @NonNull String bookId);
-//
-//        void showAlertMessage(String message);
-//
-//        void showProgressDialog(String title, String message);
-//
-//        void hideProgressDialog();
-//
-//        void showBookDetailView(@NonNull BookDetailResponse bookDetailResponse);
-
-//        void showBookDetailFailure(String message);
     }
 }

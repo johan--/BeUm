@@ -1,14 +1,16 @@
 package net.cosmiclion.opms.main.quickmenu;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemsRequest;
-import net.cosmiclion.opms.utils.Debug;
 import net.cosmiclion.opms.UseCase;
 import net.cosmiclion.opms.UseCaseHandler;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItem;
-import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItemDetail;
+import net.cosmiclion.opms.login.LoginPresenter;
+import net.cosmiclion.opms.main.purchase.model.BookPurchaseDomain;
 import net.cosmiclion.opms.main.quickmenu.usecase.GetQuickMenuItems;
+import net.cosmiclion.opms.utils.Debug;
 
 import java.util.List;
 
@@ -20,108 +22,83 @@ public class QuickMenuPresenter implements QuickMenuContract.Presenter {
     private String TAG = getClass().getSimpleName();
 
     private final UseCaseHandler mUseCaseHandler;
-
-    private final QuickMenuContract.View mQuickMenuItemView;
-
-    private final GetQuickMenuItems mGetQuickMenuItems;
-
-    private final GetQuickMenuItemDetail mGetQuickMenuItemDetail;
+    private final QuickMenuContract.View mItemView;
+    private final GetQuickMenuItems mGetPurchaseRecent;
 
     private boolean mFirstLoad = true;
+    private String mMobileToken;
+    private String mImageUrl;
+    private List<BookPurchaseDomain> mBooks;
 
     public QuickMenuPresenter(@NonNull UseCaseHandler useCaseHandler,
                               @NonNull QuickMenuContract.View quickMenuItemView,
-                              @NonNull GetQuickMenuItems getQuickMenuItems,
-                              @NonNull GetQuickMenuItemDetail getQuickMenuItemDetail
+                              @NonNull GetQuickMenuItems getQuickMenuItems
     ) {
         this.mUseCaseHandler = useCaseHandler;
-        this.mQuickMenuItemView = quickMenuItemView;
-        this.mGetQuickMenuItems = getQuickMenuItems;
-        this.mGetQuickMenuItemDetail = getQuickMenuItemDetail;
+        this.mItemView = quickMenuItemView;
+        this.mGetPurchaseRecent = getQuickMenuItems;
 
-        mQuickMenuItemView.setPresenter(this);
+        mItemView.setPresenter(this);
     }
 
     @Override
     public void start() {
-        loadQuickMenuItems(false);
+        loadBooks(false);
     }
 
-//    @Override
-//    public void loadBookDetail(@NonNull String bookId, @NonNull String bookTitle) {
-//        Debug.i(TAG, "------loadBookDetail--------");
-//        mBooksView.showProgressDialog("", "Loading book...");
-//        final BookDetailRequest bookDetailRequest = new BookDetailRequest(UID, bookId, bookTitle);
-//        GetBookDetail.RequestValues requestValues = new GetBookDetail.RequestValues(bookDetailRequest);
-//        mUseCaseHandler.execute(mBookDetail, requestValues, new UseCase.UseCaseCallback<GetBookDetail.ResponseValues>() {
-//            @Override
-//            public void onSuccess(GetBookDetail.ResponseValues response) {
-//                mBooksView.hideProgressDialog();
-//                if(bookDetailRequest != null){
-//                    BookDetailResponse bookDetailResponse = response.getBookDetailResponse();
-//                    mBooksView.showBookDetailView(bookDetailResponse);
-//                }else{
-//                    mBooksView.showBookDetailFailure("");
-//                }
-//            }
-//
-//            @Override
-//            public void onError() {
-//                mBooksView.hideProgressDialog();
-//                mBooksView.showBookDetailFailure("");
-//                Debug.i(TAG, "onError");
-//            }
-//        });
-//    }
+    @Override
+    public void loadBooks(boolean forceUpdate) {
+        Debug.i(TAG, "loadBooks Purchase= " + forceUpdate);
+        getBooks(forceUpdate || mFirstLoad, true);
+        mFirstLoad = false;
+    }
 
-
-    private void loadQuickMenuItems(boolean forceUpdate, final boolean showLoadingUI) {
+    private void getBooks(boolean forceUpdate, final boolean showLoadingUI) {
+        Debug.i(TAG, "===getBooks Purchase=== " + forceUpdate);
         if (showLoadingUI) {
-            mQuickMenuItemView.setLoadingIndicator(true);
+            mItemView.setLoadingIndicator(true);
         }
-        GetQuickMenuItems.RequestValues requestValue = new GetQuickMenuItems.RequestValues(forceUpdate, new QuickMenuItemsRequest());
-        mUseCaseHandler.execute(mGetQuickMenuItems, requestValue,
-                new UseCase.UseCaseCallback<GetQuickMenuItems.ResponseValues>() {
+        mUseCaseHandler.execute(mGetPurchaseRecent, new GetQuickMenuItems.RequestValues(forceUpdate, mMobileToken),
+                new UseCase.UseCaseCallback<GetQuickMenuItems.ResponseValue>() {
                     @Override
-                    public void onSuccess(GetQuickMenuItems.ResponseValues response) {
-                        Debug.i(TAG, "loadQuickMenuItems onSuccess");
-                        List<QuickMenuItem> books = response.getResponse();
-                        if (!mQuickMenuItemView.isActive()) {
-                            return;
+                    public void onSuccess(GetQuickMenuItems.ResponseValue response) {
+                        List<BookPurchaseDomain> books = response.getBooksPurchaseResponse();
+                        String ch = "/";
+                        for (BookPurchaseDomain item : books) {
+                            item.cover_image1 = mImageUrl + ch + item.product_id + ch + item.cover_image1;
+                            item.cover_image2 = mImageUrl + ch + item.product_id + ch + item.cover_image2;
+                            item.cover_image3 = mImageUrl + ch + item.product_id + ch + item.cover_image3;
+                            item.cover_image4 = mImageUrl + ch + item.product_id + ch + item.cover_image4;
                         }
-                        if (showLoadingUI) {
-                            mQuickMenuItemView.setLoadingIndicator(false);
-                        }
-                        processBooks(books);
+                        Debug.i(TAG, "books size = " + books.size());
+                        mItemView.showBooksView(books);
                     }
 
                     @Override
                     public void onError() {
-
+                        Debug.i(TAG, "Error");
                     }
                 });
     }
 
-    private void processBooks(List<QuickMenuItem> books) {
-        if (books.isEmpty()) {
-            // Show a message indicating there are no tasks for that filter type.
-//            processEmptyTasks();
-        } else {
-            // Show the list of tasks
-            mQuickMenuItemView.showBooksView(books);
-        }
+    @Override
+    public void getMobileToken(@NonNull Context context) {
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        mMobileToken = sharedPreferences.getString(LoginPresenter.PARAMS_MOBILE_TOKEN, "");
+        mImageUrl = sharedPreferences.getString(LoginPresenter.PREF_KEY_COVER_IMAGE_URL, "");
+        Debug.i(TAG, "mMobileToken = " + mMobileToken);
+        Debug.i(TAG, "mImageUrl = " + mImageUrl);
     }
 
     @Override
-    public void loadQuickMenuItems(boolean forceUpdate) {
-        Debug.i(TAG, "loadQuickMenuItems = " + forceUpdate);
-        loadQuickMenuItems(forceUpdate || mFirstLoad, true);
-        mFirstLoad = false;
+    public List<BookPurchaseDomain> getBooks() {
+        return mBooks;
     }
 
-    @Override
-    public void loadQuickMenuItemDetail(@NonNull String bookId, @NonNull String bookTitle) {
 
+    @Override
+    public String getMobileToken() {
+        return mMobileToken;
     }
 
     @Override

@@ -27,8 +27,8 @@ public class SkySetting {
     }
 
     public static void setStorageDirectory(String directory, String appName) {
-        storageDirectory = directory + File.separator ;
+        storageDirectory = directory + File.separator;
 //        storageDirectory = directory + File.separator + appName;
-        Log.d("SkySetting", storageDirectory);
+        Log.d("SkySetting11", storageDirectory);
     }
 }

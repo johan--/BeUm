@@ -15,12 +15,11 @@
  */
 
 package net.cosmiclion.opms.main.quickmenu.source.local;
+
 import android.content.Context;
 import android.support.annotation.NonNull;
 
 import net.cosmiclion.opms.main.quickmenu.QuickMenuDataSource;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemDetailRequest;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemsRequest;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
@@ -30,13 +29,10 @@ import static com.google.common.base.Preconditions.checkNotNull;
 public class QuickMenuLocalDataSource implements QuickMenuDataSource {
 
     private static QuickMenuLocalDataSource INSTANCE;
+    private Context mContext;
 
-//    private QuickMenuDbHelper mDbHelper;
-
-    // Prevent direct instantiation.
     private QuickMenuLocalDataSource(@NonNull Context context) {
-        checkNotNull(context);
-//        mDbHelper = new QuickMenuDbHelper(context);
+        this.mContext = checkNotNull(context);
     }
 
     public static QuickMenuLocalDataSource getInstance(@NonNull Context context) {
@@ -48,12 +44,7 @@ public class QuickMenuLocalDataSource implements QuickMenuDataSource {
 
 
     @Override
-    public void getQuickMenuItemsResponse(@NonNull QuickMenuItemsRequest request, @NonNull LoadQuickMenuItemsCallback callback) {
-
-    }
-
-    @Override
-    public void getQuickMenuItemDetailResponse(@NonNull QuickMenuItemDetailRequest request, @NonNull LoadQuickMenuItemDetailCallback callback) {
+    public void getBooksPurchaseResponse(@NonNull String token, @NonNull LoadPurchaseCallback callback) {
 
     }
 }

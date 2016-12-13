@@ -3,24 +3,21 @@ package net.cosmiclion.opms.main.quickmenu.source.remote;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
+import net.cosmiclion.opms.login.model.ResponseData;
+import net.cosmiclion.opms.main.purchase.service.PurchaseService;
 import net.cosmiclion.opms.main.quickmenu.QuickMenuDataSource;
-import net.cosmiclion.opms.main.quickmenu.model.QMenuItem;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemDetailRequest;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemDetailResponse;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemsRequest;
-import net.cosmiclion.opms.main.quickmenu.model.QuickMenuItemsResponse;
+import net.cosmiclion.opms.network.retrofit2.ApiClient;
 import net.cosmiclion.opms.utils.Debug;
-import net.cosmiclion.opms.volley.VolleyManager;
 
-import java.util.ArrayList;
-import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 
 public class QuickMenuRemoteDataSource implements QuickMenuDataSource {
     private String TAG = getClass().getSimpleName();
     private static QuickMenuRemoteDataSource INSTANCE = null;
-    private VolleyManager mVolleyManager = null;
+    private Context mContext;
 
     public static QuickMenuRemoteDataSource getInstance(@NonNull Context context) {
         if (INSTANCE == null) {
@@ -30,42 +27,30 @@ public class QuickMenuRemoteDataSource implements QuickMenuDataSource {
     }
 
     private QuickMenuRemoteDataSource(@NonNull Context context) {
-        checkNotNull(context);
-        if (mVolleyManager == null) {
-            mVolleyManager = VolleyManager.getInstance(context);
-        }
+        this.mContext = checkNotNull(context);
     }
 
     @Override
-    public void getQuickMenuItemsResponse(@NonNull QuickMenuItemsRequest request, @NonNull LoadQuickMenuItemsCallback callback) {
-        Debug.i(TAG, "========getQuickMenuItemsResponse=======");
-        List<QMenuItem> items = new ArrayList<QMenuItem>();
-        items.add(0, new QMenuItem("01","Book1","Cover1"));
-        items.add(1, new QMenuItem("02","Book2","Cover2"));
-        items.add(2, new QMenuItem("03","Book3","Cover3"));
-        items.add(3, new QMenuItem("04","Book4","Cover4"));
+    public void getBooksPurchaseResponse(@NonNull String token,
+                                         @NonNull final LoadPurchaseCallback callback) {
+        Debug.i(TAG, "===getBooksPurchaseResponse===");
 
-        items.add(0, new QMenuItem("01","Book1","Cover1"));
-        items.add(1, new QMenuItem("02","Book2","Cover2"));
-        items.add(2, new QMenuItem("03","Book3","Cover3"));
-        items.add(3, new QMenuItem("04","Book4","Cover4"));
+        PurchaseService purchaseService = ApiClient.getClient(mContext).create(PurchaseService.class);
 
-        items.add(0, new QMenuItem("01","Book1","Cover1"));
-        items.add(1, new QMenuItem("02","Book2","Cover2"));
-        items.add(2, new QMenuItem("03","Book3","Cover3"));
-        items.add(3, new QMenuItem("04","Book4","Cover4"));
+        final Call<ResponseData> call = purchaseService.getBookPurchaseInfo(token);
 
-        items.add(0, new QMenuItem("01","Book1","Cover1"));
-        items.add(1, new QMenuItem("02","Book2","Cover2"));
-        items.add(2, new QMenuItem("03","Book3","Cover3"));
-        items.add(3, new QMenuItem("04","Book4","Cover4"));
+        call.enqueue(new Callback<ResponseData>() {
+            @Override
+            public void onResponse(Call<ResponseData> call,
+                                   retrofit2.Response<ResponseData> response) {
+                callback.onBooksPurchaseLoaded(response.body());
+            }
 
-        callback.onQuickMenuItemsLoaded(new QuickMenuItemsResponse(items));
-    }
-
-    @Override
-    public void getQuickMenuItemDetailResponse(@NonNull QuickMenuItemDetailRequest request, @NonNull LoadQuickMenuItemDetailCallback callback) {
-        Debug.i(TAG, "========getQuickMenuItemsResponse=======");
-        callback.onQuickMenuItemDetailLoaded(new QuickMenuItemDetailResponse());
+            @Override
+            public void onFailure(Call<ResponseData> call, Throwable t) {
+                Debug.i(TAG, "Something went wrong: " + t.getMessage());
+                callback.onDataNotAvailable(t.getMessage());
+            }
+        });
     }
 }

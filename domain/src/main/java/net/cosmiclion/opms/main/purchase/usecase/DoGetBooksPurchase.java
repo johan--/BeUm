@@ -22,6 +22,10 @@ public class DoGetBooksPurchase extends
     private final String TAG = getClass().getSimpleName();
     private final PurchaseRepository mRepository;
 
+    public PurchaseRepository getRepository() {
+        return mRepository;
+    }
+
     public DoGetBooksPurchase(@NonNull PurchaseRepository repository) {
         mRepository = checkNotNull(repository, "repository cannot be null!");
     }
@@ -29,12 +33,12 @@ public class DoGetBooksPurchase extends
     @Override
     protected void executeUseCase(final RequestValues requestValues) {
         String token = requestValues.getToken();
+        Debug.i(TAG,"token="+token);
         mRepository.getBooksPurchaseResponse(token, new PurchaseDataSource.LoadPurchaseCallback() {
 
             @Override
             public void onBooksPurchaseLoaded(ResponseData response) {
                 getUseCaseCallback().onSuccess(new ResponseValue(response));
-
             }
 
             @Override
@@ -67,22 +71,29 @@ public class DoGetBooksPurchase extends
     public static final class ResponseValue implements UseCase.ResponseValue {
         private List<BookPurchaseDomain> mBooks = null;
         private BookPurchaseDomain mBook = null;
+        private String jsonBooks;
+
         /*
             Map object tu data sang domain, tranh viec sua du lieu tren server anh huong
             den cac tang domain va present.
          */
         public ResponseValue(ResponseData books) {
-            Debug.i("ResponseValue", "ResponseData books=" + books.getResponse());
+            Debug.i("ResponseValue Purchase", "ResponseData books=" + books.getResponse());
+            jsonBooks = books.getResponse().toString();
+            Debug.i("ResponseValue Purchase", "jsonBooks=" + jsonBooks);
+
             List<BookPurchaseDomain> booksPurchaseDomain = BookPurchaseMapper
                     .transformList((String) books.getResponse());
             mBooks = checkNotNull(booksPurchaseDomain, "mBookInfo cannot null");
 
         }
-
-        public List<BookPurchaseDomain>  getBooksPurchaseResponse() {
+        public String getJsonBooks(){
+            return jsonBooks;
+        }
+        public List<BookPurchaseDomain> getBooksPurchaseResponse() {
             return mBooks;
         }
-        public BookPurchaseDomain  getBookPurchaseResponse() {
+        public BookPurchaseDomain getBookPurchaseResponse() {
             return mBook;
         }
     }

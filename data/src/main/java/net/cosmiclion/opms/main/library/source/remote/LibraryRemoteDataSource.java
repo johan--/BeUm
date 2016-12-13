@@ -52,4 +52,29 @@ public class LibraryRemoteDataSource implements LibraryDataSource {
             }
         });
     }
+
+    @Override
+    public void getBookShelfResponse(@NonNull String token,
+                                     @NonNull String bookId,
+                                     @NonNull final LoadBookShelfCallback callback) {
+        Debug.i(TAG, "===getBookShelfResponse===");
+        LibraryService service = ApiClient.getClient(mContext).create(LibraryService.class);
+
+        final Call<ResponseData> call = service.getBookShelf(token, bookId);
+
+        call.enqueue(new Callback<ResponseData>() {
+            @Override
+            public void onResponse(Call<ResponseData> call,
+                                   retrofit2.Response<ResponseData> response) {
+                Debug.i(TAG, "getBookShelfResponse: " +response.body());
+                callback.onBookShelfLoaded(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseData> call, Throwable t) {
+                Debug.i(TAG, "Something went wrong: " + t.getMessage());
+                callback.onDataNotAvailable(t.getMessage());
+            }
+        });
+    }
 }

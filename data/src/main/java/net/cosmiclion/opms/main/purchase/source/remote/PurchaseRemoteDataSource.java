@@ -4,10 +4,13 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import net.cosmiclion.opms.login.model.ResponseData;
+import net.cosmiclion.opms.main.purchase.model.BookPurchaseData;
 import net.cosmiclion.opms.main.purchase.service.PurchaseService;
 import net.cosmiclion.opms.main.purchase.source.PurchaseDataSource;
 import net.cosmiclion.opms.network.retrofit2.ApiClient;
 import net.cosmiclion.opms.utils.Debug;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -31,7 +34,8 @@ public class PurchaseRemoteDataSource implements PurchaseDataSource {
     }
 
     @Override
-    public void getBooksPurchaseResponse(@NonNull String token, @NonNull final LoadPurchaseCallback callback) {
+    public void getBooksPurchaseResponse(@NonNull String token,
+                                         @NonNull final LoadPurchaseCallback callback) {
         Debug.i(TAG, "===getBooksPurchaseResponse===");
 
         PurchaseService purchaseService = ApiClient.getClient(mContext).create(PurchaseService.class);
@@ -51,6 +55,26 @@ public class PurchaseRemoteDataSource implements PurchaseDataSource {
                 callback.onDataNotAvailable(t.getMessage());
             }
         });
+    }
+
+    @Override
+    public void doSaveBooks(List<BookPurchaseData> books) {
+
+    }
+
+    @Override
+    public BookPurchaseData getBook(@NonNull String bookId) {
+        return null;
+    }
+
+    @Override
+    public void doUpdateBookDownloaded(@NonNull String bookId) {
+
+    }
+
+    @Override
+    public void doUpdateBookReaded(@NonNull String bookId) {
+
     }
 
 }

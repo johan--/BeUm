@@ -18,8 +18,6 @@ package net.cosmiclion.opms.login;
 
 import android.support.annotation.NonNull;
 
-import com.google.gson.Gson;
-
 import net.cosmiclion.opms.login.model.LoginRequest;
 import net.cosmiclion.opms.login.model.ResponseData;
 import net.cosmiclion.opms.login.model.UserInfoData;
@@ -39,7 +37,7 @@ public class TasksRepository implements TasksDataSource {
 
     private final TasksDataSource mRemoteDataSource;
 
-    private final TasksDataSource mTasksLocalDataSource;
+    private final TasksDataSource mLocalDataSource;
 
     /**
      * Marks the cache as invalid, to force an update the next time data is requested. This variable
@@ -51,7 +49,7 @@ public class TasksRepository implements TasksDataSource {
     private TasksRepository(@NonNull TasksDataSource tasksRemoteDataSource,
                             @NonNull TasksDataSource tasksLocalDataSource) {
         mRemoteDataSource = checkNotNull(tasksRemoteDataSource);
-        mTasksLocalDataSource = checkNotNull(tasksLocalDataSource);
+        mLocalDataSource = checkNotNull(tasksLocalDataSource);
     }
 
     /**
@@ -120,7 +118,7 @@ public class TasksRepository implements TasksDataSource {
             mRemoteDataSource.getUserInfoResponse(token, new LoadUserInfoCallback() {
                 @Override
                 public void onUserInfoLoaded(ResponseData response) {
-                    saveUserInfo(new Gson().fromJson((String)response.getResponse(),UserInfoData.class));
+//                    saveUserInfo(new Gson().fromJson((String)response.getResponse(),UserInfoData.class));
                     callback.onUserInfoLoaded(response);
                 }
 
@@ -147,7 +145,7 @@ public class TasksRepository implements TasksDataSource {
 
     @Override
     public void saveUserInfo(@NonNull UserInfoData userInfoData) {
-//        mTasksLocalDataSource.saveUserInfo(userInfoData);
+        mLocalDataSource.saveUserInfo(userInfoData);
     }
 
 
@@ -155,22 +153,18 @@ public class TasksRepository implements TasksDataSource {
     public void getBaseImageUrlResponse(@NonNull final LoadBaseImageUrlCallback callback) {
         checkNotNull(callback);
 
-        if (!mCacheIsDirty) {
-            // If the cache is dirty we need to fetch new data from the network.
-            mRemoteDataSource.getBaseImageUrlResponse( new LoadBaseImageUrlCallback() {
+        mRemoteDataSource.getBaseImageUrlResponse(new LoadBaseImageUrlCallback() {
 
-                @Override
-                public void onBaseImageUrlLoaded(ResponseData response) {
-                    callback.onBaseImageUrlLoaded(response);
-                }
+            @Override
+            public void onBaseImageUrlLoaded(ResponseData response) {
+                callback.onBaseImageUrlLoaded(response);
+            }
 
-                @Override
-                public void onDataNotAvailable(String errorMessage) {
-                    callback.onDataNotAvailable(errorMessage);
-                }
-            });
-        } else {
+            @Override
+            public void onDataNotAvailable(String errorMessage) {
+                callback.onDataNotAvailable(errorMessage);
+            }
+        });
 
-        }
     }
 }

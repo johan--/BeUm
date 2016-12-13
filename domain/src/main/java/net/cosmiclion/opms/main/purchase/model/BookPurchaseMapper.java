@@ -57,6 +57,10 @@ public class BookPurchaseMapper {
             bookDomain.is_order = bookData.is_order;
             bookDomain.is_rental = bookData.is_rental;
             bookDomain.setPivot(bookData.pivot.order_id, bookData.pivot.product_id);
+            bookDomain.purchase_time = bookData.purchase_time;
+
+            bookDomain.filetype = bookData.filetype;
+            bookDomain.filename = bookData.filename;
         }
         return bookDomain;
     }
@@ -77,6 +81,10 @@ public class BookPurchaseMapper {
             bookPurchaseDomain.is_order = bookPurchaseData.is_order;
             bookPurchaseDomain.is_rental = bookPurchaseData.is_rental;
             bookPurchaseDomain.setPivot(bookPurchaseData.pivot.order_id, bookPurchaseData.pivot.product_id);
+            bookPurchaseDomain.purchase_time = bookPurchaseData.purchase_time;
+
+            bookPurchaseDomain.filetype = bookPurchaseData.filetype;
+            bookPurchaseDomain.filename = bookPurchaseData.filename;
         }
 
         return bookPurchaseDomain;
@@ -90,8 +98,11 @@ public class BookPurchaseMapper {
                 }.getType());
         BookPurchaseDomain itemDomain;
         Debug.i("TAG_TAG", "==========hhhhhhhhh");
-        Debug.i("TAG_TAG", "pivot.order_id=" + booksData.get(0).pivot.order_id +
-                " - pivot.product_id=" + booksData.get(0).pivot.product_id);
+//        Debug.i("TAG_TAG", "pivot.order_id=" + booksData.get(0).pivot.order_id +
+//                " - pivot.product_id=" + booksData.get(0).pivot.product_id);
+        if (booksData == null) {
+            return new ArrayList<>(0);
+        }
         for (BookPurchaseData item : booksData) {
             itemDomain = transform(item);
             if (itemDomain != null) {
